@@ -200,7 +200,7 @@ def modeling():
 
         # 创建车流量预测集，20分钟跨度有关系的预测集
         def divide_test_by_direction(volume_test):
-            对volume_time_entry_test = pd.Series(data=1,
+            volume_time_entry_test = pd.Series(data=1,
                                                index=volume_test.loc[(volume_test['tollgate_id'] == tollgate_id) & (
                                                volume_test['direction'] == "entry"), :]['time'])
             volume_time_entry_test = volume_time_entry_test.resample("20T").sum()
