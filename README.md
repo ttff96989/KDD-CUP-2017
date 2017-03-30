@@ -1,12 +1,12 @@
 
-# description of the feature:
-# Traffic Volume through the Tollgates
-# time           datatime        the time when a vehicle passes the tollgate
-# tollgate_id    string          ID of the tollgate
-# direction      string           0:entry, 1:exit
-# vehicle_model  int             this number ranges from 0 to 7, which indicates the capacity of the vehicle(bigger the higher)
-# has_etc        string          does the vehicle use ETC (Electronic Toll Collection) device? 0: No, 1: Yes
-# vehicle_type   string          vehicle type: 0-passenger vehicle, 1-cargo vehicle
+description of the feature:
+Traffic Volume through the Tollgates
+time           datatime        the time when a vehicle passes the tollgate
+tollgate_id    string          ID of the tollgate
+direction      string           0:entry, 1:exit
+vehicle_model  int             this number ranges from 0 to 7, which indicates the capacity of the vehicle(bigger the higher)
+has_etc        string          does the vehicle use ETC (Electronic Toll Collection) device? 0: No, 1: Yes
+vehicle_type   string          vehicle type: 0-passenger vehicle, 1-cargo vehicle
 
 volume_predict.py建模思路：
 创建训练集，总的要求就是以前两个小时数据为训练集，用迭代式预测方法
