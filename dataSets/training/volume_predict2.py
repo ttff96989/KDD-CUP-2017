@@ -157,15 +157,13 @@ def modeling():
                 volume_all_entry.to_csv(entry_file_path, encoding="utf8")
             if exit_file_path:
                 volume_all_exit.to_csv(exit_file_path, encoding="utf8")
-            print volume_all_entry.columns
-            print volume_all_exit.columns
             return volume_all_entry, volume_all_exit
 
 
         # 计算2个小时为单位的特征
         # train_df就是整合后的特征，
         # offset是从index开始偏移多少个单位
-        def generate_2hours_features(train_df, offset):
+        def generate_2hours_features(train_df, offset, file_path=None):
             train_df["vehicle_all_model"] = train_df["vehicle_model0"] + train_df["vehicle_model1"] + \
                                             train_df["vehicle_model2"] + train_df["vehicle_model3"] + \
                                             train_df["vehicle_model4"] + train_df["vehicle_model5"]
@@ -192,11 +190,13 @@ def modeling():
             train_df["cargo_all_model_avg"] = train_df["cargo_all_model"] / train_df["cargo_all_count"]
             train_df["passenger_all_model_avg"] = train_df["cargo_all_model"] / train_df["cargo_all_count"]
             if offset >= 6:
-                train_df = generate_time_features(train_df, offset)
+                train_df = generate_time_features(train_df, offset, file_path)
+            elif file_path:
+                train_df.to_csv(file_path)
             return train_df.fillna(0)
 
         # 在train_df的index基础上加上offset*20分钟的时间特征
-        def generate_time_features(data_df, offset):
+        def generate_time_features(data_df, offset, file_path=None):
             time_str_se = pd.Series(data_df.index)
             time_se = time_str_se.apply(lambda x: pd.Timestamp(x))
             time_se.index = time_se.values
@@ -206,10 +206,12 @@ def modeling():
             data_df["hour"] = data_df["time"].apply(lambda x: x.hour)
             data_df["minute"] = data_df["time"].apply(lambda x: x.minute)
             del data_df["time"]
+            if file_path:
+                data_df.to_csv(file_path)
             return data_df
 
         # 整合每20分钟的特征，并计算以2个小时为单位的特征
-        def generate_features(data_df, new_index, offset, has_y=True):
+        def generate_features(data_df, new_index, offset, has_y=True, file_path=None):
             train_df = pd.DataFrame()
             for i in range(len(data_df) - 6 - offset):
                 se_temp = pd.Series()
@@ -220,7 +222,7 @@ def modeling():
                 se_temp.index = new_index
                 se_temp.name = str(data_df.index[i])
                 train_df = train_df.append(se_temp)
-            return generate_2hours_features(train_df, 6 + offset)
+            return generate_2hours_features(train_df, 6 + offset, file_path)
 
         # 创建训练集，总的要求就是以前两个小时数据为训练集，用迭代式预测方法
         # 例如8点-10点的数据预测10点20,8点-10点20预测10点40……，每一次预测使用的都是独立的（可能模型一样）的模型
@@ -228,38 +230,36 @@ def modeling():
         # 第一个训练集特征是所有两个小时（以20分钟为一个单位）的数据，因变量是该两小时之后20分钟的流量
         # 第二个训练集，特征是所有两个小时又20分钟（以20分钟为一个单位）的数据，因变量是该两个小时之后20分钟的流量
         # 以此类推训练12个GBDT模型，其中entry 6个，exit 6个
-        def generate_models(volume_entry, volume_exit):
+        def generate_models(volume_entry, volume_exit, entry_file_patn=None, exit_file_path=None):
             best_rate = 0.1
             best_n_estimator = 3000
-            param_grid = [
-                            {'max_depth':[3, 4], 'min_samples_leaf':[1],
-                             'learning_rate':[best_rate + 0.01 * i for i in range(-2, 4, 1)],
-                             'loss':['lad'],
-                             'n_estimators':[best_n_estimator + i * 200 for i in range(-2, 3, 1)],
-                             'max_features':[1.0]}
-                        ]
+            # param_grid = [
+            #                 {'max_depth':[3, 4], 'min_samples_leaf':[1],
+            #                  'learning_rate':[best_rate + 0.01 * i for i in range(-2, 4, 1)],
+            #                  'loss':['lad'],
+            #                  'n_estimators':[best_n_estimator + i * 200 for i in range(-2, 3, 1)],
+            #                  'max_features':[1.0]}
+            #             ]
             old_index = volume_entry.columns
             new_index = []
             for i in range(6):
                 new_index += [item + "%d" % (i) for item in old_index]
             new_index.append("y")
-            # param_grid = [
-            #     {'max_depth':[3], 'min_samples_leaf':[1],
-            #      'learning_rate':[0.1], 'loss':['lad'], 'n_estimators':[3000], 'max_features':[1.0]}
-            # ]
+            param_grid = [
+                {'max_depth':[3], 'min_samples_leaf':[1],
+                 'learning_rate':[0.1], 'loss':['lad'], 'n_estimators':[3000], 'max_features':[1.0]}
+            ]
 
             # 这是交叉验证的评分函数
             def scorer(estimator, X, y):
                 predict_arr = estimator.predict(X)
                 y_arr = y
-                # result = (np.abs(predict_arr - y_arr) / y_arr).sum() / len(y)
                 result = (np.abs(1 - np.exp(predict_arr - y_arr))).sum() / len(y)
                 return result
 
             # 这是用训练集做预测时的评分函数
             def scorer2(estimator, X, y):
                 predict_arr = estimator.predict(X)
-                # result = (np.abs(predict_arr - y) / y).sum()
                 result = (np.abs(1 - np.exp(predict_arr - y))).sum()
                 return result
 
@@ -267,7 +267,7 @@ def modeling():
             train_entry_len = 0
             train_entry_score = 0
             for j in range(6):
-                train_df = generate_features(volume_entry, new_index, j)
+                train_df = generate_features(volume_entry, new_index, j, file_path=entry_file_patn)
                 train_df = train_df[train_df["y"] > 0]
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
@@ -289,7 +289,7 @@ def modeling():
             train_exit_len = 0
             train_exit_score = 0
             for j in range(6):
-                train_df = generate_features(volume_exit, new_index, j)
+                train_df = generate_features(volume_exit, new_index, j, file_path=exit_file_path)
                 train_df = train_df[train_df["y"] > 0]
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
@@ -308,7 +308,7 @@ def modeling():
         # 创建车流量预测集，20分钟跨度有关系的预测集
         def divide_test_by_direction(volume_test, entry_file_path=None, exit_file_path=None):
             volume_entry_test = volume_test[
-                (volume_test['tollgate_id'] == "1S") & (volume_test["direction"] == "entry")].copy()
+                (volume_test['tollgate_id'] == tollgate_id) & (volume_test["direction"] == "entry")].copy()
             volume_entry_test["volume"] = 1
             volume_entry_test["cargo_count"] = volume_entry_test["vehicle_type"].apply(lambda x: 1 if x == "cargo" else 0)
             volume_entry_test["passenger_count"] = volume_entry_test["vehicle_type"].apply(
@@ -333,7 +333,7 @@ def modeling():
             volume_entry_test = volume_entry_test.fillna(0)
 
             volume_exit_test = volume_test[
-                (volume_test['tollgate_id'] == "1S") & (volume_test["direction"] == "exit")].copy()
+                (volume_test['tollgate_id'] == tollgate_id) & (volume_test["direction"] == "exit")].copy()
             if len(volume_exit_test) > 0:
                 volume_exit_test["volume"] = 1
                 volume_exit_test["cargo_count"] = volume_exit_test["vehicle_type"].apply(lambda x: 1 if x == "cargo" else 0)
@@ -364,11 +364,12 @@ def modeling():
             return volume_entry_test, volume_exit_test
 
         # 转换预测集，将预测集转换成与训练集格式相同的格式
-        def predict(volume_entry_test, volume_exit_test, models_entry, models_exit):
+        def predict(volume_entry_test, volume_exit_test, models_entry, models_exit,
+                    entry_file_path=None, exit_file_path=None):
             old_index = volume_entry_test.columns
             new_index = []
             for i in range(6):
-                new_index += [item + "%d" % (i) for item in old_index]
+                new_index += [item + "%d" % (i, ) for item in old_index]
 
             # （entry方向）
             test_entry_df = pd.DataFrame()
@@ -380,11 +381,11 @@ def modeling():
                 se_temp.index = new_index
                 se_temp.name = str(volume_entry_test.index[i])
                 test_entry_df = test_entry_df.append(se_temp)
-                i = i + 6
+                i += 6
             test_entry_df = generate_2hours_features(test_entry_df, 0)
             predict_test_entry = pd.DataFrame()
             for i in range(6):
-                test_entry_df = generate_time_features(test_entry_df, i + 6)
+                test_entry_df = generate_time_features(test_entry_df, i + 6, entry_file_path)
                 test_y = models_entry[i].predict(test_entry_df)
                 predict_test_entry[i] = np.exp(test_y) - 1
             predict_test_entry.index = test_entry_df.index
@@ -405,7 +406,7 @@ def modeling():
             test_exit_df = generate_2hours_features(test_exit_df, 0)
             predict_test_exit = pd.DataFrame()
             for i in range(6):
-                test_exit_df = generate_time_features(test_exit_df, i)
+                test_exit_df = generate_time_features(test_exit_df, i, exit_file_path)
                 test_y = models_exit[i].predict(test_exit_df)
                 predict_test_exit[i] = np.exp(test_y - 1)
             predict_test_exit.index = test_exit_df.index
@@ -423,14 +424,18 @@ def modeling():
                     series = pd.Series({"tollgate_id": tollgate_id,
                                         "time_window": time_window,
                                         "direction": direction,
-                                        "volume": "%.2f" % (np.exp(predict_original.iloc[i, j - 6]) - 1)})
+                                        "volume": "%.2f" % (predict_original.iloc[i, j - 6])})
                     series.name = i + j - 6
                     result = result.append(series)
             return result
 
-
+        entry_train_file = "./train&test_zjw/volume_entry_train_%s.csv" % (tollgate_id, )
+        exit_train_file = "./train&test_zjw/volume_exit_train_%s.csv" % (tollgate_id, )
         volume_entry_train, volume_exit_train = divide_train_by_direction(volume_train)
-        models_entry, models_exit = generate_models(volume_entry_train, volume_exit_train)
+        models_entry, models_exit = generate_models(volume_entry_train,
+                                                    volume_exit_train)
+        entry_test_file = "./train&test_zjw/volume_entry_test_%s.csv" % (tollgate_id, )
+        exit_test_file = "./train&test_zjw/volume_exit_test_%s.csv" % (tollgate_id, )
         volume_entry_test, volume_exit_test = divide_test_by_direction(volume_test)
         predict_original_entry, predict_original_exit = predict(volume_entry_test,
                                                                 volume_exit_test,
