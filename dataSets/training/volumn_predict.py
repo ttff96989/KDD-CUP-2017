@@ -118,19 +118,19 @@ def modeling():
         # 第二个训练集，特征是所有两个小时又20分钟（以20分钟为一个单位）的数据，因变量是该两个小时之后20分钟的流量
         # 以此类推训练12个GBDT模型，其中entry 6个，exit 6个
         def generate_models(volume_entry, volume_exit):
-            best_rate = 0.1
-            best_n_estimator = 3000
-            param_grid = [
-                            {'max_depth':[3, 4], 'min_samples_leaf':[1],
-                             'learning_rate':[best_rate + 0.01 * i for i in range(-2, 4, 1)],
-                             'loss':['lad'],
-                             'n_estimators':[best_n_estimator + i * 200 for i in range(-2, 3, 1)],
-                             'max_features':[1.0]}
-                        ]
+            # best_rate = 0.1
+            # best_n_estimator = 3000
             # param_grid = [
-            #     {'max_depth':[3], 'min_samples_leaf':[1],
-            #      'learning_rate':[0.1], 'loss':['lad'], 'n_estimators':[3000], 'max_features':[1.0]}
-            # ]
+            #                 {'max_depth':[3, 4], 'min_samples_leaf':[1],
+            #                  'learning_rate':[best_rate + 0.01 * i for i in range(-2, 4, 1)],
+            #                  'loss':['lad'],
+            #                  'n_estimators':[best_n_estimator + i * 200 for i in range(-2, 3, 1)],
+            #                  'max_features':[1.0]}
+            #             ]
+            param_grid = [
+                {'max_depth':[3], 'min_samples_leaf':[1],
+                 'learning_rate':[0.1], 'loss':['lad'], 'n_estimators':[3000], 'max_features':[1.0]}
+            ]
 
             # 这是交叉验证的评分函数
             def scorer(estimator, X, y):
@@ -192,7 +192,7 @@ def modeling():
                 clf.fit(train_X, train_y)
                 print "Best GBDT param is :", clf.best_params_
                 train_exit_len += len(train_y)
-                train_exit_score += scorer(clf.best_estimator_, train_X, train_y)
+                train_exit_score += scorer2(clf.best_estimator_, train_X, train_y)
                 models_exit.append(clf.best_estimator_)
             print "Best Score is :", train_exit_score / train_exit_len
 

@@ -171,14 +171,13 @@ def modeling():
                                           train_df["cargo_model2"] + train_df["cargo_model3"] + \
                                           train_df["cargo_model4"] + train_df["cargo_model5"]
             train_df["passenger_all_model"] = train_df["passenger_model0"] + train_df["passenger_model1"] + \
-                                              train_df["passenger_model2"] + train_df["passenger_model3"] + train_df[
-                                                  "passenger_model4"] + \
-                                              train_df["passenger_model5"]
+                                              train_df["passenger_model2"] + train_df["passenger_model3"] + \
+                                              train_df["passenger_model4"] + train_df["passenger_model5"]
             train_df["no_all_count"] = train_df["no_count0"] + train_df["no_count1"] + train_df["no_count2"] + \
                                        train_df["no_count3"] + train_df["no_count4"] + train_df["no_count5"]
-            train_df["cargo_all_count"] = train_df["cargo_count0"] + train_df["cargo_count1"] + train_df[
-                "cargo_count2"] + \
-                                          train_df["cargo_count3"] + train_df["cargo_count4"] + train_df["cargo_count5"]
+            train_df["cargo_all_count"] = train_df["cargo_count0"] + train_df["cargo_count1"] + \
+                                          train_df["cargo_count2"] + train_df["cargo_count3"] + \
+                                          train_df["cargo_count4"] + train_df["cargo_count5"]
             train_df["passenger_all_count"] = train_df["passenger_count0"] + train_df["passenger_count1"] + \
                                               train_df["passenger_count2"] + train_df["passenger_count3"] + \
                                               train_df["passenger_count4"] + train_df["passenger_count5"]
@@ -188,7 +187,7 @@ def modeling():
                                     train_df["etc_count3"] + train_df["etc_count4"] + train_df["etc_count5"]
             train_df["vehicle_all_model_avg"] = train_df["vehicle_all_model"] / train_df["volume_all"]
             train_df["cargo_all_model_avg"] = train_df["cargo_all_model"] / train_df["cargo_all_count"]
-            train_df["passenger_all_model_avg"] = train_df["cargo_all_model"] / train_df["cargo_all_count"]
+            train_df["passenger_all_model_avg"] = train_df["passenger_all_model"] / train_df["passenger_all_count"]
             if offset >= 6:
                 train_df = generate_time_features(train_df, offset, file_path)
             elif file_path:
@@ -233,22 +232,23 @@ def modeling():
         def generate_models(volume_entry, volume_exit, entry_file_patn=None, exit_file_path=None):
             best_rate = 0.1
             best_n_estimator = 3000
-            # param_grid = [
-            #                 {'max_depth':[3, 4], 'min_samples_leaf':[1],
-            #                  'learning_rate':[best_rate + 0.01 * i for i in range(-2, 4, 1)],
-            #                  'loss':['lad'],
-            #                  'n_estimators':[best_n_estimator + i * 200 for i in range(-2, 3, 1)],
-            #                  'max_features':[1.0]}
-            #             ]
+            param_grid = [
+                            {'max_depth':[3, 4], 'min_samples_leaf':[1],
+                             'learning_rate':[best_rate + 0.01 * i for i in range(-2, 4, 1)],
+                             'loss':['lad'],
+                             'n_estimators':[best_n_estimator + i * 200 for i in range(-2, 3, 1)],
+                             'max_features':[1.0]}
+                        ]
             old_index = volume_entry.columns
             new_index = []
             for i in range(6):
-                new_index += [item + "%d" % (i) for item in old_index]
+                new_index += [item + "%d" % (i, ) for item in old_index]
             new_index.append("y")
-            param_grid = [
-                {'max_depth':[3], 'min_samples_leaf':[1],
-                 'learning_rate':[0.1], 'loss':['lad'], 'n_estimators':[3000], 'max_features':[1.0]}
-            ]
+            # param_grid = [
+            #     {'max_depth':[3], 'min_samples_leaf':[1],
+            #      'learning_rate':[0.1], 'loss':['lad'], 'n_estimators':[3000], 'max_features':[1.0],
+            #      'criterion':["mae"]}
+            # ]
 
             # 这是交叉验证的评分函数
             def scorer(estimator, X, y):
@@ -299,7 +299,7 @@ def modeling():
                 clf.fit(train_X, train_y)
                 print "Best GBDT param is :", clf.best_params_
                 train_exit_len += len(train_y)
-                train_exit_score += scorer(clf.best_estimator_, train_X, train_y)
+                train_exit_score += scorer2(clf.best_estimator_, train_X, train_y)
                 models_exit.append(clf.best_estimator_)
             print "Best Score is :", train_exit_score / train_exit_len
 
@@ -336,7 +336,8 @@ def modeling():
                 (volume_test['tollgate_id'] == tollgate_id) & (volume_test["direction"] == "exit")].copy()
             if len(volume_exit_test) > 0:
                 volume_exit_test["volume"] = 1
-                volume_exit_test["cargo_count"] = volume_exit_test["vehicle_type"].apply(lambda x: 1 if x == "cargo" else 0)
+                volume_exit_test["cargo_count"] = volume_exit_test["vehicle_type"].apply(
+                    lambda x: 1 if x == "cargo" else 0)
                 volume_exit_test["passenger_count"] = volume_exit_test["vehicle_type"].apply(
                     lambda x: 1 if x == "passenger" else 0)
                 volume_exit_test["no_count"] = volume_exit_test["vehicle_type"].apply(lambda x: 1 if x == "No" else 0)
@@ -402,16 +403,15 @@ def modeling():
                 se_temp.index = new_index
                 se_temp.name = str(volume_exit_test.index[i])
                 test_exit_df = test_exit_df.append(se_temp)
-                i = i + 6
+                i += 6
             test_exit_df = generate_2hours_features(test_exit_df, 0)
             predict_test_exit = pd.DataFrame()
             for i in range(6):
-                test_exit_df = generate_time_features(test_exit_df, i, exit_file_path)
+                test_exit_df = generate_time_features(test_exit_df, i + 6, exit_file_path)
                 test_y = models_exit[i].predict(test_exit_df)
-                predict_test_exit[i] = np.exp(test_y - 1)
+                predict_test_exit[i] = np.exp(test_y) - 1
             predict_test_exit.index = test_exit_df.index
             return predict_test_entry, predict_test_exit
-
 
         # 将预测数据转换成输出文件的格式
         def transform_predict(predict_original, direction, tollgate_id):
