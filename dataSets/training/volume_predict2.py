@@ -16,6 +16,9 @@
 
 2. 如何证明分开考虑收费站比将收费站全部整合到一起效果好，如果将收费站整合到一起的话，那么就不对收费站id，出入方向做分类
 
+3. 从观察数据得出来的结论，在10月1日附近（具体哪几天不记得了）全天的数据相对于其他日期的数据很像噪声点，可以尝试剔除那
+   几天的数据
+
 优化思路：
 1. 根据题目所给评价函数，如果将y转换成log(y)，那么损失函数可以朝lad方向梯度下降（过程已经大致证明了），而特征的log处理
    不影响CART的回归结果，所以对所有车流量（不论特征还是因变量都做log计算）。如果使用其他非树形结构模型需要考虑是否要对
@@ -23,8 +26,8 @@
 
 2. 增加特征，之前只考虑20分钟内的车流量情况，现在加上在20分钟内的总载重量，平均载重量；货车数量，货车总载重量，货车平均
    载重量；客车数量，客车总载重量，客车平均载重量；使用电子桩的车数（2个小时6个时段，每个时段有10维特征，一共60维）；
-   2小时内总载重量，平均载重量，货车数量，货车总载重量，货车平均载重量，客车数量，客车总载重量，客车平均载重量（10维）；
-   总计70维特征
+   2小时内总载重量，平均载重量，货车数量，货车总载重量，货车平均载重量，客车数量，客车总载重量，客车平均载重量（9维）；
+   。再加上待预测时段的时间信息，包括月，日，时，分
 
 '''
 
@@ -36,6 +39,9 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import GradientBoostingRegressor
 from pandas.tseries.offsets import *
 from sklearn.model_selection import GridSearchCV
+from scipy.stats import skew
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression, RidgeCV, LassoCV, ElasticNetCV
 
 # description of the feature:
 # Traffic Volume through the Tollgates
@@ -59,6 +65,10 @@ def preprocessing():
     volume_df['vehicle_type'] = volume_df['vehicle_type'].replace({0: "passenger", 1: "cargo"})
     volume_df['time'] = volume_df['time'].apply(lambda x: pd.Timestamp(x))
 
+    # 剔除10月1日至10月6日数据（每个收费站在该日期附近都有异常）
+    volume_df = volume_df[(volume_df["time"] < pd.Timestamp("2016-10-01 00:00:00")) |
+                          (volume_df["time"] > pd.Timestamp("2016-10-07 00:00:00"))]
+
     # 承载量：1-默认客车，2-默认货车，3-默认货车，4-默认客车
     # 承载量大于等于5的为货运汽车，所有承载量为0的车都类型不明
     volume_df = volume_df.sort_values(by="vehicle_model")
@@ -68,7 +78,8 @@ def preprocessing():
     vehicle_model3 = volume_df[volume_df['vehicle_model'] == 3].fillna("cargo")
     vehicle_model4 = volume_df[volume_df['vehicle_model'] == 4].fillna("passenger")
     vehicle_model5 = volume_df[volume_df['vehicle_model'] >= 5].fillna("cargo")
-    volume_df = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2, vehicle_model3, vehicle_model4, vehicle_model5])
+    volume_df = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2,
+                           vehicle_model3, vehicle_model4, vehicle_model5])
 
     '''
     处理预测集
@@ -90,7 +101,8 @@ def preprocessing():
     vehicle_model3 = volume_test[volume_test['vehicle_model'] == 3].fillna("cargo")
     vehicle_model4 = volume_test[volume_test['vehicle_model'] == 4].fillna("passenger")
     vehicle_model5 = volume_test[volume_test['vehicle_model'] >= 5].fillna("cargo")
-    volume_test = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2, vehicle_model3, vehicle_model4, vehicle_model5])
+    volume_test = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2,
+                             vehicle_model3, vehicle_model4, vehicle_model5])
     return volume_df, volume_test
 
 def modeling():
@@ -121,6 +133,7 @@ def modeling():
             del volume_all_entry["vehicle_type"]
             del volume_all_entry["has_etc"]
             volume_all_entry = volume_all_entry.resample("20T").sum()
+            volume_all_entry = volume_all_entry.dropna()
             volume_all_entry["cargo_model_avg"] = volume_all_entry["cargo_model"] / volume_all_entry["cargo_count"]
             volume_all_entry["passenger_model_avg"] = volume_all_entry["passenger_model"] / volume_all_entry[
                 "passenger_count"]
@@ -148,6 +161,7 @@ def modeling():
                 del volume_all_exit["vehicle_type"]
                 del volume_all_exit["has_etc"]
                 volume_all_exit = volume_all_exit.resample("20T").sum()
+                volume_all_exit = volume_all_exit.dropna()
                 volume_all_exit["cargo_model_avg"] = volume_all_exit["cargo_model"] / volume_all_exit["cargo_count"]
                 volume_all_exit["passenger_model_avg"] = volume_all_exit["passenger_model"] / volume_all_exit[
                     "passenger_count"]
@@ -223,31 +237,20 @@ def modeling():
                 train_df = train_df.append(se_temp)
             return generate_2hours_features(train_df, 6 + offset, file_path)
 
-        # 创建训练集，总的要求就是以前两个小时数据为训练集，用迭代式预测方法
-        # 例如8点-10点的数据预测10点20,8点-10点20预测10点40……，每一次预测使用的都是独立的（可能模型一样）的模型
-        # 现在开始构建训练集
-        # 第一个训练集特征是所有两个小时（以20分钟为一个单位）的数据，因变量是该两小时之后20分钟的流量
-        # 第二个训练集，特征是所有两个小时又20分钟（以20分钟为一个单位）的数据，因变量是该两个小时之后20分钟的流量
-        # 以此类推训练12个GBDT模型，其中entry 6个，exit 6个
-        def generate_models(volume_entry, volume_exit, entry_file_patn=None, exit_file_path=None):
+        # 生成gbdt模型
+        def gbdt_model(train_X, train_y):
             best_rate = 0.1
             best_n_estimator = 3000
             param_grid = [
-                            {'max_depth':[3, 4], 'min_samples_leaf':[1],
-                             'learning_rate':[best_rate + 0.01 * i for i in range(-2, 4, 1)],
-                             'loss':['lad'],
-                             'n_estimators':[best_n_estimator + i * 200 for i in range(-2, 3, 1)],
-                             'max_features':[1.0]}
-                        ]
-            old_index = volume_entry.columns
-            new_index = []
-            for i in range(6):
-                new_index += [item + "%d" % (i, ) for item in old_index]
-            new_index.append("y")
+                {'max_depth': [3], 'min_samples_leaf': [10],
+                 'learning_rate': [best_rate + 0.01 * i for i in range(-2, 4, 1)],
+                 'loss': ['lad'],
+                 'n_estimators': [best_n_estimator + i * 200 for i in range(-2, 3, 1)],
+                 'max_features': [1.0]}
+            ]
             # param_grid = [
-            #     {'max_depth':[3], 'min_samples_leaf':[1],
-            #      'learning_rate':[0.1], 'loss':['lad'], 'n_estimators':[3000], 'max_features':[1.0],
-            #      'criterion':["mae"]}
+            #     {'max_depth':[3], 'min_samples_leaf':[10],
+            #      'learning_rate':[0.1], 'loss':['lad'], 'n_estimators':[3000], 'max_features':[1.0]}
             # ]
 
             # 这是交叉验证的评分函数
@@ -256,6 +259,66 @@ def modeling():
                 y_arr = y
                 result = (np.abs(1 - np.exp(predict_arr - y_arr))).sum() / len(y)
                 return result
+
+            model = GradientBoostingRegressor()
+            clf = GridSearchCV(model, param_grid, refit=True, scoring=scorer)
+            clf.fit(train_X, train_y)
+            print "Best GBDT param is :", clf.best_params_
+            return clf.best_estimator_
+
+        # 生成Lasso线性模型
+        def Lasso_model(train_X, train_y):
+            skewness = train_X.apply(lambda x: skew(x))
+            skewness = skewness[abs(skewness) > 0.5]
+            # print(str(skewness.shape[0]) + " skewed numerical features to log transform")
+            skewed_features = skewness.index
+            train_X[skewed_features] = np.log1p(train_X[skewed_features])
+            stdSc = StandardScaler()
+            train_X = stdSc.fit_transform(train_X)
+            lasso = LassoCV(alphas=[0.0001, 0.0003, 0.0006, 0.001, 0.003, 0.006, 0.01, 0.03, 0.06, 0.1,
+                                    0.3, 0.6, 1],
+                            max_iter=50000, cv=10)
+            lasso.fit(train_X, train_y)
+            alpha = lasso.alpha_
+            print("Best alpha :", alpha)
+            return lasso, train_X
+
+        # 生成Ridge线性模型
+        def Ridge_model(train_X, train_y):
+            skewness = train_X.apply(lambda x: skew(x))
+            skewness = skewness[abs(skewness) > 0.5]
+            # print(str(skewness.shape[0]) + " skewed numerical features to log transform")
+            skewed_features = skewness.index
+            train_X[skewed_features] = np.log1p(train_X[skewed_features])
+            stdSc = StandardScaler()
+            train_X = stdSc.fit_transform(train_X)
+            ridge = RidgeCV(alphas=[0.01, 0.03, 0.06, 0.1, 0.3, 0.6, 1, 3, 6, 10, 30, 60])
+            ridge.fit(train_X, train_y)
+            alpha = ridge.alpha_
+            print("Best alpha :", alpha)
+
+            print("Try again for more precision with alphas centered around " + str(alpha))
+            ridge = RidgeCV(alphas=[alpha * .6, alpha * .65, alpha * .7, alpha * .75, alpha * .8, alpha * .85,
+                                    alpha * .9, alpha * .95, alpha, alpha * 1.05, alpha * 1.1, alpha * 1.15,
+                                    alpha * 1.25, alpha * 1.3, alpha * 1.35, alpha * 1.4],
+                            cv=10)
+            ridge.fit(train_X, train_y)
+            alpha = ridge.alpha_
+            print("Best alpha :", alpha)
+            return ridge, train_X
+
+        # 创建训练集，总的要求就是以前两个小时数据为训练集，用迭代式预测方法
+        # 例如8点-10点的数据预测10点20,8点-10点20预测10点40……，每一次预测使用的都是独立的（可能模型一样）的模型
+        # 现在开始构建训练集
+        # 第一个训练集特征是所有两个小时（以20分钟为一个单位）的数据，因变量是该两小时之后20分钟的流量
+        # 第二个训练集，特征是所有两个小时又20分钟（以20分钟为一个单位）的数据，因变量是该两个小时之后20分钟的流量
+        # 以此类推训练12个GBDT模型，其中entry 6个，exit 6个
+        def generate_models(volume_entry, volume_exit, entry_file_patn=None, exit_file_path=None):
+            old_index = volume_entry.columns
+            new_index = []
+            for i in range(6):
+                new_index += [item + "%d" % (i, ) for item in old_index]
+            new_index.append("y")
 
             # 这是用训练集做预测时的评分函数
             def scorer2(estimator, X, y):
@@ -272,13 +335,10 @@ def modeling():
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
                 train_X = train_df.fillna(0)
-                model = GradientBoostingRegressor()
-                clf = GridSearchCV(model, param_grid, refit=True, scoring=scorer)
-                clf.fit(train_X, train_y)
-                print "Best GBDT param is :", clf.best_params_
                 train_entry_len += len(train_y)
-                train_entry_score += scorer2(clf.best_estimator_, train_X, train_y)
-                models_entry.append(clf.best_estimator_)
+                best_estimator = gbdt_model(train_X, train_y)
+                train_entry_score += scorer2(best_estimator, train_X, train_y)
+                models_entry.append(best_estimator)
             print "Best Score is :", train_entry_score / train_entry_len
 
             # 注意！！！！2号收费站只有entry方向没有exit方向
@@ -294,13 +354,10 @@ def modeling():
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
                 train_X = train_df.fillna(0)
-                model = GradientBoostingRegressor()
-                clf = GridSearchCV(model, param_grid, refit=True, scoring=scorer)
-                clf.fit(train_X, train_y)
-                print "Best GBDT param is :", clf.best_params_
+                best_estimator = gbdt_model(train_X, train_y)
                 train_exit_len += len(train_y)
-                train_exit_score += scorer2(clf.best_estimator_, train_X, train_y)
-                models_exit.append(clf.best_estimator_)
+                train_exit_score += scorer2(best_estimator, train_X, train_y)
+                models_exit.append(best_estimator)
             print "Best Score is :", train_exit_score / train_exit_len
 
             return models_entry, models_exit
