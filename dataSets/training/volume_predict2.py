@@ -313,7 +313,7 @@ def modeling():
         # 第一个训练集特征是所有两个小时（以20分钟为一个单位）的数据，因变量是该两小时之后20分钟的流量
         # 第二个训练集，特征是所有两个小时又20分钟（以20分钟为一个单位）的数据，因变量是该两个小时之后20分钟的流量
         # 以此类推训练12个GBDT模型，其中entry 6个，exit 6个
-        def generate_models(volume_entry, volume_exit, entry_file_patn=None, exit_file_path=None):
+        def generate_models(volume_entry, volume_exit, entry_file_path=None, exit_file_path=None):
             old_index = volume_entry.columns
             new_index = []
             for i in range(6):
@@ -330,7 +330,7 @@ def modeling():
             train_entry_len = 0
             train_entry_score = 0
             for j in range(6):
-                train_df = generate_features(volume_entry, new_index, j, file_path=entry_file_patn)
+                train_df = generate_features(volume_entry, new_index, j, file_path=entry_file_path)
                 train_df = train_df[train_df["y"] > 0]
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
