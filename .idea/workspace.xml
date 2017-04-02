@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c1080875-0cfa-475a-87fc-d2ad5d721bf1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/volume_predict2.py" afterPath="$PROJECT_DIR$/dataSets/training/volume_predict2.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/volume_predict2_result.csv" afterPath="$PROJECT_DIR$/dataSets/training/volume_predict2_result.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dataSets/training/volume_predict3.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/time_similarity.ipynb" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/time_similarity.ipynb" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,30 +19,35 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="volume_predict2.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2.py">
+      <file leaf-file-name="volume_predict3.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="431" column="53" lean-forward="true" selection-start-line="431" selection-start-column="53" selection-end-line="431" selection-end-column="53" />
+            <state relative-caret-position="579">
+              <caret line="182" column="8" lean-forward="true" selection-start-line="182" selection-start-column="8" selection-end-line="182" selection-end-column="8" />
               <folding>
-                <element signature="e#8729#11465#0" expanded="false" />
-                <element signature="e#11595#12226#0" expanded="false" />
-                <element signature="e#12363#12948#0" expanded="false" />
-                <element signature="e#13367#16742#0" expanded="false" />
-                <element signature="e#16881#20897#0" expanded="false" />
-                <element signature="e#21094#23202#0" expanded="false" />
-                <element signature="e#23315#24105#0" expanded="false" />
+                <element signature="e#459#478#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="volume_predict2_result.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2_result.csv">
+      <file leaf-file-name="volume_predict2.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="536">
+              <caret line="421" column="54" lean-forward="true" selection-start-line="421" selection-start-column="12" selection-end-line="421" selection-end-column="54" />
+              <folding>
+                <element signature="e#5182#9190#0" expanded="false" />
+                <element signature="e#9361#12081#0" expanded="false" />
+                <element signature="e#12211#12842#0" expanded="false" />
+                <element signature="e#12979#13564#0" expanded="false" />
+                <element signature="e#13639#14766#0" expanded="false" />
+                <element signature="e#14845#15593#0" expanded="false" />
+                <element signature="e#15672#16859#0" expanded="false" />
+                <element signature="e#17278#19332#0" expanded="false" />
+                <element signature="e#23684#25793#0" expanded="false" />
+                <element signature="e#25906#26696#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -57,6 +63,7 @@
       <find>2S</find>
       <find>3S</find>
       <find>models_entry</find>
+      <find>range</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -67,6 +74,7 @@
       <list>
         <option value="$PROJECT_DIR$/dataSets/training/test.py" />
         <option value="$PROJECT_DIR$/dataSets/training/volume_predict2.py" />
+        <option value="$PROJECT_DIR$/dataSets/training/volume_predict3.py" />
       </list>
     </option>
   </component>
@@ -340,16 +348,16 @@
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14138205" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25099286" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.04657534" sideWeight="0.50277996" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31329113" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.04657534" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.045205478" sideWeight="0.49722" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -364,7 +372,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="4" />
+      <option name="time" value="5" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -377,6 +385,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/dataSets/training/Untitled.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2_result.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -385,25 +400,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataSets/training/Untitled.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="0" />
+    <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="536">
+          <caret line="421" column="54" lean-forward="true" selection-start-line="421" selection-start-column="12" selection-end-line="421" selection-end-column="54" />
+          <folding>
+            <element signature="e#5182#9190#0" expanded="false" />
+            <element signature="e#9361#12081#0" expanded="false" />
+            <element signature="e#12211#12842#0" expanded="false" />
+            <element signature="e#12979#13564#0" expanded="false" />
+            <element signature="e#13639#14766#0" expanded="false" />
+            <element signature="e#14845#15593#0" expanded="false" />
+            <element signature="e#15672#16859#0" expanded="false" />
+            <element signature="e#17278#19332#0" expanded="false" />
+            <element signature="e#23684#25793#0" expanded="false" />
+            <element signature="e#25906#26696#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2.py">
+    <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="431" column="53" lean-forward="true" selection-start-line="431" selection-start-column="53" selection-end-line="431" selection-end-column="53" />
+        <state relative-caret-position="579">
+          <caret line="182" column="8" lean-forward="true" selection-start-line="182" selection-start-column="8" selection-end-line="182" selection-end-column="8" />
           <folding>
-            <element signature="e#8729#11465#0" expanded="false" />
-            <element signature="e#11595#12226#0" expanded="false" />
-            <element signature="e#12363#12948#0" expanded="false" />
-            <element signature="e#13367#16742#0" expanded="false" />
-            <element signature="e#16881#20897#0" expanded="false" />
-            <element signature="e#21094#23202#0" expanded="false" />
-            <element signature="e#23315#24105#0" expanded="false" />
+            <element signature="e#459#478#0" expanded="true" />
           </folding>
         </state>
       </provider>
