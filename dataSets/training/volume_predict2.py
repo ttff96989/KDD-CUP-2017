@@ -86,10 +86,10 @@ def preprocessing():
     '''
     volume_test = pd.read_csv("../testing_phase1/volume(table 6)_test1.csv")
     # 替换所有有标签含义的数字
-    volume_test['tollgate_id'] = volume_test['tollgate_id'].replace({1:"1S", 2:"2S", 3:"3S"})
-    volume_test['direction'] = volume_test['direction'].replace({0:"entry", 1:"exit"})
-    volume_test['has_etc'] = volume_test['has_etc'].replace({0:"No", 1:"Yes"})
-    volume_test['vehicle_type'] = volume_test['vehicle_type'].replace({0:"passenger", 1:"cargo"})
+    volume_test['tollgate_id'] = volume_test['tollgate_id'].replace({1: "1S", 2: "2S", 3: "3S"})
+    volume_test['direction'] = volume_test['direction'].replace({0: "entry", 1: "exit"})
+    volume_test['has_etc'] = volume_test['has_etc'].replace({0: "No", 1: "Yes"})
+    volume_test['vehicle_type'] = volume_test['vehicle_type'].replace({0: "passenger", 1: "cargo"})
     volume_test['time'] = volume_test['time'].apply(lambda x: pd.Timestamp(x))
 
     # 承载量：1-默认客车，2-默认货车，3-默认货车，4-默认客车
@@ -363,9 +363,9 @@ def modeling():
             return models_entry, models_exit
 
         # 创建车流量预测集，20分钟跨度有关系的预测集
-        def divide_test_by_direction(volume_test, entry_file_path=None, exit_file_path=None):
-            volume_entry_test = volume_test[
-                (volume_test['tollgate_id'] == tollgate_id) & (volume_test["direction"] == "entry")].copy()
+        def divide_test_by_direction(volume_df, entry_file_path=None, exit_file_path=None):
+            volume_entry_test = volume_df[
+                (volume_df['tollgate_id'] == tollgate_id) & (volume_df["direction"] == "entry")].copy()
             volume_entry_test["volume"] = 1
             volume_entry_test["cargo_count"] = volume_entry_test["vehicle_type"].apply(lambda x: 1 if x == "cargo" else 0)
             volume_entry_test["passenger_count"] = volume_entry_test["vehicle_type"].apply(
@@ -389,8 +389,8 @@ def modeling():
             volume_entry_test["vehicle_model_avg"] = volume_entry_test["vehicle_model"] / volume_entry_test["volume"]
             volume_entry_test = volume_entry_test.fillna(0)
 
-            volume_exit_test = volume_test[
-                (volume_test['tollgate_id'] == tollgate_id) & (volume_test["direction"] == "exit")].copy()
+            volume_exit_test = volume_df[
+                (volume_df['tollgate_id'] == tollgate_id) & (volume_df["direction"] == "exit")].copy()
             if len(volume_exit_test) > 0:
                 volume_exit_test["volume"] = 1
                 volume_exit_test["cargo_count"] = volume_exit_test["vehicle_type"].apply(
@@ -493,9 +493,9 @@ def modeling():
                                                     volume_exit_train)
         entry_test_file = "./train&test_zjw/volume_entry_test_%s.csv" % (tollgate_id, )
         exit_test_file = "./train&test_zjw/volume_exit_test_%s.csv" % (tollgate_id, )
-        volume_entry_test, volume_exit_test = divide_test_by_direction(volume_test)
-        predict_original_entry, predict_original_exit = predict(volume_entry_test,
-                                                                volume_exit_test,
+        entry_test, exit_test = divide_test_by_direction(volume_test)
+        predict_original_entry, predict_original_exit = predict(entry_test,
+                                                                exit_test,
                                                                 models_entry,
                                                                 models_exit)
         result_df = result_df.append(transform_predict(predict_original_entry, "entry", tollgate_id))
