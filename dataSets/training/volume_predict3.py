@@ -230,6 +230,7 @@ def modeling():
                 predict_result = train_y[score_list.idxmin()]
                 predict_result.name = test.index[0]
                 predict_result.index = range(len(predict_result))
+                predict_result = predict_result + (test.mean() - predict_result.mean())
                 result = result.append(predict_result)
             return result
 
@@ -243,7 +244,7 @@ def modeling():
                     series = pd.Series({"tollgate_id": tollgate_id,
                                         "time_window": time_window,
                                         "direction": direction,
-                                        "volume": "%.2f" % (data_df.iloc[i, j - 6])})
+                                        "volume": round(data_df.iloc[i, j - 6], 2)})
                     series.name = i + j - 6
                     result = result.append(series)
             return result
