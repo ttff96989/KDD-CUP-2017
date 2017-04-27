@@ -30,9 +30,6 @@
 
 7. 尝试将所有模型用stacking融合
 
-8. 不需要删除国庆7天的数据，只需要删除国庆和国庆前后连接点的数据就可以了。原因：考虑到删除国庆数据会造成大幅度的过拟合，
-   所以删除噪声点可以提高成绩，但是删除的方式需要斟酌。
-
 优化思路：
 1. 根据题目所给评价函数，如果将y转换成log(y)，那么损失函数可以朝lad方向梯度下降（过程已经大致证明了），而特征的log处理
    不影响CART的回归结果，所以对所有车流量（不论特征还是因变量都做log计算）。如果使用其他非树形结构模型需要考虑是否要对
@@ -45,6 +42,9 @@
 
 3. 从观察数据得出来的结论，在10月1日附近（具体哪几天不记得了）全天的数据相对于其他日期的数据很像噪声点，可以尝试剔除那
    几天的数据
+
+4. 不需要删除国庆7天的数据，只需要删除国庆和国庆前后连接点的数据就可以了。原因：考虑到删除国庆数据会造成大幅度的过拟合，
+   所以删除噪声点可以提高成绩，但是删除的方式需要斟酌。
 
 '''
 
@@ -83,8 +83,8 @@ def preprocessing():
     volume_df['time'] = volume_df['time'].apply(lambda x: pd.Timestamp(x))
 
     # 剔除10月1日至10月6日数据（每个收费站在该日期附近都有异常）
-    volume_df = volume_df[(volume_df["time"] < pd.Timestamp("2016-10-01 00:00:00")) |
-                          (volume_df["time"] > pd.Timestamp("2016-10-07 00:00:00"))]
+    # volume_df = volume_df[(volume_df["time"] < pd.Timestamp("2016-10-01 00:00:00")) |
+    #                       (volume_df["time"] > pd.Timestamp("2016-10-07 00:00:00"))]
 
     # 承载量：1-默认客车，2-默认货车，3-默认货车，4-默认客车
     # 承载量大于等于5的为货运汽车，所有承载量为0的车都类型不明
@@ -245,6 +245,11 @@ def modeling():
             train_df = pd.DataFrame()
             for i in range(len(data_df) - 6 - offset):
                 se_temp = pd.Series()
+                # 删除9月和10月交界的数据，就是训练集的X和y所在时间点分别在两个月份的情况
+                month_left = data_df.index[i]
+                month_right = data_df.index[i + 6 + offset]
+                if month_left == 9 and month_right == 10:
+                    continue
                 for k in range(6):
                     se_temp = se_temp.append(data_df.iloc[i + k, :].copy())
                 if has_y:
