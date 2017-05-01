@@ -2,38 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c1080875-0cfa-475a-87fc-d2ad5d721bf1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/stacking.py" afterPath="$PROJECT_DIR$/dataSets/training/stacking.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset0.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset0.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset1.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset1.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset2.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset2.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset3.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset3.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset4.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset4.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset5.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_1Soffset5.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset0.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset0.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset1.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset1.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset2.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset2.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset3.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset3.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset4.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset4.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset5.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_2Soffset5.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset0.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset0.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset1.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset1.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset2.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset2.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset3.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset3.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset4.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset4.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset5.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_entry_train_3Soffset5.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset0.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset0.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset1.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset1.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset2.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset2.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset3.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset3.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset4.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset4.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset5.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_1Soffset5.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset0.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset0.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset1.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset1.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset2.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset2.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset3.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset3.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset4.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset4.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset5.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_train_3Soffset5.csv" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/volume_predict2.py" afterPath="$PROJECT_DIR$/dataSets/training/volume_predict2.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
