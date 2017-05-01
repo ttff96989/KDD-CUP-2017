@@ -58,7 +58,9 @@ from pandas.tseries.offsets import *
 from sklearn.model_selection import GridSearchCV
 from scipy.stats import skew
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LinearRegression, RidgeCV, LassoCV, ElasticNetCV
+from sklearn.linear_model import LinearRegression, RidgeCV, LassoCV, ElasticNetCV, Ridge, Lasso
+from sklearn.cross_validation import KFold
+from sklearn.ensemble import ExtraTreesRegressor
 
 # description of the feature:
 # Traffic Volume through the Tollgates
@@ -219,10 +221,68 @@ def modeling():
             train_df["vehicle_all_model_avg"] = train_df["vehicle_all_model"] / train_df["volume_all"]
             train_df["cargo_all_model_avg"] = train_df["cargo_all_model"] / train_df["cargo_all_count"]
             train_df["passenger_all_model_avg"] = train_df["passenger_all_model"] / train_df["passenger_all_count"]
+            # 二次方 三次方 开方 运算
+            train_df["vehicle_all_model_avg_S2"] = train_df["vehicle_all_model_avg"] * train_df["vehicle_all_model_avg"]
+            train_df["vehicle_all_model_avg_S3"] = train_df["vehicle_all_model_avg"] * \
+                                                   train_df["vehicle_all_model_avg"] * train_df["vehicle_all_model_avg"]
+            train_df["vehicle_all_model_avg_sqrt"] = np.sqrt(train_df["vehicle_all_model_avg"])
+            train_df["vehicle_model_avg5_S2"] = train_df["vehicle_model_avg5"] * train_df["vehicle_model_avg5"]
+            train_df["vehicle_model_avg5_S3"] = train_df["vehicle_model_avg5"] * \
+                                                train_df["vehicle_model_avg5"] * train_df["vehicle_model_avg5"]
+            train_df["vehicle_model_avg5_sqrt"] = np.sqrt(train_df["vehicle_model_avg5"])
+            train_df["vehicle_model_avg4_S2"] = train_df["vehicle_model_avg4"] * train_df["vehicle_model_avg4"]
+            train_df["vehicle_model_avg4_S3"] = train_df["vehicle_model_avg4"] *\
+                                                train_df["vehicle_model_avg4"] * train_df["vehicle_model_avg4"]
+            train_df["vehicle_model_avg4_sqrt"] = np.sqrt(train_df["vehicle_model_avg4"])
+            train_df["vehicle_model_avg3_S2"] = train_df["vehicle_model_avg3"] * train_df["vehicle_model_avg3"]
+            train_df["vehicle_model_avg3_S3"] = train_df["vehicle_model_avg3"] * \
+                                                train_df["vehicle_model_avg3"] * train_df["vehicle_model_avg3"]
+            train_df["vehicle_model_avg3_sqrt"] = np.sqrt(train_df["vehicle_model_avg3"])
+            train_df["vehicle_model_avg2_S2"] = train_df["vehicle_model_avg2"] * train_df["vehicle_model_avg2"]
+            train_df["vehicle_model_avg2_S3"] = train_df["vehicle_model_avg2"] * \
+                                                train_df["vehicle_model_avg2"] * train_df["vehicle_model_avg2"]
+            train_df["vehicle_model_avg2_sqrt"] = np.sqrt(train_df["vehicle_model_avg2"])
+            train_df["vehicle_model_avg1_S2"] = train_df["vehicle_model_avg1"] * train_df["vehicle_model_avg1"]
+            train_df["vehicle_model_avg1_S3"] = train_df["vehicle_model_avg1"] * \
+                                                train_df["vehicle_model_avg1"] * train_df["vehicle_model_avg1"]
+            train_df["vehicle_model_avg1_sqrt"] = np.sqrt(train_df["vehicle_model_avg1"])
+            train_df["vehicle_model_avg0_S2"] = train_df["vehicle_model_avg0"] * train_df["vehicle_model_avg0"]
+            train_df["vehicle_model_avg0_S3"] = train_df["vehicle_model_avg0"] * \
+                                                train_df["vehicle_model_avg0"] * train_df["vehicle_model_avg0"]
+            train_df["passenger_all_model_avg_S2"] = train_df["passenger_all_model_avg"] * train_df["passenger_all_model_avg"]
+            train_df["passenger_all_model_avg_S3"] = train_df["passenger_all_model_avg"]\
+                                                     * train_df["passenger_all_model_avg"] * train_df["passenger_all_model_avg"]
+            train_df["no_all_count_S2"] = train_df["no_all_count"] * train_df["no_all_count"]
+            train_df["no_all_count_S3"] = train_df["no_all_count"] * train_df["no_all_count"] * train_df["no_all_count"]
+            train_df["no_all_count_sqrt"] = np.sqrt(train_df["no_all_count"])
+            train_df["no_count4_S2"] = train_df["no_count4"] * train_df["no_count4"]
+            train_df["no_count4_S3"] = train_df["no_count4"] * train_df["no_count4"] * train_df["no_count4"]
+            train_df["no_count4_sqrt"] = np.sqrt(train_df["no_count4"])
+            train_df["volume1_S2"] = train_df["volume1"] * train_df["volume1"]
+            train_df["volume1_S3"] = train_df["volume1"] * train_df["volume1"] * train_df["volume1"]
+            train_df["volume1_sqrt"] = np.sqrt(train_df["volume1"])
+            train_df["no_count5_S2"] = train_df["no_count5"] * train_df["no_count5"]
+            train_df["no_count5_S3"] = train_df["no_count5"] * train_df["no_count5"] * train_df["no_count5"]
+            train_df["no_count5_sqrt"] = np.sqrt(train_df["no_count5"])
+            train_df["volume2_S2"] = train_df["volume2"] * train_df["volume2"]
+            train_df["volume2_S3"] = train_df["volume2"] * train_df["volume2"] * train_df["volume2"]
+            train_df["volume2_sqrt"] = np.sqrt(train_df["volume2"])
+            train_df["volume3_S2"] = train_df["volume3"] * train_df["volume3"]
+            train_df["volume3_S3"] = train_df["volume3"] * train_df["volume3"] * train_df["volume3"]
+            train_df["volume3_sqrt"] = np.sqrt(train_df["volume3"])
+            train_df["volume_all_S2"] = train_df["volume_all"] * train_df["volume_all"]
+            train_df["volume_all_S3"] = train_df["volume_all"] * train_df["volume_all"] * train_df["volume_all"]
+            train_df["volume_all_sqrt"] = np.sqrt(train_df["volume_all"])
+            train_df["volume4_S2"] = train_df["volume4"] * train_df["volume4"]
+            train_df["volume4_S3"] = train_df["volume4"] * train_df["volume4"] * train_df["volume4"]
+            train_df["volume4_sqrt"] = np.sqrt(train_df["volume4"])
+            train_df["volume5_S2"] = train_df["volume5"] * train_df["volume5"]
+            train_df["volume5_S3"] = train_df["volume5"] * train_df["volume5"] * train_df["volume5"]
+            train_df["volume5_sqrt"] = np.sqrt(train_df["volume5"])
             if offset >= 6:
-                train_df = generate_time_features(train_df, offset, file_path)
+                train_df = generate_time_features(train_df, offset, file_path + "offset" + str(offset - 6))
             elif file_path:
-                train_df.to_csv(file_path)
+                train_df.to_csv(file_path + ".csv")
             return train_df.fillna(0)
 
         # 在train_df的index基础上加上offset*20分钟的时间特征
@@ -237,7 +297,7 @@ def modeling():
             data_df["minute"] = data_df["time"].apply(lambda x: x.minute)
             del data_df["time"]
             if file_path:
-                data_df.to_csv(file_path)
+                data_df.to_csv(file_path + ".csv")
             return data_df
 
         # 整合每20分钟的特征，并计算以2个小时为单位的特征
@@ -329,6 +389,7 @@ def modeling():
             print("Best alpha :", alpha)
             return ridge, train_X
 
+
         # 创建训练集，总的要求就是以前两个小时数据为训练集，用迭代式预测方法
         # 例如8点-10点的数据预测10点20,8点-10点20预测10点40……，每一次预测使用的都是独立的（可能模型一样）的模型
         # 现在开始构建训练集
@@ -358,7 +419,7 @@ def modeling():
                 del train_df["y"]
                 train_X = train_df.fillna(0)
                 train_entry_len += len(train_y)
-                best_estimator = gbdt_model(train_X, train_y)
+                best_estimator, train_X = Lasso_model(train_X, train_y)
                 train_entry_score += scorer2(best_estimator, train_X, train_y)
                 models_entry.append(best_estimator)
             print "Best Score is :", train_entry_score / train_entry_len
@@ -376,7 +437,7 @@ def modeling():
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
                 train_X = train_df.fillna(0)
-                best_estimator = gbdt_model(train_X, train_y)
+                best_estimator, train_X = Lasso_model(train_X, train_y)
                 train_exit_len += len(train_y)
                 train_exit_score += scorer2(best_estimator, train_X, train_y)
                 models_exit.append(best_estimator)
@@ -508,18 +569,22 @@ def modeling():
                     result = result.append(series)
             return result
 
-        entry_train_file = "./train&test_zjw/volume_entry_train_%s.csv" % (tollgate_id, )
-        exit_train_file = "./train&test_zjw/volume_exit_train_%s.csv" % (tollgate_id, )
+        entry_train_file = "./train&test_zjw/volume_entry_train_%s" % (tollgate_id, )
+        exit_train_file = "./train&test_zjw/volume_exit_train_%s" % (tollgate_id, )
         volume_entry_train, volume_exit_train = divide_train_by_direction(volume_train)
         models_entry, models_exit = generate_models(volume_entry_train,
-                                                    volume_exit_train)
-        entry_test_file = "./train&test_zjw/volume_entry_test_%s.csv" % (tollgate_id, )
-        exit_test_file = "./train&test_zjw/volume_exit_test_%s.csv" % (tollgate_id, )
+                                                    volume_exit_train,
+                                                    entry_train_file,
+                                                    exit_train_file)
+        entry_test_file = "./train&test_zjw/volume_entry_test_%s" % (tollgate_id, )
+        exit_test_file = "./train&test_zjw/volume_exit_test_%s" % (tollgate_id, )
         entry_test, exit_test = divide_test_by_direction(volume_test)
         predict_original_entry, predict_original_exit = predict(entry_test,
                                                                 exit_test,
                                                                 models_entry,
-                                                                models_exit)
+                                                                models_exit,
+                                                                entry_test_file,
+                                                                exit_test_file)
         result_df = result_df.append(transform_predict(predict_original_entry, "entry", tollgate_id))
         result_df = result_df.append(transform_predict(predict_original_exit, "exit", tollgate_id))
 
