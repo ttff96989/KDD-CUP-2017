@@ -27,8 +27,8 @@ result_df = pd.DataFrame()
 for tollgate_id, direction, offset in tuple_lst:
 
     ## Load the data ##
-    train = pd.read_csv("./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + "offset"+str(offset)+".csv", index_col="Unnamed: 0")
-    test = pd.read_csv("./train&test_zjw/volume_" + direction + "_test_"+tollgate_id+".csv", index_col="Unnamed: 0")
+    train = pd.read_csv("./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + "offset" + str(offset) + ".csv", index_col="Unnamed: 0")
+    test = pd.read_csv("./train&test_zjw/volume_" + direction + "_test_" + tollgate_id + "offset" + str(offset) + ".csv", index_col="Unnamed: 0")
     test_index = test.index
 
     ntrain = train.shape[0]
@@ -96,7 +96,7 @@ for tollgate_id, direction, offset in tuple_lst:
 
     et_params = {
         'n_jobs': 16,
-        'n_estimators': 100,
+        'n_estimators': 1000,
         'max_features': 0.5,
         'max_depth': 12,
         'min_samples_leaf': 2,
@@ -104,7 +104,7 @@ for tollgate_id, direction, offset in tuple_lst:
 
     rf_params = {
         'n_jobs': 16,
-        'n_estimators': 100,
+        'n_estimators': 1000,
         'max_features': 0.2,
         'max_depth': 12,
         'min_samples_leaf': 2,
@@ -119,7 +119,7 @@ for tollgate_id, direction, offset in tuple_lst:
     }
 
     gbdt_params={
-
+        'loss': ['lad']
     }
 
     # 可以无限增加元模型，然后增加模型组合的可能性

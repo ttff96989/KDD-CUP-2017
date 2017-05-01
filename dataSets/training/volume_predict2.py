@@ -46,6 +46,9 @@
 4. 不需要删除国庆7天的数据，只需要删除国庆和国庆前后连接点的数据就可以了。原因：考虑到删除国庆数据会造成大幅度的过拟合，
    所以删除噪声点可以提高成绩，但是删除的方式需要斟酌。
 
+5. 日期是一种标签含义的数组特征，需要变成字符形，这个只能在stacking文件里做了，predict2不好处理标签特征，因为它的训
+   练和预测分开了，而哑编码需要将训练集和预测集放一块
+
 '''
 
 import pandas as pd
@@ -291,10 +294,9 @@ def modeling():
             time_se = time_str_se.apply(lambda x: pd.Timestamp(x))
             time_se.index = time_se.values
             data_df["time"] = time_se + DateOffset(minutes=offset * 20)
-            data_df["month"] = data_df["time"].apply(lambda x: x.month)
-            data_df["day"] = data_df["time"].apply(lambda x: x.day)
-            data_df["hour"] = data_df["time"].apply(lambda x: x.hour)
-            data_df["minute"] = data_df["time"].apply(lambda x: x.minute)
+            data_df["day"] = data_df["time"].apply(lambda x: str(x.day) + "D")
+            data_df["hour"] = data_df["time"].apply(lambda x: str(x.hour) + "H")
+            data_df["minute"] = data_df["time"].apply(lambda x: str(x.minute) + "M")
             del data_df["time"]
             if file_path:
                 data_df.to_csv(file_path + ".csv")
@@ -418,11 +420,11 @@ def modeling():
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
                 train_X = train_df.fillna(0)
-                train_entry_len += len(train_y)
-                best_estimator, train_X = Lasso_model(train_X, train_y)
-                train_entry_score += scorer2(best_estimator, train_X, train_y)
-                models_entry.append(best_estimator)
-            print "Best Score is :", train_entry_score / train_entry_len
+                # train_entry_len += len(train_y)
+                # best_estimator, train_X = Lasso_model(train_X, train_y)
+                # train_entry_score += scorer2(best_estimator, train_X, train_y)
+                # models_entry.append(best_estimator)
+            # print "Best Score is :", train_entry_score / train_entry_len
 
             # 注意！！！！2号收费站只有entry方向没有exit方向
             if len(volume_exit) == 0:
@@ -437,11 +439,11 @@ def modeling():
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
                 train_X = train_df.fillna(0)
-                best_estimator, train_X = Lasso_model(train_X, train_y)
-                train_exit_len += len(train_y)
-                train_exit_score += scorer2(best_estimator, train_X, train_y)
-                models_exit.append(best_estimator)
-            print "Best Score is :", train_exit_score / train_exit_len
+                # best_estimator, train_X = Lasso_model(train_X, train_y)
+                # train_exit_len += len(train_y)
+                # train_exit_score += scorer2(best_estimator, train_X, train_y)
+                # models_exit.append(best_estimator)
+            # print "Best Score is :", train_exit_score / train_exit_len
 
             return models_entry, models_exit
 
@@ -526,14 +528,14 @@ def modeling():
             test_entry_df = generate_2hours_features(test_entry_df, 0)
             predict_test_entry = pd.DataFrame()
             for i in range(6):
-                test_entry_df = generate_time_features(test_entry_df, i + 6, entry_file_path)
-                test_y = models_entry[i].predict(test_entry_df)
-                predict_test_entry[i] = np.exp(test_y) - 1
-            predict_test_entry.index = test_entry_df.index
+                test_entry_df = generate_time_features(test_entry_df, i + 6, entry_file_path + "offset" + str(i))
+                # test_y = models_entry[i].predict(test_entry_df)
+                # predict_test_entry[i] = np.exp(test_y) - 1
+            # predict_test_entry.index = test_entry_df.index
 
             # （exit方向）
             test_exit_df = pd.DataFrame()
-            if len(models_exit) == 0:
+            if tollgate_id == "2S":
                 return predict_test_entry, test_exit_df
             i = 0
             while i < len(volume_exit_test) - 5:
@@ -547,10 +549,10 @@ def modeling():
             test_exit_df = generate_2hours_features(test_exit_df, 0)
             predict_test_exit = pd.DataFrame()
             for i in range(6):
-                test_exit_df = generate_time_features(test_exit_df, i + 6, exit_file_path)
-                test_y = models_exit[i].predict(test_exit_df)
-                predict_test_exit[i] = np.exp(test_y) - 1
-            predict_test_exit.index = test_exit_df.index
+                test_exit_df = generate_time_features(test_exit_df, i + 6, exit_file_path + "offset" +str(i))
+                # test_y = models_exit[i].predict(test_exit_df)
+                # predict_test_exit[i] = np.exp(test_y) - 1
+            # predict_test_exit.index = test_exit_df.index
             return predict_test_entry, predict_test_exit
 
         # 将预测数据转换成输出文件的格式
@@ -591,9 +593,9 @@ def modeling():
     return result_df
 
 result = modeling()
-result_df = pd.DataFrame()
-result_df["tollgate_id"] = result["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
-result_df["time_window"] = result["time_window"]
-result_df["direction"] = result["direction"].replace({"entry": 0, "exit": 1})
-result_df['volume'] = result["volume"]
-result_df.to_csv("volume_predict2_result.csv", encoding="utf8", index=None)
+# result_df = pd.DataFrame()
+# result_df["tollgate_id"] = result["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
+# result_df["time_window"] = result["time_window"]
+# result_df["direction"] = result["direction"].replace({"entry": 0, "exit": 1})
+# result_df['volume'] = result["volume"]
+# result_df.to_csv("volume_predict2_result.csv", encoding="utf8", index=None)
