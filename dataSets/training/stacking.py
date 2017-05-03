@@ -63,7 +63,7 @@ gbdt_params = {
     }
 
 ada_param = {
-    'best_estimator': DecisionTreeRegressor(max_depth=4), 'n_estimators': 300
+    'base_estimator': DecisionTreeRegressor(max_depth=4), 'n_estimators': 300
 }
 
 mean_param = {
@@ -171,7 +171,7 @@ for tollgate_id, direction, offset in tuple_lst:
 
 
     # 可以无限增加元模型，然后增加模型组合的可能性
-    model_name_lst = ["MEAN", "RD", "ET", "RF", "GB", "LS"]
+    model_name_lst = ["MEAN", "RD", "ET", "GB", "LS", "RF", "ADA"]
     model_lst = [Mean_Model, Ridge, ExtraTreesRegressor, GradientBoostingRegressor, Lasso,
                  RandomForestRegressor, AdaBoostRegressor]
     model_params = [mean_param, rd_params, et_params, gbdt_params, ls_params, rf_params, ada_param]
@@ -231,7 +231,7 @@ for tollgate_id, direction, offset in tuple_lst:
 
         print("{},{}".format(x_train.shape, x_test.shape))
 
-        random_index = random.randint(0, 4)
+        random_index = random.randint(0, 3)
         print "second floor use : " + model2_name[random_index]
         model2_param = model2_params[random_index]
         model2 = model2_lst[random_index](**model2_param)
