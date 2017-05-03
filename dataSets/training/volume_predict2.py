@@ -24,11 +24,10 @@
 4. 可以用样本自相关函数判断下一时段的车流到底和之前几个20分钟线性相关（因为不一定要前2个小时来预测下一个20分钟），样本自
    相关函数用statsmodel库（感觉不一定靠谱）
 
-5. 尝试构造线性模型的特征（平方，三次方，开方等），最大化线性模型准确率
-
 6. 尝试使用神经网络建模
 
-7. 尝试将所有模型用stacking融合
+7. 平方，开方，开更只是对线性模型有用，对GBDT没有任何用处，甚至对RF，ET这种随机性很强的模型有误导作用（因为平方，开方等
+  操作在树结构模型中相当于改变了原始特征的分布，将平方，开方的特征概率提高）
 
 优化思路：
 1. 根据题目所给评价函数，如果将y转换成log(y)，那么损失函数可以朝lad方向梯度下降（过程已经大致证明了），而特征的log处理
@@ -48,6 +47,11 @@
 
 5. 日期是一种标签含义的数组特征，需要变成字符形，这个只能在stacking文件里做了，predict2不好处理标签特征，因为它的训
    练和预测分开了，而哑编码需要将训练集和预测集放一块
+
+6. 尝试将所有模型用stacking融合
+
+7. 改进hour特征，因为预测集涉及到的hour只有8,9,17,18，所以把训练集的时间也设定为四维特征，其中全0代表除这四个时段以外
+   的其他时段
 
 '''
 
@@ -102,6 +106,7 @@ def preprocessing():
     vehicle_model5 = volume_df[volume_df['vehicle_model'] >= 5].fillna("cargo")
     volume_df = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2,
                            vehicle_model3, vehicle_model4, vehicle_model5])
+    # volume_df["vehicle_type"] = volume_df["vehicle_type"].fillna("No")
 
     '''
     处理预测集
@@ -114,17 +119,6 @@ def preprocessing():
     volume_test['vehicle_type'] = volume_test['vehicle_type'].replace({0: "passenger", 1: "cargo"})
     volume_test['time'] = volume_test['time'].apply(lambda x: pd.Timestamp(x))
 
-    # 承载量：1-默认客车，2-默认货车，3-默认货车，4-默认客车
-    # 承载量大于等于5的为货运汽车，所有承载量为0的车都类型不明
-    volume_test = volume_test.sort_values(by="vehicle_model")
-    vehicle_model0 = volume_test[volume_test['vehicle_model'] == 0].fillna("No")
-    vehicle_model1 = volume_test[volume_test['vehicle_model'] == 1].fillna("passenger")
-    vehicle_model2 = volume_test[volume_test['vehicle_model'] == 2].fillna("cargo")
-    vehicle_model3 = volume_test[volume_test['vehicle_model'] == 3].fillna("cargo")
-    vehicle_model4 = volume_test[volume_test['vehicle_model'] == 4].fillna("passenger")
-    vehicle_model5 = volume_test[volume_test['vehicle_model'] >= 5].fillna("cargo")
-    volume_test = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2,
-                             vehicle_model3, vehicle_model4, vehicle_model5])
     return volume_df, volume_test
 
 def modeling():
@@ -294,9 +288,15 @@ def modeling():
             time_se = time_str_se.apply(lambda x: pd.Timestamp(x))
             time_se.index = time_se.values
             data_df["time"] = time_se + DateOffset(minutes=offset * 20)
-            data_df["day"] = data_df["time"].apply(lambda x: str(x.day) + "D")
-            data_df["hour"] = data_df["time"].apply(lambda x: str(x.hour) + "H")
+            # data_df["day"] = data_df["time"].apply(lambda x: str(x.day) + "D")
+            #  data_df["hour"] = data_df["time"].apply(lambda x: str(x.hour) + "H")
+            data_df["is_eight"] = data_df["time"].apply(lambda x: 1 if x.hour == 8 else 0)
+            data_df["is_nine"] = data_df["time"].apply(lambda x: 1 if x.hour == 9 else 0)
+            data_df["is_eighteen"] = data_df["time"].apply(lambda x: 1 if x.hour == 18 else 0)
+            data_df["is_seventeen"] = data_df["time"].apply(lambda x: 1 if x.hour == 17 else 0)
             data_df["minute"] = data_df["time"].apply(lambda x: str(x.minute) + "M")
+            data_df["week"] = data_df["time"].apply(lambda x: str(x.dayofweek) + "W")
+            data_df["weekend"] = data_df["week"].apply(lambda x: 1 if x >= 5 else 0)
             del data_df["time"]
             if file_path:
                 data_df.to_csv(file_path + ".csv")
