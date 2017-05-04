@@ -6,7 +6,7 @@ from sklearn.cross_validation import KFold
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error
-from sklearn.linear_model import Ridge, RidgeCV, ElasticNet, LassoCV, Lasso
+from sklearn.linear_model import Ridge, RidgeCV, ElasticNet, LassoCV, Lasso, LinearRegression
 from math import sqrt
 from pandas.tseries.offsets import *
 import random
@@ -62,8 +62,17 @@ gbdt_params = {
     'learning_rate': 0.1, 'loss': 'lad', 'n_estimators': 3000, 'max_features': 1.0
     }
 
+gbdt_params2 = {
+    'max_depth': 4, 'min_samples_leaf': 1,
+    'learning_rate': 0.3, 'loss': 'lad', 'n_estimator': 3000, 'max_features': 0.7
+}
+
 ada_param = {
     'base_estimator': DecisionTreeRegressor(max_depth=4), 'n_estimators': 300
+}
+
+ada_param2 = {
+    'base_estimator': LinearRegression()
 }
 
 mean_param = {
@@ -83,7 +92,7 @@ for tollgate_id, direction, offset in tuple_lst:
 
     ## Preprocessing ##
 
-    y_train = np.log(train[TARGET] + 1)
+    y_train = np.log1p(train[TARGET])
 
     train.drop([TARGET], axis=1, inplace=True)
 
@@ -124,10 +133,10 @@ for tollgate_id, direction, offset in tuple_lst:
             pass
 
         def predict(self, X_test):
-            volume_index = [60, 61, 62, 63, 64, 65]
+            volume_index = ["volume0", "volume1", "volume2", "volume3", "volume4", "volume5"]
             result = np.zeros(len(X_test))
             for index in volume_index:
-                result += X_test.iloc[:, index].values
+                result += np.log1p(X_test.loc[:, index].values)
             result /= len(volume_index)
             return result
 
@@ -254,7 +263,7 @@ for tollgate_id, direction, offset in tuple_lst:
 for i in range(len(model_name_lst)):
     name = model_name_lst[i]
     model_score_dic[name] /= 30 * (5 - abs(i - 2))
-
+    print name + "-stacking : %.5f" % (model_score_dic[name])
 
 result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
 result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})

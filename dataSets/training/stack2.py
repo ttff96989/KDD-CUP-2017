@@ -19,16 +19,10 @@ from sklearn.ensemble import AdaBoostRegressor
 '''
 
 TARGET = 'y'
-NFOLDS = 5
+NFOLDS = 10
 SEED = 0
 NROWS = None
 SUBMISSION_FILE = '../input/sample_submission.csv'
-
-id_direction_lst = [("1S", "entry"), ("1S", "exit"), ("2S", "entry"), ("3S", "entry"), ("3S", "exit")]
-tuple_lst = []
-for id, direction in id_direction_lst:
-    for i in range(6):
-        tuple_lst.append((id, direction, i))
 
 et_params = {
         'n_jobs': 16,
@@ -71,13 +65,15 @@ mean_param = {
 result_df = pd.DataFrame()
 model_score_dic = {}
 
-for tollgate_id, direction, offset in tuple_lst:
+for offset in range(6):
 
     ## Load the data ##
-    train = pd.read_csv("./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + "offset" + str(offset) + ".csv", index_col="Unnamed: 0")
-    test = pd.read_csv("./train&test_zjw/volume_" + direction + "_test_" + tollgate_id + "offset" + str(offset) + ".csv", index_col="Unnamed: 0")
+    train = pd.read_csv("./train&test4_zjw/train_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
+    test = pd.read_csv("./train&test4_zjw/test_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
     train = train.dropna()
     test_index = test.index
+    test_tollgate = test.tollgate_id.values
+    test_direction = test.direction.values
 
     ## Preprocessing ##
 
@@ -122,10 +118,10 @@ for tollgate_id, direction, offset in tuple_lst:
             pass
 
         def predict(self, X_test):
-            volume_index = [60, 61, 62, 63, 64, 65]
+            volume_index = ["volume0", "volume1", "volume2", "volume3", "volume4", "volume5"]
             result = np.zeros(len(X_test))
             for index in volume_index:
-                result += X_test.iloc[:, index].values
+                result += np.log1p(X_test.loc[:, index].values)
             result /= len(volume_index)
             return result
 
@@ -240,11 +236,11 @@ for tollgate_id, direction, offset in tuple_lst:
     y_predict = pd.DataFrame()
     y_predict["volume_float"] = np.exp(y_test)
     y_predict.index = test_index
-    y_predict["tollgate_id"] = tollgate_id
+    y_predict["tollgate_id"] = test_tollgate
     y_predict["time_window"] = y_predict.index
     y_predict["time_window"] = y_predict["time_window"].apply(lambda time_basic: "[" + str(pd.Timestamp(time_basic) + DateOffset(minutes=(6 + offset) * 20)) + "," + str(
                 pd.Timestamp(time_basic) + DateOffset(minutes=((6 + offset) + 1) * 20)) + ")")
-    y_predict["direction"] = direction
+    y_predict["direction"] = test_direction
     y_predict["volume"] = y_predict["volume_float"].apply(lambda x: "%.2f" % x)
     del y_predict["volume_float"]
     result_df = result_df.append(y_predict)
@@ -252,9 +248,9 @@ for tollgate_id, direction, offset in tuple_lst:
 for i in range(len(model_name_lst)):
     name = model_name_lst[i]
     model_score_dic[name] /= 30 * (5 - abs(i - 2))
-
+    print name + "-stacking : %.5f" % (model_score_dic[name])
 
 result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
 result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
-result_df.to_csv("./train&test_zjw/volume_predict_stacking.csv", index=None, encoding="utf8")
+result_df.to_csv("./train&test4_zjw/volume_predict_stacking_10fold.csv", index=None, encoding="utf8")
 print result_df

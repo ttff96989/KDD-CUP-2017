@@ -80,10 +80,10 @@ def preprocessing():
     volume_test = volume_test.sort_values(by="vehicle_model")
     vehicle_model0 = volume_test[volume_test['vehicle_model'] == 0].fillna("No")
     vehicle_model1 = volume_test[volume_test['vehicle_model'] == 1].fillna("passenger")
-    vehicle_model2 = volume_test[volume_test['vehicle_model'] == 2].fillna("carge")
-    vehicle_model3 = volume_test[volume_test['vehicle_model'] == 3].fillna("carge")
+    vehicle_model2 = volume_test[volume_test['vehicle_model'] == 2].fillna("cargo")
+    vehicle_model3 = volume_test[volume_test['vehicle_model'] == 3].fillna("cargo")
     vehicle_model4 = volume_test[volume_test['vehicle_model'] == 4].fillna("passenger")
-    vehicle_model5 = volume_test[volume_test['vehicle_model'] >= 5].fillna("carge")
+    vehicle_model5 = volume_test[volume_test['vehicle_model'] >= 5].fillna("cargo")
     volume_test = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2, vehicle_model3, vehicle_model4, vehicle_model5])
     return volume_df, volume_test
 

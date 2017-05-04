@@ -119,6 +119,18 @@ def preprocessing():
     volume_test['vehicle_type'] = volume_test['vehicle_type'].replace({0: "passenger", 1: "cargo"})
     volume_test['time'] = volume_test['time'].apply(lambda x: pd.Timestamp(x))
 
+    # 承载量：1-默认客车，2-默认货车，3-默认货车，4-默认客车
+    # 承载量大于等于5的为货运汽车，所有承载量为0的车都类型不明
+    volume_test = volume_test.sort_values(by="vehicle_model")
+    vehicle_model0 = volume_test[volume_test['vehicle_model'] == 0].fillna("No")
+    vehicle_model1 = volume_test[volume_test['vehicle_model'] == 1].fillna("passenger")
+    vehicle_model2 = volume_test[volume_test['vehicle_model'] == 2].fillna("cargo")
+    vehicle_model3 = volume_test[volume_test['vehicle_model'] == 3].fillna("cargo")
+    vehicle_model4 = volume_test[volume_test['vehicle_model'] == 4].fillna("passenger")
+    vehicle_model5 = volume_test[volume_test['vehicle_model'] >= 5].fillna("cargo")
+    volume_test = pd.concat(
+        [vehicle_model0, vehicle_model1, vehicle_model2, vehicle_model3, vehicle_model4, vehicle_model5])
+
     return volume_df, volume_test
 
 def modeling():
