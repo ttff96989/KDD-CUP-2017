@@ -6,6 +6,8 @@
 但是还是要区分offset时段，即分成六个模型
 
 待优化：
+1. 122行附近的dropna需要仔细斟酌，因为存在训练集中20分钟内车流量为空的情况，此时resanmple后的结果同样是NaN（已经优化，没运行）
+
 2. 删除噪声点的问题，还是需要看看预测集的分布情况，是否出现了类似训练集中异常的情况
 
 3. 时间特征的处理，是否需要那么有针对性
@@ -118,7 +120,7 @@ def divide_train_by_direction(volume_df, tollgate_id, entry_file_path=None, exit
     del volume_all_entry["vehicle_type"]
     del volume_all_entry["has_etc"]
     volume_all_entry = volume_all_entry.resample("20T").sum()
-    volume_all_entry = volume_all_entry.dropna()
+    volume_all_entry = volume_all_entry.fillna(0)
     volume_all_entry["cargo_model_avg"] = volume_all_entry["cargo_model"] / volume_all_entry["cargo_count"]
     volume_all_entry["passenger_model_avg"] = volume_all_entry["passenger_model"] / volume_all_entry[
         "passenger_count"]
@@ -148,7 +150,7 @@ def divide_train_by_direction(volume_df, tollgate_id, entry_file_path=None, exit
         del volume_all_exit["vehicle_type"]
         del volume_all_exit["has_etc"]
         volume_all_exit = volume_all_exit.resample("20T").sum()
-        volume_all_exit = volume_all_exit.dropna()
+        volume_all_exit = volume_all_exit.fillna(0)
         volume_all_exit["cargo_model_avg"] = volume_all_exit["cargo_model"] / volume_all_exit["cargo_count"]
         volume_all_exit["passenger_model_avg"] = volume_all_exit["passenger_model"] / volume_all_exit[
                     "passenger_count"]
@@ -350,7 +352,7 @@ def divide_test_by_direction(volume_df, tollgate_id, entry_file_path=None, exit_
     del entry_test["vehicle_type"]
     del entry_test["has_etc"]
     entry_test = entry_test.resample("20T").sum()
-    entry_test = entry_test.dropna()
+    entry_test = entry_test.fillna(0)
     entry_test["cargo_model_avg"] = entry_test["cargo_model"] / entry_test["cargo_count"]
     entry_test["passenger_model_avg"] = entry_test["passenger_model"] / entry_test[
         "passenger_count"]
@@ -379,7 +381,7 @@ def divide_test_by_direction(volume_df, tollgate_id, entry_file_path=None, exit_
         del exit_test["vehicle_type"]
         del exit_test["has_etc"]
         exit_test = exit_test.resample("20T").sum()
-        exit_test = exit_test.dropna()
+        exit_test = exit_test.fillna(0)
         exit_test["cargo_model_avg"] = exit_test["cargo_model"] / exit_test["cargo_count"]
         exit_test["passenger_model_avg"] = exit_test["passenger_model"] / exit_test[
            "passenger_count"]
