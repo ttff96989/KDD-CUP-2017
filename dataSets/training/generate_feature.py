@@ -6,17 +6,15 @@
 但是还是要区分offset时段，即分成六个模型
 
 待优化：
-1. 122行附近的dropna需要仔细斟酌，因为存在训练集中20分钟内车流量为空的情况，此时resanmple后的结果同样是NaN（已经优化，没运行）
 
-2. 删除噪声点的问题，还是需要看看预测集的分布情况，是否出现了类似训练集中异常的情况
+待提交优化:
+1. 删除噪声点，将10月1号到6号的数据作为噪声点剔除掉，因为原始训练集和预测集的比例为10000：60，除掉10月1日到6日的数据
+   应该能够提高模型的泛化能力，
 
-3. 时间特征的处理，是否需要那么有针对性
-
-待提交优化：
+已优化:
 1. 加特征：使用电子桩的车的总重量，平均重量，不适用电子桩的总重量，平均重量
 
-已优化
-
+2. resample之后的dropna修改成fillna(0)，因为存在训练集中20分钟内车流量为空的情况，此时resanmple后的结果同样是NaN（已经优化，没运行）
 '''
 import pandas as pd
 import numpy as np
@@ -55,8 +53,8 @@ def preprocessing():
     volume_df['time'] = volume_df['time'].apply(lambda x: pd.Timestamp(x))
 
     # 剔除10月1日至10月6日数据（每个收费站在该日期附近都有异常）
-    # volume_df = volume_df[(volume_df["time"] < pd.Timestamp("2016-10-01 00:00:00")) |
-    #                       (volume_df["time"] > pd.Timestamp("2016-10-07 00:00:00"))]
+    volume_df = volume_df[(volume_df["time"] < pd.Timestamp("2016-10-01 00:00:00")) |
+                          (volume_df["time"] > pd.Timestamp("2016-10-07 00:00:00"))]
 
     # 承载量：1-默认客车，2-默认货车，3-默认货车，4-默认客车
     # 承载量大于等于5的为货运汽车，所有承载量为0的车都类型不明
@@ -287,10 +285,10 @@ def generate_train_features(data_df, new_index, offset, has_y=True, file_path=No
     for i in range(len(data_df) - 6 - offset):
         se_temp = pd.Series()
         # 删除9月和10月交界的数据，就是训练集的X和y所在时间点分别在两个月份的情况
-        month_left = data_df.index[i]
-        month_right = data_df.index[i + 6 + offset]
-        if month_left == 9 and month_right == 10:
-            continue
+        # month_left = data_df.index[i]
+        # month_right = data_df.index[i + 6 + offset]
+        # if month_left == 9 and month_right == 10:
+        #     continue
         for k in range(6):
             se_temp = se_temp.append(data_df.iloc[i + k, :].copy())
         if has_y:
@@ -352,7 +350,7 @@ def divide_test_by_direction(volume_df, tollgate_id, entry_file_path=None, exit_
     del entry_test["vehicle_type"]
     del entry_test["has_etc"]
     entry_test = entry_test.resample("20T").sum()
-    entry_test = entry_test.fillna(0)
+    entry_test = entry_test.dropna()
     entry_test["cargo_model_avg"] = entry_test["cargo_model"] / entry_test["cargo_count"]
     entry_test["passenger_model_avg"] = entry_test["passenger_model"] / entry_test[
         "passenger_count"]
@@ -381,7 +379,7 @@ def divide_test_by_direction(volume_df, tollgate_id, entry_file_path=None, exit_
         del exit_test["vehicle_type"]
         del exit_test["has_etc"]
         exit_test = exit_test.resample("20T").sum()
-        exit_test = exit_test.fillna(0)
+        exit_test = exit_test.dropna()
         exit_test["cargo_model_avg"] = exit_test["cargo_model"] / exit_test["cargo_count"]
         exit_test["passenger_model_avg"] = exit_test["passenger_model"] / exit_test[
            "passenger_count"]
