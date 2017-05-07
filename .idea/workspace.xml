@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c1080875-0cfa-475a-87fc-d2ad5d721bf1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/generate_feature.py" afterPath="$PROJECT_DIR$/dataSets/training/generate_feature.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dataSets/training/generate_feature2.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/stack2.py" afterPath="$PROJECT_DIR$/dataSets/training/stack2.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,70 +19,57 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="volume_predict2_result.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2_result.csv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="volume_predict2.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1695">
-              <caret line="113" column="74" lean-forward="false" selection-start-line="113" selection-start-column="31" selection-end-line="113" selection-end-column="74" />
-              <folding>
-                <element signature="e#1694#1713#0" expanded="true" />
-                <marker date="1493908301000" expanded="false" signature="19885:20733" ph="..." />
-                <marker date="1493908301000" expanded="false" signature="20795:21935" ph="..." />
-                <marker date="1493908301000" expanded="false" signature="22001:22762" ph="..." />
-                <marker date="1493908301000" expanded="false" signature="22828:24028" ph="..." />
-                <marker date="1493908301000" expanded="false" signature="33152:33955" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="stacking.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/dataSets/training/stacking.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="98" column="53" lean-forward="true" selection-start-line="98" selection-start-column="15" selection-end-line="98" selection-end-column="53" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="generate_feature.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="generate_feature.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dataSets/training/generate_feature.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="608">
-              <caret line="334" column="96" lean-forward="false" selection-start-line="334" selection-start-column="96" selection-end-line="334" selection-end-column="96" />
+            <state relative-caret-position="532">
+              <caret line="478" column="0" lean-forward="false" selection-start-line="478" selection-start-column="0" selection-end-line="478" selection-end-column="19" />
               <folding>
-                <element signature="e#313#332#0" expanded="true" />
-                <element signature="e#1425#4536#0" expanded="false" />
-                <element signature="e#4664#8670#0" expanded="false" />
-                <element signature="e#8801#16504#0" expanded="false" />
-                <element signature="e#16611#17631#0" expanded="false" />
-                <element signature="e#17751#18466#0" expanded="false" />
-                <element signature="e#18821#19535#0" expanded="false" />
-                <element signature="e#19664#23024#0" expanded="false" />
-                <element signature="e#23170#24956#0" expanded="false" />
-                <element signature="e#24988#26493#0" expanded="false" />
+                <element signature="e#342#361#0" expanded="true" />
+                <element signature="e#1454#4561#0" expanded="false" />
+                <element signature="e#4689#8695#0" expanded="false" />
+                <element signature="e#8826#16529#0" expanded="false" />
+                <element signature="e#16636#17656#0" expanded="false" />
+                <element signature="e#17776#18499#0" expanded="false" />
+                <element signature="e#19697#23055#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="stack2.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="generate_feature2.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dataSets/training/generate_feature2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1288">
+              <caret line="255" column="40" lean-forward="false" selection-start-line="255" selection-start-column="40" selection-end-line="255" selection-end-column="40" />
+              <folding>
+                <element signature="e#39#58#0" expanded="true" />
+                <element signature="e#1612#2948#0" expanded="false" />
+                <element signature="e#3054#4070#0" expanded="false" />
+                <element signature="e#4189#4910#0" expanded="false" />
+                <element signature="e#5264#5978#0" expanded="false" />
+                <element signature="e#7359#9021#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="stack2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dataSets/training/stack2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1020">
-              <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="406">
+              <caret line="471" column="0" lean-forward="true" selection-start-line="471" selection-start-column="0" selection-end-line="471" selection-end-column="0" />
+              <folding>
+                <element signature="e#3897#4353#0" expanded="false" />
+                <element signature="e#4397#4741#0" expanded="false" />
+                <element signature="e#4781#5251#0" expanded="false" />
+                <element signature="e#5283#6098#0" expanded="false" />
+                <element signature="e#6778#7194#0" expanded="false" />
+                <element signature="e#10537#10881#0" expanded="false" />
+                <element signature="e#10921#11391#0" expanded="false" />
+                <element signature="e#11423#12238#0" expanded="false" />
+                <element signature="e#12740#12982#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -105,6 +94,7 @@
       <find>models_entry</find>
       <find>range</find>
       <find>test</find>
+      <find>model_used_name</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -120,13 +110,14 @@
         <option value="$PROJECT_DIR$/dataSets/training/volume_predict2&amp;3_result.py" />
         <option value="$PROJECT_DIR$/dataSets/training/volume_predict2.py" />
         <option value="$PROJECT_DIR$/dataSets/training/stacking.py" />
-        <option value="$PROJECT_DIR$/dataSets/training/stack2.py" />
         <option value="$PROJECT_DIR$/dataSets/training/generate_feature.py" />
+        <option value="$PROJECT_DIR$/dataSets/training/generate_feature2.py" />
+        <option value="$PROJECT_DIR$/dataSets/training/stack2.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="40" />
+    <option name="y" value="23" />
     <option name="width" value="1280" />
     <option name="height" value="720" />
   </component>
@@ -197,14 +188,13 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="FullScreen" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/dataSets/training" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.generate_feature">
+  <component name="RunManager" selected="Python.generate_feature2">
     <configuration default="false" name="volume_predict2" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -218,23 +208,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="VolumePredict-zjw" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dataSets/training/volume_predict2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="volume_combine2&amp;3" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/dataSets/training/train&amp;test_zjw" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="VolumePredict-zjw" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dataSets/training/volume_combine2&amp;3.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -286,6 +259,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="VolumePredict-zjw" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dataSets/training/generate_feature.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="generate_feature2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/dataSets/training" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="VolumePredict-zjw" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dataSets/training/generate_feature2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -426,18 +416,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.volume_predict2" />
-      <item index="1" class="java.lang.String" itemvalue="Python.volume_combine2&amp;3" />
-      <item index="2" class="java.lang.String" itemvalue="Python.volume_predict2&amp;3_result" />
-      <item index="3" class="java.lang.String" itemvalue="Python.stacking" />
-      <item index="4" class="java.lang.String" itemvalue="Python.generate_feature" />
+      <item index="1" class="java.lang.String" itemvalue="Python.volume_predict2&amp;3_result" />
+      <item index="2" class="java.lang.String" itemvalue="Python.stacking" />
+      <item index="3" class="java.lang.String" itemvalue="Python.generate_feature" />
+      <item index="4" class="java.lang.String" itemvalue="Python.generate_feature2" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.generate_feature" />
-        <item index="1" class="java.lang.String" itemvalue="Python.stacking" />
-        <item index="2" class="java.lang.String" itemvalue="Python.volume_predict2" />
-        <item index="3" class="java.lang.String" itemvalue="Python.volume_predict2&amp;3_result" />
-        <item index="4" class="java.lang.String" itemvalue="Python.volume_combine2&amp;3" />
+        <item index="0" class="java.lang.String" itemvalue="Python.generate_feature2" />
+        <item index="1" class="java.lang.String" itemvalue="Python.generate_feature" />
+        <item index="2" class="java.lang.String" itemvalue="Python.stacking" />
+        <item index="3" class="java.lang.String" itemvalue="Python.volume_predict2" />
+        <item index="4" class="java.lang.String" itemvalue="Python.volume_predict2&amp;3_result" />
       </list>
     </recent_temporary>
   </component>
@@ -455,17 +445,17 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="40" width="1280" height="720" extended-state="0" />
+    <frame x="0" y="23" width="1280" height="720" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24305004" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20889595" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.04657534" sideWeight="0.50277996" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43150684" sideWeight="0.49722" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -625,14 +615,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2_result.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/dataSets/training/train&amp;test_zjw/volume_exit_test_1S.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -669,10 +651,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataSets/training/stack2.py">
+    <entry file="file://$PROJECT_DIR$/dataSets/training/stacking.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1020">
-          <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+        <state relative-caret-position="285">
+          <caret line="98" column="53" lean-forward="true" selection-start-line="98" selection-start-column="15" selection-end-line="98" selection-end-column="53" />
           <folding />
         </state>
       </provider>
@@ -692,29 +674,59 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataSets/training/stacking.py">
+    <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2_result.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="98" column="53" lean-forward="true" selection-start-line="98" selection-start-column="15" selection-end-line="98" selection-end-column="53" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dataSets/training/generate_feature.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="334" column="96" lean-forward="false" selection-start-line="334" selection-start-column="96" selection-end-line="334" selection-end-column="96" />
+        <state relative-caret-position="532">
+          <caret line="478" column="0" lean-forward="false" selection-start-line="478" selection-start-column="0" selection-end-line="478" selection-end-column="19" />
           <folding>
-            <element signature="e#313#332#0" expanded="true" />
-            <element signature="e#1425#4536#0" expanded="false" />
-            <element signature="e#4664#8670#0" expanded="false" />
-            <element signature="e#8801#16504#0" expanded="false" />
-            <element signature="e#16611#17631#0" expanded="false" />
-            <element signature="e#17751#18466#0" expanded="false" />
-            <element signature="e#18821#19535#0" expanded="false" />
-            <element signature="e#19664#23024#0" expanded="false" />
-            <element signature="e#23170#24956#0" expanded="false" />
-            <element signature="e#24988#26493#0" expanded="false" />
+            <element signature="e#342#361#0" expanded="true" />
+            <element signature="e#1454#4561#0" expanded="false" />
+            <element signature="e#4689#8695#0" expanded="false" />
+            <element signature="e#8826#16529#0" expanded="false" />
+            <element signature="e#16636#17656#0" expanded="false" />
+            <element signature="e#17776#18499#0" expanded="false" />
+            <element signature="e#19697#23055#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataSets/training/generate_feature2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1288">
+          <caret line="255" column="40" lean-forward="false" selection-start-line="255" selection-start-column="40" selection-end-line="255" selection-end-column="40" />
+          <folding>
+            <element signature="e#39#58#0" expanded="true" />
+            <element signature="e#1612#2948#0" expanded="false" />
+            <element signature="e#3054#4070#0" expanded="false" />
+            <element signature="e#4189#4910#0" expanded="false" />
+            <element signature="e#5264#5978#0" expanded="false" />
+            <element signature="e#7359#9021#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataSets/training/stack2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="471" column="0" lean-forward="true" selection-start-line="471" selection-start-column="0" selection-end-line="471" selection-end-column="0" />
+          <folding>
+            <element signature="e#3897#4353#0" expanded="false" />
+            <element signature="e#4397#4741#0" expanded="false" />
+            <element signature="e#4781#5251#0" expanded="false" />
+            <element signature="e#5283#6098#0" expanded="false" />
+            <element signature="e#6778#7194#0" expanded="false" />
+            <element signature="e#10537#10881#0" expanded="false" />
+            <element signature="e#10921#11391#0" expanded="false" />
+            <element signature="e#11423#12238#0" expanded="false" />
+            <element signature="e#12740#12982#0" expanded="false" />
           </folding>
         </state>
       </provider>

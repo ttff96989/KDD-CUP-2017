@@ -122,8 +122,9 @@ mean_param = {
 result_df = pd.DataFrame()
 model_score_dic = {}
 
-for offset in range(6):
+model_used_name = ["GB", "RF", "XGB", "XGB2", "ADA", "LS", "ET", "RD"]
 
+def predict1(offset):
     ## Load the data ##
     train = pd.read_csv("./train&test4_zjw/train_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
     test = pd.read_csv("./train&test4_zjw/test_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
@@ -143,7 +144,7 @@ for offset in range(6):
     # log transform skewed numeric features:
     numeric_feats = all_data.dtypes[all_data.dtypes != "object"].index
 
-    skewed_feats = train[numeric_feats].apply(lambda x: skew(x.dropna())) #compute skewness
+    skewed_feats = train[numeric_feats].apply(lambda x: skew(x.dropna()))  # compute skewness
     skewed_feats = skewed_feats[skewed_feats > 0.75]
     skewed_feats = skewed_feats.index
 
@@ -235,12 +236,11 @@ for offset in range(6):
         # print oof_test
         return oof_train.reshape(-1, 1), oof_test.reshape(-1, 1)
 
-
     # 可以无限增加元模型，然后增加模型组合的可能性
-    model_name_lst = ["MEAN", "GB", "RF", "XGB", "XGB2", "ADA", "LS", "ET", "RD"]
-    model_lst = [Mean_Model, GradientBoostingRegressor, RandomForestRegressor, None, None,
+    model_name_lst = ["GB", "RF", "XGB", "XGB2", "ADA", "LS", "ET", "RD"]
+    model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None,
                  AdaBoostRegressor, Lasso, ExtraTreesRegressor, Ridge]
-    model_params = [mean_param, gbdt_params, rf_params, xgb_params, xgb_params2,
+    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2,
                     ada_param, ls_params, et_params, rd_params]
     model2_name = ["ET", "RF", "GB", "ADA", "XGB", "XGB2"]
     model2_lst = [ExtraTreesRegressor, RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor, None, None]
@@ -251,13 +251,11 @@ for offset in range(6):
                       [0, 1, 2, 3, 4, 5],
                       [0, 1, 2, 3, 4, 5, 6],
                       [0, 1, 2, 3, 4, 5, 6, 7],
-                      [0, 1, 2, 3, 4, 5, 6, 7, 8],
-                      [1, 2, 3, 4, 5, 6, 7, 8],
-                      [2, 3, 4, 5, 6, 7, 8],
-                      [3, 4, 5, 6, 7, 8],
-                      [4, 5, 6, 7, 8],
-                      [5, 6, 7, 8],
-                      [6, 7, 8]]
+                      [1, 2, 3, 4, 5, 6, 7],
+                      [2, 3, 4, 5, 6, 7],
+                      [3, 4, 5, 6, 7],
+                      [4, 5, 6, 7],
+                      [5, 6, 7]]
 
     y_test = np.zeros((ntest,))
     for i in range(len(model_used_idx)):
@@ -276,20 +274,19 @@ for offset in range(6):
         train_lst = [train_temp for train_temp, test_temp in train_test_lst]
         test_lst = [test_temp for train_temp, test_temp in train_test_lst]
 
-
         def scorer(data_lst1, data_lst2):
             # print data_lst1
             # print data_lst2
             return (np.abs(1 - np.exp(data_lst1.values - data_lst2.reshape((1, -1))[0]))).mean()
 
-
         for j in range(len(train_lst)):
             score = scorer(y_train, train_lst[j])
             print model_name_lst[j] + "-CV".format(score)
             if model_name_lst[j] in model_score_dic:
-                model_score_dic[model_name_lst[j]] += score
+                model_score_dic[model_name_lst[j]][0] += score
+                model_score_dic[model_name_lst[j]][1] += 1
             else:
-                model_score_dic[model_name_lst[j]] = score
+                model_score_dic[model_name_lst[j]] = [score, 1]
         x_train = np.concatenate(train_lst, axis=1)
         x_test = np.concatenate(test_lst, axis=1)
 
@@ -300,7 +297,166 @@ for offset in range(6):
         model2 = generate_wrapper(random_index, model2_name, model2_lst, model2_params)
         model2.train(x_train, y_train)
         y_test += model2.predict(x_test)
-    y_test /= len(model_used_idx)
+    return y_test, len(model_used_idx), test_index, test_tollgate, test_direction
+
+def predict2(offset):
+    ## Load the data ##
+    train = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
+    test = pd.read_csv("./train&test3_zjw/test_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
+    train = train.dropna()
+
+    ## Preprocessing ##
+
+    y_train = np.log(train[TARGET] + 1)
+
+    train.drop([TARGET], axis=1, inplace=True)
+
+    all_data = pd.concat((train.copy(), test.copy()))
+
+    # log transform skewed numeric features:
+    numeric_feats = all_data.dtypes[all_data.dtypes != "object"].index
+
+    skewed_feats = train[numeric_feats].apply(lambda x: skew(x.dropna()))  # compute skewness
+    skewed_feats = skewed_feats[skewed_feats > 0.75]
+    skewed_feats = skewed_feats.index
+
+    all_data[skewed_feats] = np.log1p(all_data[skewed_feats])
+
+    stdSc = StandardScaler()
+    all_data[numeric_feats] = stdSc.fit_transform(all_data[numeric_feats])
+
+    all_data = pd.get_dummies(all_data)
+
+    # filling NA's with the mean of the column:
+
+    # creating matrices for sklearn:
+
+    x_train = np.array(all_data[:train.shape[0]])
+    x_test = np.array(all_data[train.shape[0]:])
+
+    ntrain = x_train.shape[0]
+    ntest = x_test.shape[0]
+
+    kf = KFold(ntrain, n_folds=NFOLDS, shuffle=True, random_state=SEED)
+
+    class SklearnWrapper(object):
+        def __init__(self, clf, seed=0, params=None):
+            params['random_state'] = seed
+            self.clf = clf(**params)
+
+        def train(self, x_train, y_train):
+            self.clf.fit(x_train, y_train)
+
+        def predict(self, x):
+            return self.clf.predict(x)
+
+        def clf_type(self):
+            return type(self.clf)
+
+    class XgbWrapper(object):
+        def __init__(self, seed=0, params=None):
+            self.param = params
+            self.param["seed"] = seed
+            self.nrounds = params.pop("nrounds", 250)
+
+        def train(self, x_train, y_train):
+            dtrain = xgb.DMatrix(x_train, label=y_train)
+            self.gbdt = xgb.train(self.param, dtrain, self.nrounds)
+
+        def predict(self, x):
+            return self.gbdt.predict(xgb.DMatrix(x))
+
+        def clf_type(self):
+            return None
+
+    def get_oof(clf):
+        oof_train = np.zeros((ntrain,))
+        oof_test = np.zeros((ntest,))
+        oof_test_skf = np.empty((NFOLDS, ntest))
+
+        for i, (train_index, test_index) in enumerate(kf):
+            x_tr = x_train[train_index]
+            y_tr = y_train[train_index]
+            x_te = x_train[test_index]
+
+            if clf.clf_type() and clf.clf_type() == Mean_Model:
+                oof_train = clf.predict(train.copy())
+                oof_test_skf[i, :] = clf.predict(test.copy())
+            else:
+                clf.train(x_tr, y_tr)
+
+                oof_train[test_index] = clf.predict(x_te)
+                oof_test_skf[i, :] = clf.predict(x_test)
+
+        oof_test[:] = oof_test_skf.mean(axis=0)
+        # print oof_train
+        # print oof_test
+        return oof_train.reshape(-1, 1), oof_test.reshape(-1, 1)
+
+    model_name = ["GB", "RF", "XGB", "XGB2", "ADA", "ET"]
+    model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None,
+                  AdaBoostRegressor, ExtraTreesRegressor]
+    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2, ada_param, et_params]
+    model2_name = ["GB", "ADA", "XGB", "XGB2"]
+    model2_lst = [GradientBoostingRegressor, AdaBoostRegressor, None, None]
+    model2_params = [gbdt_params, ada_param, xgb_params, xgb_params2]
+    model_used_idx = [[0, 1, 2],
+                       [0, 1, 2, 3],
+                       [0, 1, 2, 3, 4],
+                       [0, 1, 2, 3, 4, 5],
+                       [1, 2, 3, 4, 5],
+                       [2, 3, 4, 5],
+                       [3, 4, 5]]
+
+    y_test = np.zeros((ntest,))
+    for i in range(len(model_used_idx)):
+
+        def generate_wrapper(index, names, models, params):
+            if names[index] == "XGB" or names[index] == "XGB2":
+                return XgbWrapper(seed=SEED, params=params[index])
+            else:
+                return SklearnWrapper(clf=models[index], seed=SEED, params=params[index])
+
+        # model_used = [model_lst[idx] for idx in model_used_idx[i]]
+        # arams_used = [model_params[idx] for idx in model_used_idx[i]]
+        wrapper_lst = [generate_wrapper(idx, model_name, model_lst, model_params)
+                       for idx in range(len(model_used_idx[i]))]
+        train_test_lst = [get_oof(wrapper) for wrapper in wrapper_lst]
+        train_lst = [train_temp for train_temp, test_temp in train_test_lst]
+        test_lst = [test_temp for train_temp, test_temp in train_test_lst]
+
+        def scorer(data_lst1, data_lst2):
+            # print data_lst1
+            # print data_lst2
+            return (np.abs(1 - np.exp(data_lst1.values - data_lst2.reshape((1, -1))[0]))).mean()
+
+        for j in range(len(train_lst)):
+            score = scorer(y_train, train_lst[j])
+            print model_name[j] + "-CV".format(score)
+            if model_name[j] in model_score_dic:
+                model_score_dic[model_name[j]][0] += score
+                model_score_dic[model_name[j]][1] += 1
+            else:
+                model_score_dic[model_name[j]] = [score, 1]
+        x_train = np.concatenate(train_lst, axis=1)
+        x_test = np.concatenate(test_lst, axis=1)
+
+        print("{},{}".format(x_train.shape, x_test.shape))
+
+        random_index = random.randint(0, 5)
+        print "second floor use : " + model2_name[random_index]
+        model2 = generate_wrapper(random_index, model2_name, model2_lst, model2_params)
+        model2.train(x_train, y_train)
+        y_test += model2.predict(x_test)
+    return y_test, len(model_used_idx)
+
+
+for offset in range(6):
+
+    # index, tollgate, direction在测试集中的顺序就按照predict1里读取到的文件里的顺序来
+    y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset)
+    y_test2, len2 = predict2(offset)
+    y_test = (y_test1 + y_test2) / (len1 + len2)
 
     y_predict = pd.DataFrame()
     y_predict["volume_float"] = np.exp(y_test)
@@ -314,13 +470,12 @@ for offset in range(6):
     del y_predict["volume_float"]
     result_df = result_df.append(y_predict)
 
-use_times = [7, 8, 9, 9, 9, 9, 9, 8, 7]
-for i in range(len(model_name_lst)):
-    name = model_name_lst[i]
-    model_score_dic[name] /= 6 * use_times[i]
+for i in range(len(model_used_name)):
+    name = model_used_name[i]
+    score = model_score_dic[name][0] / model_score_dic[name][1]
     print name + "-stacking : %.5f" % (model_score_dic[name])
 
 result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
 result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
-result_df.to_csv("./train&test4_zjw/volume_predict_stacking_5fold2.csv", index=None, encoding="utf8")
+result_df.to_csv("./train&test3_zjw/volume_predict_stacking.csv", index=None, encoding="utf8")
 print result_df.sort_values(["tollgate", "direction"])
