@@ -119,7 +119,6 @@ mean_param = {
 
 }
 
-result_df = pd.DataFrame()
 model_score_dic = {}
 
 model_used_name = ["GB", "RF", "XGB", "XGB2", "ADA", "LS", "ET", "RD"]
@@ -209,7 +208,7 @@ def predict1(tollgate_id, direction, offset):
     print "predict1 path of train file: " + train_file
     print "predict1 path of test file: " + test_file
     train = train.dropna()
-    test_index = test.index
+    test_index = pd.Series(test.index + "-" + direction + "-" + str(offset))
 
     ## Preprocessing ##
 
@@ -559,9 +558,10 @@ def predict3(offset):
     train = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
     test = pd.read_csv("./train&test3_zjw/test_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
     train = train.dropna()
-    test_index = test.index
+    test_index = pd.Series(test.index + "-" + test["direction"] + "-" + str(offset))
     test_tollgate = test.tollgate_id.values
     test_direction = test.direction.values
+
 
     ## Preprocessing ##
 
@@ -725,18 +725,18 @@ def predict3(offset):
 
 
 def main():
-    global result_df
+    result_df = pd.DataFrame()
     print u"训练集用train&test0的数据，在历史最好成绩基础上修改特征，看看改特征之后有什么效果"
     print "NFOLD = " + str(NFOLDS)
     for tollgate_id, direction, offset in tuple_lst:
         print tollgate_id
         print direction
         print offset
-        # y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
+        y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
         # y_test2, _, _ = predict2(tollgate_id, direction, offset)
         # y_test = (y_test1 + y_test2) / (length1 + length2)
-        # y_test = y_test1 / length1
-        y_test, test_index = predict0(tollgate_id, direction, offset)
+        y_test = y_test1 / length1
+        # y_test, test_index = predict0(tollgate_id, direction, offset)
 
         y_predict = pd.DataFrame()
         y_predict["volume_float"] = np.exp(y_test)
@@ -749,6 +749,23 @@ def main():
         y_predict["volume"] = y_predict["volume_float"].apply(lambda x: "%.2f" % x)
         del y_predict["volume_float"]
         result_df = result_df.append(y_predict)
+
+    result2_df = pd.DataFrame()
+    for offset in range(6):
+        y_test1, len1, test_index, test_tollgate, test_direction = predict3(offset)
+        y_test = y_test1 / len1
+        y_predict = pd.DataFrame()
+        y_predict["volume_float"] = np.exp(y_test)
+        y_predict.index = test_index
+        y_predict["tollgate_id"] = test_tollgate
+        y_predict["time_window"] = y_predict.index
+        y_predict["time_window"] = y_predict["time_window"].apply(
+            lambda time_basic: "[" + str(pd.Timestamp(time_basic) + DateOffset(minutes=(6 + offset) * 20)) + "," + str(
+                pd.Timestamp(time_basic) + DateOffset(minutes=((6 + offset) + 1) * 20)) + ")")
+        y_predict["direction"] = test_direction
+        y_predict["volume"] = y_predict["volume_float"].apply(lambda x: "%.2f" % x)
+        del y_predict["volume_float"]
+        result2_df = result2_df.append(y_predict)
 
     try:
         for i in range(len(model_used_name)):
