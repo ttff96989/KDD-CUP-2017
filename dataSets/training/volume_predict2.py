@@ -161,7 +161,7 @@ def modeling():
             del volume_all_entry["vehicle_type"]
             del volume_all_entry["has_etc"]
             volume_all_entry = volume_all_entry.resample("20T").sum()
-            # volume_all_entry = volume_all_entry.fillna(0)
+            volume_all_entry = volume_all_entry.fillna(0)
             volume_all_entry["cargo_model_avg"] = volume_all_entry["cargo_model"] / volume_all_entry["cargo_count"]
             volume_all_entry["passenger_model_avg"] = volume_all_entry["passenger_model"] / volume_all_entry[
                 "passenger_count"]
@@ -189,7 +189,7 @@ def modeling():
                 del volume_all_exit["vehicle_type"]
                 del volume_all_exit["has_etc"]
                 volume_all_exit = volume_all_exit.resample("20T").sum()
-                volume_all_exit = volume_all_exit.dropna()
+                volume_all_exit = volume_all_exit.fillna(0)
                 volume_all_exit["cargo_model_avg"] = volume_all_exit["cargo_model"] / volume_all_exit["cargo_count"]
                 volume_all_exit["passenger_model_avg"] = volume_all_exit["passenger_model"] / volume_all_exit[
                     "passenger_count"]
@@ -288,13 +288,14 @@ def modeling():
             # train_df["volume5_S2"] = train_df["volume5"] * train_df["volume5"]
             # train_df["volume5_S3"] = train_df["volume5"] * train_df["volume5"] * train_df["volume5"]
             # train_df["volume5_sqrt"] = np.sqrt(train_df["volume5"])
+            train_df = train_df.fillna(0)
             if offset >= 6 and file_path:
                 train_df = generate_time_features(train_df, offset, file_path + "offset" + str(offset - 6))
             elif offset >= 6:
                 train_df = generate_time_features(train_df, offset)
             elif file_path:
                 train_df.to_csv(file_path + ".csv")
-            return train_df.fillna(0)
+            return train_df
 
         # 在train_df的index基础上加上offset*20分钟的时间特征
         def generate_time_features(data_df, offset, file_path=None):

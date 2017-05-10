@@ -381,6 +381,7 @@ def predict1(tollgate_id, direction, offset):
 
 
 def predict2(tollgate_id, direction, offset):
+    index_cols = ["tollgate_id", "direction", "time"]
     ## Load the data ##
     train_file = "./train&test5_zjw/volume_" + direction + "_train_" + tollgate_id + ".csv"
     train = pd.read_csv(train_file, index_col="time")
