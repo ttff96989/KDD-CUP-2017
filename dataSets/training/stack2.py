@@ -18,13 +18,18 @@ import xgboost as xgb
 '''
 和stack.py的区别是不区分方向和出口
 
+2017-05-08: 发现不区分方向和出口效果并不理想，不论是用stacking还是在stacking的基础上加上均值模型
+所以打算退回到分端口和方向的模型中，用stacking * （纯时间特征模型 + 常规模型）
+
 待优化：
 
 1. Adaboost + linerRegression
 
-2. 去掉均值模型，改用纯时间因子作为特征的训练集和预测集，用stacking后替换掉均值模型
-
 待提交优化：
+
+1. 将5折提高到8折
+
+2. 去掉均值模型，改用纯时间因子作为特征的训练集和预测集，用stacking后替换掉均值模型
 
 
 已优化：
@@ -33,6 +38,15 @@ import xgboost as xgb
 
 2. 增加两个惩罚粒度不同的XGBoost
 
+结论：
+
+1. 加上纯时间特征的模型，准确率确实有提高从0.1930到0.1882
+
+2. 5折升级为10折效果也有提高，从0.1882到0.1847
+
+3. 纯时间特征模型和不区分出口和方向的模型效果效果差不多，可见不分方向和出口是不可能的……
+
+4. 不分方向和端口的纯时间特征模型准确率要比分端口和方向的时间模型准确率高很多
 
 '''
 
@@ -299,11 +313,15 @@ def predict1(offset):
         y_test += model2.predict(x_test)
     return y_test, len(model_used_idx), test_index, test_tollgate, test_direction
 
+
 def predict2(offset):
     ## Load the data ##
     train = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
     test = pd.read_csv("./train&test3_zjw/test_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
     train = train.dropna()
+    test_index = test.index
+    test_tollgate = test.tollgate_id.values
+    test_direction = test.direction.values
 
     ## Preprocessing ##
 
@@ -338,6 +356,21 @@ def predict2(offset):
     ntest = x_test.shape[0]
 
     kf = KFold(ntrain, n_folds=NFOLDS, shuffle=True, random_state=SEED)
+
+    class Mean_Model(object):
+        def __init__(self, random_state=None):
+            pass
+
+        def fit(self, X_train, y_train):
+            pass
+
+        def predict(self, X_test):
+            volume_index = ["volume0", "volume1", "volume2", "volume3", "volume4", "volume5"]
+            result = np.zeros(len(X_test))
+            for index in volume_index:
+                result += np.log1p(X_test.loc[:, index].values)
+            result /= len(volume_index)
+            return result
 
     class SklearnWrapper(object):
         def __init__(self, clf, seed=0, params=None):
@@ -443,39 +476,48 @@ def predict2(offset):
 
         print("{},{}".format(x_train.shape, x_test.shape))
 
-        random_index = random.randint(0, 5)
+        random_index = random.randint(0, 3)
         print "second floor use : " + model2_name[random_index]
         model2 = generate_wrapper(random_index, model2_name, model2_lst, model2_params)
         model2.train(x_train, y_train)
         y_test += model2.predict(x_test)
-    return y_test, len(model_used_idx)
+    return y_test, len(model_used_idx), test_index, test_tollgate, test_direction
 
 
-for offset in range(6):
+def main():
+    global result_df
+    for offset in range(6):
 
-    # index, tollgate, direction在测试集中的顺序就按照predict1里读取到的文件里的顺序来
-    y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset)
-    y_test2, len2 = predict2(offset)
-    y_test = (y_test1 + y_test2) / (len1 + len2)
+        # index, tollgate, direction在测试集中的顺序就按照predict1里读取到的文件里的顺序来
+        y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset)
+        # y_test2, len2, test_index, test_tollgate, test_direction = predict2(offset)
+        # y_test = (y_test1 + y_test2) / (len1 + len2)
+        y_test = y_test1 / len1
 
-    y_predict = pd.DataFrame()
-    y_predict["volume_float"] = np.exp(y_test)
-    y_predict.index = test_index
-    y_predict["tollgate_id"] = test_tollgate
-    y_predict["time_window"] = y_predict.index
-    y_predict["time_window"] = y_predict["time_window"].apply(lambda time_basic: "[" + str(pd.Timestamp(time_basic) + DateOffset(minutes=(6 + offset) * 20)) + "," + str(
-                pd.Timestamp(time_basic) + DateOffset(minutes=((6 + offset) + 1) * 20)) + ")")
-    y_predict["direction"] = test_direction
-    y_predict["volume"] = y_predict["volume_float"].apply(lambda x: "%.2f" % x)
-    del y_predict["volume_float"]
-    result_df = result_df.append(y_predict)
+        y_predict = pd.DataFrame()
+        y_predict["volume_float"] = np.exp(y_test)
+        y_predict.index = test_index
+        y_predict["tollgate_id"] = test_tollgate
+        y_predict["time_window"] = y_predict.index
+        y_predict["time_window"] = y_predict["time_window"].apply(lambda time_basic: "[" + str(pd.Timestamp(time_basic) + DateOffset(minutes=(6 + offset) * 20)) + "," + str(
+                    pd.Timestamp(time_basic) + DateOffset(minutes=((6 + offset) + 1) * 20)) + ")")
+        y_predict["direction"] = test_direction
+        y_predict["volume"] = y_predict["volume_float"].apply(lambda x: "%.2f" % x)
+        del y_predict["volume_float"]
+        result_df = result_df.append(y_predict)
 
-for i in range(len(model_used_name)):
-    name = model_used_name[i]
-    score = model_score_dic[name][0] / model_score_dic[name][1]
-    print name + "-stacking : %.5f" % (model_score_dic[name])
+    try:
+        for i in range(len(model_used_name)):
+            name = model_used_name[i]
+            score = model_score_dic[name][0] / model_score_dic[name][1]
+            print name + "-stacking : %.5f" % (score,)
+        print result_df.sort_values(["tollgate_id", "direction"])
+    except Exception as e:
+        print e
 
-result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
-result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
-result_df.to_csv("./train&test3_zjw/volume_predict_stacking.csv", index=None, encoding="utf8")
-print result_df.sort_values(["tollgate", "direction"])
+    result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
+    result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
+    result_df.to_csv("./train&test3_zjw/volume_predict_stacking_pure.csv", index=None, encoding="utf8")
+
+
+main()
