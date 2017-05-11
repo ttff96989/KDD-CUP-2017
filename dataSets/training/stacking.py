@@ -726,17 +726,17 @@ def predict3(offset):
 
 def main():
     global result_df
-    print u"训练集用train&test0的数据，在历史最好成绩基础上修改特征，看看改特征之后有什么效果"
+    print u"训练集用train&test的数据，8个模型混合"
     print "NFOLD = " + str(NFOLDS)
     for tollgate_id, direction, offset in tuple_lst:
         print tollgate_id
         print direction
         print offset
-        # y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
+        y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
         # y_test2, _, _ = predict2(tollgate_id, direction, offset)
         # y_test = (y_test1 + y_test2) / (length1 + length2)
-        # y_test = y_test1 / length1
-        y_test, test_index = predict0(tollgate_id, direction, offset)
+        y_test = y_test1 / length1
+        # y_test, test_index = predict0(tollgate_id, direction, offset)
 
         y_predict = pd.DataFrame()
         y_predict["volume_float"] = np.exp(y_test)

@@ -166,7 +166,7 @@ def modeling():
             volume_all_entry["passenger_model_avg"] = volume_all_entry["passenger_model"] / volume_all_entry[
                 "passenger_count"]
             volume_all_entry["vehicle_model_avg"] = volume_all_entry["vehicle_model"] / volume_all_entry["volume"]
-            volume_all_entry = volume_all_entry.fillna(0)
+            # volume_all_entry = volume_all_entry.fillna(0)
 
             # exit
             volume_all_exit = volume_df[
@@ -189,12 +189,12 @@ def modeling():
                 del volume_all_exit["vehicle_type"]
                 del volume_all_exit["has_etc"]
                 volume_all_exit = volume_all_exit.resample("20T").sum()
-                volume_all_exit = volume_all_exit.fillna(0)
+                volume_all_exit = volume_all_exit.dropna(0)
                 volume_all_exit["cargo_model_avg"] = volume_all_exit["cargo_model"] / volume_all_exit["cargo_count"]
                 volume_all_exit["passenger_model_avg"] = volume_all_exit["passenger_model"] / volume_all_exit[
                     "passenger_count"]
                 volume_all_exit["vehicle_model_avg"] = volume_all_exit["vehicle_model"] / volume_all_exit["volume"]
-                volume_all_exit = volume_all_exit.fillna(0)
+                # volume_all_exit = volume_all_exit.fillna(0)
             if entry_file_path:
                 volume_all_entry.to_csv(entry_file_path, encoding="utf8")
             if exit_file_path:
@@ -288,7 +288,8 @@ def modeling():
             # train_df["volume5_S2"] = train_df["volume5"] * train_df["volume5"]
             # train_df["volume5_S3"] = train_df["volume5"] * train_df["volume5"] * train_df["volume5"]
             # train_df["volume5_sqrt"] = np.sqrt(train_df["volume5"])
-            train_df = train_df.fillna(0)
+            # 2017-05-11
+            # train_df = train_df.fillna(0)
             if offset >= 6 and file_path:
                 train_df = generate_time_features(train_df, offset, file_path + "offset" + str(offset - 6))
             elif offset >= 6:
@@ -303,18 +304,18 @@ def modeling():
             time_se = time_str_se.apply(lambda x: pd.Timestamp(x))
             time_se.index = time_se.values
             data_df["time"] = time_se + DateOffset(minutes=offset * 20)
-            data_df["day"] = data_df["time"].apply(lambda x: str(x.day) + "D")
-            data_df["hour"] = data_df["time"].apply(lambda x: str(x.hour) + "H")
-            data_df["is_eight"] = data_df["time"].apply(lambda x: 1 if x.hour == 8 else 0)
-            data_df["is_nine"] = data_df["time"].apply(lambda x: 1 if x.hour == 9 else 0)
-            data_df["is_eighteen"] = data_df["time"].apply(lambda x: 1 if x.hour == 18 else 0)
-            data_df["is_seventeen"] = data_df["time"].apply(lambda x: 1 if x.hour == 17 else 0)
-            data_df["minute"] = data_df["time"].apply(lambda x: str(x.minute) + "M")
-            data_df["week"] = data_df["time"].apply(lambda x: str(x.dayofweek) + "W")
-            # data_df["day"] = data_df["time"].apply(lambda x: x.day)
-            # data_df["hour"] = data_df["time"].apply(lambda x: x.hour)
-            # data_df["minute"] = data_df["time"].apply(lambda x: x.minute)
-            # data_df["week"] = data_df["time"].apply(lambda x: x.dayofweek)
+            # data_df["day"] = data_df["time"].apply(lambda x: str(x.day) + "D")
+            # data_df["hour"] = data_df["time"].apply(lambda x: str(x.hour) + "H")
+            # data_df["is_eight"] = data_df["time"].apply(lambda x: 1 if x.hour == 8 else 0)
+            # data_df["is_nine"] = data_df["time"].apply(lambda x: 1 if x.hour == 9 else 0)
+            # data_df["is_eighteen"] = data_df["time"].apply(lambda x: 1 if x.hour == 18 else 0)
+            # data_df["is_seventeen"] = data_df["time"].apply(lambda x: 1 if x.hour == 17 else 0)
+            # data_df["minute"] = data_df["time"].apply(lambda x: str(x.minute) + "M")
+            # data_df["week"] = data_df["time"].apply(lambda x: str(x.dayofweek) + "W")
+            data_df["day"] = data_df["time"].apply(lambda x: x.day)
+            data_df["hour"] = data_df["time"].apply(lambda x: x.hour)
+            data_df["minute"] = data_df["time"].apply(lambda x: x.minute)
+            data_df["week"] = data_df["time"].apply(lambda x: x.dayofweek)
             data_df["weekend"] = data_df["week"].apply(lambda x: 1 if x >= 5 else 0)
             del data_df["time"]
             if file_path:
@@ -338,7 +339,9 @@ def modeling():
                 se_temp.index = new_index
                 se_temp.name = str(data_df.index[i])
                 train_df = train_df.append(se_temp)
-            return generate_2hours_features(train_df.dropna(), 6 + offset, file_path)
+            # 2015-05-11
+            # return generate_2hours_features(train_df.dropna(), 6 + offset, file_path)
+            return generate_2hours_features(train_df, 6 + offset, file_path)
 
         # 生成gbdt模型
         def gbdt_model(train_X, train_y):
@@ -606,16 +609,16 @@ def modeling():
                     result = result.append(series)
             return result
 
-        entry_train_file = "./train&test0_zjw/volume_entry_train_%s" % (tollgate_id, )
-        exit_train_file = "./train&test0_zjw/volume_exit_train_%s" % (tollgate_id, )
+        entry_train_file = "./train&test_zjw/volume_entry_train_%s" % (tollgate_id, )
+        exit_train_file = "./train&test_zjw/volume_exit_train_%s" % (tollgate_id, )
         volume_entry_train, volume_exit_train = divide_train_by_direction(volume_train)
 
         models_entry, models_exit = generate_models(volume_entry_train,
                                                     volume_exit_train,
                                                     entry_train_file,
                                                     exit_train_file)
-        entry_test_file = "./train&test0_zjw/volume_entry_test_%s" % (tollgate_id, )
-        exit_test_file = "./train&test0_zjw/volume_exit_test_%s" % (tollgate_id, )
+        entry_test_file = "./train&test_zjw/volume_entry_test_%s" % (tollgate_id, )
+        exit_test_file = "./train&test_zjw/volume_exit_test_%s" % (tollgate_id, )
         entry_test, exit_test = divide_test_by_direction(volume_test)
         predict_original_entry, predict_original_exit = predict(entry_test,
                                                                 exit_test,

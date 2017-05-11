@@ -489,10 +489,10 @@ def main():
     for offset in range(6):
 
         # index, tollgate, direction在测试集中的顺序就按照predict1里读取到的文件里的顺序来
-        y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset)
-        # y_test2, len2, test_index, test_tollgate, test_direction = predict2(offset)
+        # y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset)
+        y_test2, len2, test_index, test_tollgate, test_direction = predict2(offset)
         # y_test = (y_test1 + y_test2) / (len1 + len2)
-        y_test = y_test1 / len1
+        y_test = y_test2 / len2
 
         y_predict = pd.DataFrame()
         y_predict["volume_float"] = np.exp(y_test)
