@@ -13,7 +13,7 @@ import random
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import AdaBoostRegressor
-import xgboost as xgb
+# import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
 
 '''
@@ -159,8 +159,8 @@ def predict0(tollgate_id, direction, offset):
 
     # creating matrices for sklearn:
 
-    x_train = np.array(all_data[:train.shape[0]])
-    x_test = np.array(all_data[train.shape[0]:])
+    x_train = all_data[:train.shape[0]]
+    x_test = all_data[train.shape[0]:]
 
     def gbdt_model(X_train, X_test, y_train):
         best_rate = 0.1
@@ -173,7 +173,7 @@ def predict0(tollgate_id, direction, offset):
         #      'max_features': [1.0]}
         # ]
         param_grid = [
-            {'max_depth': [3],
+            {'max_depth': [5],
              'min_samples_leaf': [10],
              'learning_rate': [0.1],
              'loss': ['lad'],
@@ -195,6 +195,24 @@ def predict0(tollgate_id, direction, offset):
         clf.fit(X_train, y_train)
         print "Best GBDT param is :", clf.best_params_
         return clf.predict(X_test)
+
+    def gbdt_filter(X_train, y_train):
+        param = {'max_depth': 3,
+                 'min_samples_leaf': 10,
+                 'learning_rate': 0.1,
+                 'loss': 'lad',
+                 'n_estimators': 750,
+                 'max_features': 1.0}
+        model = GradientBoostingRegressor(**param)
+        model.fit(X_train, y_train)
+        result = model.predict(X_train)
+        X_train["score"] = np.power(y_train - result, 2)
+        X_train = X_train.sort_values(by="score", ascending=False)
+        split = int(X_train.shape[0] * 0.90)
+        del X_train["score"]
+        return X_train.iloc[range(split),:], y_train.iloc[range(split)]
+
+    x_train, y_train = gbdt_filter(x_train, y_train)
 
     return gbdt_model(x_train, x_test, y_train), test_index
 
@@ -733,11 +751,11 @@ def main():
         print tollgate_id
         print direction
         print offset
-        y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
+        # y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
         # y_test2, _, _ = predict2(tollgate_id, direction, offset)
         # y_test = (y_test1 + y_test2) / (length1 + length2)
-        y_test = y_test1 / length1
-        # y_test, test_index = predict0(tollgate_id, direction, offset)
+        # y_test = y_test1 / length1
+        y_test, test_index = predict0(tollgate_id, direction, offset)
 
         y_predict = pd.DataFrame()
         y_predict["volume_float"] = np.exp(y_test)
