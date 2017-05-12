@@ -101,12 +101,13 @@ def generate_time_features(data_df, offset, file_path=None):
     data_df["is_seventeen"] = data_df["time"].apply(lambda x: 1 if x.hour == 17 else 0)
     data_df["minute_str"] = data_df["time"].apply(lambda x: str(x.minute) + "M")
     data_df["week_str"] = data_df["time"].apply(lambda x: str(x.dayofweek) + "W")
-    data_df["weekend"] = data_df["week"].apply(lambda x: 1 if x >= 5 else 0)
+
 
     data_df["day"] = data_df["time"].apply(lambda x: x.day)
     data_df["hour"] = data_df["time"].apply(lambda x: x.hour)
     data_df["minute"] = data_df["time"].apply(lambda x: x.minute)
     data_df["week"] = data_df["time"].apply(lambda x: x.dayofweek)
+    data_df["weekend"] = data_df["week"].apply(lambda x: 1 if x >= 5 else 0)
     del data_df["time"]
     if file_path:
         data_df.to_csv(file_path + ".csv")

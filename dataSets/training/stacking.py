@@ -13,7 +13,7 @@ import random
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import AdaBoostRegressor
-# import xgboost as xgb
+import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
 
 '''
@@ -207,10 +207,10 @@ def predict0(tollgate_id, direction, offset):
         model.fit(X_train, y_train)
         result = model.predict(X_train)
         X_train["score"] = np.power(y_train - result, 2)
-        X_train = X_train.sort_values(by="score", ascending=False)
+        X_train = X_train.sort_values(by="score")
         split = int(X_train.shape[0] * 0.90)
         del X_train["score"]
-        return X_train.iloc[range(split),:], y_train.iloc[range(split)]
+        return X_train.iloc[range(split), :], y_train.iloc[range(split)]
 
     x_train, y_train = gbdt_filter(x_train, y_train)
 
@@ -226,7 +226,7 @@ def predict1(tollgate_id, direction, offset):
     print "predict1 path of train file: " + train_file
     print "predict1 path of test file: " + test_file
     train = train.dropna()
-    test_index = pd.Series(test.index + "-" + direction + "-" + str(offset))
+    test_index = test.index
 
     ## Preprocessing ##
 
@@ -751,11 +751,11 @@ def main():
         print tollgate_id
         print direction
         print offset
-        # y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
+        y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
         # y_test2, _, _ = predict2(tollgate_id, direction, offset)
         # y_test = (y_test1 + y_test2) / (length1 + length2)
-        # y_test = y_test1 / length1
-        y_test, test_index = predict0(tollgate_id, direction, offset)
+        y_test = y_test1 / length1
+        # y_test, test_index = predict0(tollgate_id, direction, offset)
 
         y_predict = pd.DataFrame()
         y_predict["volume_float"] = np.exp(y_test)
@@ -769,22 +769,22 @@ def main():
         del y_predict["volume_float"]
         result_df = result_df.append(y_predict)
 
-    result2_df = pd.DataFrame()
-    for offset in range(6):
-        y_test1, len1, test_index, test_tollgate, test_direction = predict3(offset)
-        y_test = y_test1 / len1
-        y_predict = pd.DataFrame()
-        y_predict["volume_float"] = np.exp(y_test)
-        y_predict.index = test_index
-        y_predict["tollgate_id"] = test_tollgate
-        y_predict["time_window"] = y_predict.index
-        y_predict["time_window"] = y_predict["time_window"].apply(
-            lambda time_basic: "[" + str(pd.Timestamp(time_basic) + DateOffset(minutes=(6 + offset) * 20)) + "," + str(
-                pd.Timestamp(time_basic) + DateOffset(minutes=((6 + offset) + 1) * 20)) + ")")
-        y_predict["direction"] = test_direction
-        y_predict["volume"] = y_predict["volume_float"].apply(lambda x: "%.2f" % x)
-        del y_predict["volume_float"]
-        result2_df = result2_df.append(y_predict)
+    #result2_df = pd.DataFrame()
+    #for offset in range(6):
+    #    y_test1, len1, test_index, test_tollgate, test_direction = predict3(offset)
+    #    y_test = y_test1 / len1
+    #    y_predict = pd.DataFrame()
+    #    y_predict["volume_float"] = np.exp(y_test)
+    #    y_predict.index = test_index
+    #    y_predict["tollgate_id"] = test_tollgate
+    #    y_predict["time_window"] = y_predict.index
+    #    y_predict["time_window"] = y_predict["time_window"].apply(
+    #        lambda time_basic: "[" + str(pd.Timestamp(time_basic) + DateOffset(minutes=(6 + offset) * 20)) + "," + str(
+    #            pd.Timestamp(time_basic) + DateOffset(minutes=((6 + offset) + 1) * 20)) + ")")
+    #    y_predict["direction"] = test_direction
+    #    y_predict["volume"] = y_predict["volume_float"].apply(lambda x: "%.2f" % x)
+    #    del y_predict["volume_float"]
+    #    result2_df = result2_df.append(y_predict)
 
     try:
         for i in range(len(model_used_name)):

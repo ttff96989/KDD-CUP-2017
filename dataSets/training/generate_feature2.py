@@ -83,14 +83,19 @@ def generate_time_features(data_df, offset, file_path=None):
     time_se = time_str_se.apply(lambda x: pd.Timestamp(x))
     time_se.index = time_se.values
     data_df["time"] = time_se + DateOffset(minutes=offset * 20)
-    data_df["day"] = data_df["time"].apply(lambda x: str(x.day) + "D")
-    data_df["hour"] = data_df["time"].apply(lambda x: str(x.hour) + "H")
+    data_df["day_str"] = data_df["time"].apply(lambda x: str(x.day) + "D")
+    data_df["hour_str"] = data_df["time"].apply(lambda x: str(x.hour) + "H")
     data_df["is_eight"] = data_df["time"].apply(lambda x: 1 if x.hour == 8 else 0)
     data_df["is_nine"] = data_df["time"].apply(lambda x: 1 if x.hour == 9 else 0)
     data_df["is_eighteen"] = data_df["time"].apply(lambda x: 1 if x.hour == 18 else 0)
     data_df["is_seventeen"] = data_df["time"].apply(lambda x: 1 if x.hour == 17 else 0)
-    data_df["minute"] = data_df["time"].apply(lambda x: str(x.minute) + "M")
-    data_df["week"] = data_df["time"].apply(lambda x: str(x.dayofweek) + "W")
+    data_df["minute_str"] = data_df["time"].apply(lambda x: str(x.minute) + "M")
+    data_df["week_str"] = data_df["time"].apply(lambda x: str(x.dayofweek) + "W")
+
+    data_df["day"] = data_df["time"].apply(lambda x: x.day)
+    data_df["hour"] = data_df["time"].apply(lambda x: x.hour)
+    data_df["minute"] = data_df["time"].apply(lambda x: x.minute)
+    data_df["week"] = data_df["time"].apply(lambda x: x.dayofweek)
     data_df["weekend"] = data_df["week"].apply(lambda x: 1 if x >= 5 else 0)
     del data_df["time"]
     if file_path:
