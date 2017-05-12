@@ -426,20 +426,17 @@ def predict2(offset):
         # print oof_test
         return oof_train.reshape(-1, 1), oof_test.reshape(-1, 1)
 
-    model_name = ["GB", "RF", "XGB", "XGB2", "ADA", "ET"]
-    model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None,
-                  AdaBoostRegressor, ExtraTreesRegressor]
-    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2, ada_param, et_params]
+    model_name = ["GB", "RF", "XGB", "XGB2", "ET"]
+    model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None, ExtraTreesRegressor]
+    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2, et_params]
     model2_name = ["GB", "ADA", "XGB", "XGB2"]
-    model2_lst = [GradientBoostingRegressor, AdaBoostRegressor, None, None]
-    model2_params = [gbdt_params, ada_param, xgb_params, xgb_params2]
+    model2_lst = [GradientBoostingRegressor, None, None]
+    model2_params = [gbdt_params, xgb_params, xgb_params2]
     model_used_idx = [[0, 1, 2],
                        [0, 1, 2, 3],
                        [0, 1, 2, 3, 4],
-                       [0, 1, 2, 3, 4, 5],
-                       [1, 2, 3, 4, 5],
-                       [2, 3, 4, 5],
-                       [3, 4, 5]]
+                       [1, 2, 3, 4],
+                       [2, 3, 4]]
 
     y_test = np.zeros((ntest,))
     for i in range(len(model_used_idx)):

@@ -209,6 +209,7 @@ def predict0(tollgate_id, direction, offset):
         X_train["score"] = np.power(y_train - result, 2)
         X_train = X_train.sort_values(by="score")
         split = int(X_train.shape[0] * 0.90)
+        print "use %d lines of original training set" % (split, )
         del X_train["score"]
         return X_train.iloc[range(split), :], y_train.iloc[range(split)]
 
@@ -330,25 +331,23 @@ def predict1(tollgate_id, direction, offset):
         return oof_train.reshape(-1, 1), oof_test.reshape(-1, 1)
 
     # 可以无限增加元模型，然后增加模型组合的可能性
-    model_name_lst = ["GB", "RF", "XGB", "XGB2", "ADA", "LS", "ET", "RD"]
+    model_name_lst = ["GB", "RF", "XGB", "XGB2", "LS", "ET", "RD"]
     model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None,
-                 AdaBoostRegressor, Lasso, ExtraTreesRegressor, Ridge]
+                 Lasso, ExtraTreesRegressor, Ridge]
     model_params = [gbdt_params, rf_params, xgb_params, xgb_params2,
-                    ada_param, ls_params, et_params, rd_params]
-    model2_name = ["ET", "RF", "GB", "ADA", "XGB", "XGB2"]
-    model2_lst = [ExtraTreesRegressor, RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor, None, None]
-    model2_params = [et_params, rf_params, gbdt_params, ada_param, xgb_params, xgb_params2]
+                    ls_params, et_params, rd_params]
+    model2_name = ["ET", "RF", "GB", "XGB", "XGB2"]
+    model2_lst = [ExtraTreesRegressor, RandomForestRegressor, GradientBoostingRegressor, None, None]
+    model2_params = [et_params, rf_params, gbdt_params, xgb_params, xgb_params2]
     model_used_idx = [[0, 1, 2],
                       [0, 1, 2, 3],
                       [0, 1, 2, 3, 4],
                       [0, 1, 2, 3, 4, 5],
                       [0, 1, 2, 3, 4, 5, 6],
-                      [0, 1, 2, 3, 4, 5, 6, 7],
-                      [1, 2, 3, 4, 5, 6, 7],
-                      [2, 3, 4, 5, 6, 7],
-                      [3, 4, 5, 6, 7],
-                      [4, 5, 6, 7],
-                      [5, 6, 7]]
+                      [1, 2, 3, 4, 5, 6],
+                      [2, 3, 4, 5, 6],
+                      [3, 4, 5, 6],
+                      [4, 5, 6]]
 
     y_test = np.zeros((ntest,))
     for i in range(len(model_used_idx)):
