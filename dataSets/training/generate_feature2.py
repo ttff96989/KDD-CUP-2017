@@ -54,7 +54,7 @@ def divide_train_by_direction(volume_df, tollgate_id, entry_file_path=None, exit
     del volume_all_entry["vehicle_type"]
     del volume_all_entry["has_etc"]
     volume_all_entry = volume_all_entry.resample("20T").sum()
-    volume_all_entry = volume_all_entry.fillna(0)
+    # volume_all_entry = volume_all_entry.fillna(0)
 
 
     # exit
@@ -69,7 +69,7 @@ def divide_train_by_direction(volume_df, tollgate_id, entry_file_path=None, exit
         del volume_all_exit["vehicle_type"]
         del volume_all_exit["has_etc"]
         volume_all_exit = volume_all_exit.resample("20T").sum()
-        volume_all_exit = volume_all_exit.fillna(0)
+        # volume_all_exit = volume_all_exit.fillna(0)
 
     if entry_file_path:
         volume_all_entry.to_csv(entry_file_path, encoding="utf8")
@@ -137,7 +137,7 @@ def generate_train(volume_entry, volume_exit, entry_file_path=None, exit_file_pa
     entry_df_lst = []
     exit_df_lst = []
     for j in range(6):
-        train_entry_df = generate_train_features(volume_entry, new_index, j, file_path=entry_file_path)
+        train_entry_df = generate_train_features(volume_entry.copy(), new_index, j, file_path=entry_file_path)
         entry_df_lst.append(train_entry_df)
 
     # 注意！！！！2号收费站只有entry方向没有exit方向
@@ -145,7 +145,7 @@ def generate_train(volume_entry, volume_exit, entry_file_path=None, exit_file_pa
         return entry_df_lst, [pd.DataFrame() for i in range(6)]
 
     for j in range(6):
-        train_exit_df = generate_train_features(volume_exit, new_index, j, file_path=exit_file_path)
+        train_exit_df = generate_train_features(volume_exit.copy(), new_index, j, file_path=exit_file_path)
         exit_df_lst.append(train_exit_df)
 
     return entry_df_lst, exit_df_lst
@@ -208,7 +208,7 @@ def generate_test(volume_entry_test, volume_exit_test, tollgate_id, entry_file_p
             test_entry_df = generate_time_features(test_entry_df, i + 6, entry_file_path + "offset" + str(i))
         else:
             test_entry_df = generate_time_features(test_entry_df, i + 6)
-        entry_df_lst.append(test_entry_df)
+        entry_df_lst.append(test_entry_df.copy())
 
     # （exit方向）
     exit_df_lst = []
@@ -229,7 +229,7 @@ def generate_test(volume_entry_test, volume_exit_test, tollgate_id, entry_file_p
             test_exit_df = generate_time_features(test_exit_df, i + 6, exit_file_path + "offset" + str(i))
         else:
             test_exit_df = generate_time_features(test_exit_df, i + 6)
-        exit_df_lst.append(test_exit_df)
+        exit_df_lst.append(test_exit_df.copy())
     return entry_df_lst, exit_df_lst
 
 def generate_features():
@@ -239,7 +239,6 @@ def generate_features():
     test_df = [pd.DataFrame() for i in range(6)]
     for tollgate_id in tollgate_list:
         print tollgate_id
-
         def add_labels(data_df, direction):
             for item in data_df:
                 item["tollgate_id"] = tollgate_id

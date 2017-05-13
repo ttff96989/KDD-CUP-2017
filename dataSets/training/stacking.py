@@ -121,7 +121,7 @@ mean_param = {
 
 model_score_dic = {}
 
-model_used_name = ["GB", "RF", "XGB", "XGB2", "ADA", "LS", "ET", "RD"]
+model_used_name = ["GB", "RF", "XGB", "XGB2", "LS", "ET", "RD"]
 
 
 # 还原历史最好成绩的
@@ -129,6 +129,13 @@ def predict0(tollgate_id, direction, offset):
     ## Load the data ##
     train_file = "./train&test0_zjw/volume_" + direction + "_train_" + tollgate_id + "offset" + str(offset) + ".csv"
     train = pd.read_csv(train_file, index_col="Unnamed: 0")
+    train = train.dropna()
+    # train["time"] = train.index
+    # train["time"] = train["time"].apply(pd.Timestamp)
+    # train = train[(train["time"] < pd.Timestamp("2016-09-30 22:20:00")) |
+    #               (train["time"] > pd.Timestamp("2016-10-07 01:20:00"))]
+    # del train["time"]
+    # train = train.fillna(0)
     test_file = "./train&test0_zjw/volume_" + direction + "_test_" + tollgate_id + "offset" + str(offset) + ".csv"
     test = pd.read_csv(test_file, index_col="Unnamed: 0")
     test_index = test.index
@@ -206,7 +213,7 @@ def predict0(tollgate_id, direction, offset):
         model = GradientBoostingRegressor(**param)
         model.fit(X_train, y_train)
         result = model.predict(X_train)
-        X_train["score"] = np.power(y_train - result, 2)
+        X_train["score"] = np.abs(y_train.copy() - result.copy()) / (1 + y_train.copy())
         X_train = X_train.sort_values(by="score")
         split = int(X_train.shape[0] * 0.90)
         print "use %d lines of original training set" % (split, )
@@ -246,15 +253,22 @@ def predict1(tollgate_id, direction, offset):
 
     all_data[skewed_feats] = np.log1p(all_data[skewed_feats])
 
-    stdSc = StandardScaler()
-    all_data[numeric_feats] = stdSc.fit_transform(all_data[numeric_feats])
+    # stdSc = StandardScaler()
+    # all_data[numeric_feats] = stdSc.fit_transform(all_data[numeric_feats])
 
     all_data = pd.get_dummies(all_data)
 
     # creating matrices for sklearn:
 
-    x_train = np.array(all_data[:train.shape[0]])
-    x_test = np.array(all_data[train.shape[0]:])
+    x_train = all_data[:train.shape[0]]
+    x_test = all_data[train.shape[0]:]
+
+    std_sc = StandardScaler()
+    x_train[numeric_feats] = std_sc.fit_transform(x_train[numeric_feats])
+    x_test[numeric_feats] = std_sc.transform(x_test[numeric_feats])
+
+    x_train = np.array(x_train)
+    x_test = np.array(x_test)
 
     ntrain = x_train.shape[0]
     ntest = x_test.shape[0]
@@ -336,9 +350,9 @@ def predict1(tollgate_id, direction, offset):
                  Lasso, ExtraTreesRegressor, Ridge]
     model_params = [gbdt_params, rf_params, xgb_params, xgb_params2,
                     ls_params, et_params, rd_params]
-    model2_name = ["ET", "RF", "GB", "XGB", "XGB2"]
-    model2_lst = [ExtraTreesRegressor, RandomForestRegressor, GradientBoostingRegressor, None, None]
-    model2_params = [et_params, rf_params, gbdt_params, xgb_params, xgb_params2]
+    model2_name = ["GB", "XGB", "XGB2"]
+    model2_lst = [GradientBoostingRegressor, None, None]
+    model2_params = [gbdt_params, xgb_params, xgb_params2]
     model_used_idx = [[0, 1, 2],
                       [0, 1, 2, 3],
                       [0, 1, 2, 3, 4],
@@ -387,11 +401,12 @@ def predict1(tollgate_id, direction, offset):
 
         print("{},{}".format(x_train.shape, x_test.shape))
 
-        random_index = random.randint(0, 3)
+        random_index = random.randint(0, 2)
         print "second floor use : " + model2_name[random_index]
-        model2_param = model2_params[random_index]
-        model2 = model2_lst[random_index](**model2_param)
-        model2.fit(x_train, y_train)
+        # model2_param = model2_params[random_index]
+        # model2 = model2_lst[random_index](**model2_param)
+        model2 = generate_wrapper(random_index, model2_name, model2_lst, model2_params)
+        model2.train(x_train, y_train)
         y_test += model2.predict(x_test)
     return y_test, len(model_used_idx), test_index
 
@@ -788,8 +803,9 @@ def main():
     try:
         for i in range(len(model_used_name)):
             name = model_used_name[i]
-            score = model_score_dic[name][0] / model_score_dic[name][1]
-            print name + "-stacking : %.5f" % (score,)
+            if name in model_score_dic:
+                score = model_score_dic[name][0] / model_score_dic[name][1]
+                print name + "-stacking : %.5f" % (score,)
         print result_df.sort_values(["tollgate_id", "direction"])
     except Exception as e:
         print e

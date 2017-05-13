@@ -92,7 +92,6 @@ gbdt_params = {
 
 xgb_params = {
     'seed': 0,
-    'colsample_bytree': 0.7,
     'silent': 1,
     'subsample': 0.7,
     'learning_rate': 0.075,
@@ -101,12 +100,12 @@ xgb_params = {
     'num_parallel_tree': 1,
     'min_child_weight': 1,
     'eval_metric': 'rmse',
+    'n_estimator': 3000,
     'nrounds': 500
 }
 
 xgb_params2 = {
     'seed': 0,
-    'colsample_bytree': 0.7,
     'silent': 1,
     'subsample': 0.7,
     'learning_rate': 0.075,
@@ -115,6 +114,7 @@ xgb_params2 = {
     'num_parallel_tree': 1,
     'min_child_weight': 1,
     'eval_metric': 'rmse',
+    'n_estimator': 3000,
     'nrounds': 500,
     'lambda': 0.3
 }
@@ -429,7 +429,7 @@ def predict2(offset):
     model_name = ["GB", "RF", "XGB", "XGB2", "ET"]
     model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None, ExtraTreesRegressor]
     model_params = [gbdt_params, rf_params, xgb_params, xgb_params2, et_params]
-    model2_name = ["GB", "ADA", "XGB", "XGB2"]
+    model2_name = ["GB", "XGB", "XGB2"]
     model2_lst = [GradientBoostingRegressor, None, None]
     model2_params = [gbdt_params, xgb_params, xgb_params2]
     model_used_idx = [[0, 1, 2],
@@ -473,7 +473,7 @@ def predict2(offset):
 
         print("{},{}".format(x_train.shape, x_test.shape))
 
-        random_index = random.randint(0, 3)
+        random_index = random.randint(0, 2)
         print "second floor use : " + model2_name[random_index]
         model2 = generate_wrapper(random_index, model2_name, model2_lst, model2_params)
         model2.train(x_train, y_train)
