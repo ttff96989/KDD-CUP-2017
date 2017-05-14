@@ -433,10 +433,10 @@ def predict2(offset):
     model2_lst = [GradientBoostingRegressor, None, None]
     model2_params = [gbdt_params, xgb_params, xgb_params2]
     model_used_idx = [[0, 1, 2],
-                       [0, 1, 2, 3],
-                       [0, 1, 2, 3, 4],
-                       [1, 2, 3, 4],
-                       [2, 3, 4]]
+                      [0, 1, 2, 3],
+                      [0, 1, 2, 3, 4],
+                      [1, 2, 3, 4],
+                      [2, 3, 4]]
 
     y_test = np.zeros((ntest,))
     for i in range(len(model_used_idx)):
