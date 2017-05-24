@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 '''
 在volume_predict的基础上改进模型
 
@@ -69,6 +69,7 @@ from sklearn.linear_model import LinearRegression, RidgeCV, LassoCV, ElasticNetC
 from sklearn.cross_validation import KFold
 from sklearn.ensemble import ExtraTreesRegressor
 
+
 # description of the feature:
 # Traffic Volume through the Tollgates
 # time           datatime        the time when a vehicle passes the tollgate
@@ -97,15 +98,15 @@ def preprocessing():
 
     # 承载量：1-默认客车，2-默认货车，3-默认货车，4-默认客车
     # 承载量大于等于5的为货运汽车，所有承载量为0的车都类型不明
-    volume_df = volume_df.sort_values(by="vehicle_model")
-    vehicle_model0 = volume_df[volume_df['vehicle_model'] == 0].fillna("No")
-    vehicle_model1 = volume_df[volume_df['vehicle_model'] == 1].fillna("passenger")
-    vehicle_model2 = volume_df[volume_df['vehicle_model'] == 2].fillna("cargo")
-    vehicle_model3 = volume_df[volume_df['vehicle_model'] == 3].fillna("cargo")
-    vehicle_model4 = volume_df[volume_df['vehicle_model'] == 4].fillna("passenger")
-    vehicle_model5 = volume_df[volume_df['vehicle_model'] >= 5].fillna("cargo")
-    volume_df = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2,
-                           vehicle_model3, vehicle_model4, vehicle_model5])
+    # volume_df = volume_df.sort_values(by="vehicle_model")
+    # vehicle_model0 = volume_df[volume_df['vehicle_model'] == 0].fillna("No")
+    # vehicle_model1 = volume_df[volume_df['vehicle_model'] == 1].fillna("passenger")
+    # vehicle_model2 = volume_df[volume_df['vehicle_model'] == 2].fillna("cargo")
+    # vehicle_model3 = volume_df[volume_df['vehicle_model'] == 3].fillna("cargo")
+    # vehicle_model4 = volume_df[volume_df['vehicle_model'] == 4].fillna("passenger")
+    # vehicle_model5 = volume_df[volume_df['vehicle_model'] >= 5].fillna("cargo")
+    # volume_df = pd.concat([vehicle_model0, vehicle_model1, vehicle_model2,
+    # vehicle_model3, vehicle_model4, vehicle_model5])
     # volume_df["vehicle_type"] = volume_df["vehicle_type"].fillna("No")
 
     '''
@@ -121,17 +122,19 @@ def preprocessing():
 
     # 承载量：1-默认客车，2-默认货车，3-默认货车，4-默认客车
     # 承载量大于等于5的为货运汽车，所有承载量为0的车都类型不明
-    volume_test = volume_test.sort_values(by="vehicle_model")
-    vehicle_model0 = volume_test[volume_test['vehicle_model'] == 0].fillna("No")
-    vehicle_model1 = volume_test[volume_test['vehicle_model'] == 1].fillna("passenger")
-    vehicle_model2 = volume_test[volume_test['vehicle_model'] == 2].fillna("cargo")
-    vehicle_model3 = volume_test[volume_test['vehicle_model'] == 3].fillna("cargo")
-    vehicle_model4 = volume_test[volume_test['vehicle_model'] == 4].fillna("passenger")
-    vehicle_model5 = volume_test[volume_test['vehicle_model'] >= 5].fillna("cargo")
-    volume_test = pd.concat(
-        [vehicle_model0, vehicle_model1, vehicle_model2, vehicle_model3, vehicle_model4, vehicle_model5])
+    # volume_test = volume_test.sort_values(by="vehicle_model")
+    # vehicle_model0 = volume_test[volume_test['vehicle_model'] == 0].fillna("No")
+    # vehicle_model1 = volume_test[volume_test['vehicle_model'] == 1].fillna("passenger")
+    # vehicle_model2 = volume_test[volume_test['vehicle_model'] == 2].fillna("cargo")
+    # vehicle_model3 = volume_test[volume_test['vehicle_model'] == 3].fillna("cargo")
+    # vehicle_model4 = volume_test[volume_test['vehicle_model'] == 4].fillna("passenger")
+    # vehicle_model5 = volume_test[volume_test['vehicle_model'] >= 5].fillna("cargo")
+    # volume_test = pd.concat(
+    #    [vehicle_model0, vehicle_model1, vehicle_model2, vehicle_model3, vehicle_model4, vehicle_model5])
+    # volume_df["vehicle_type"] = volume_df["vehicle_type"].fillna("No")
 
     return volume_df, volume_test
+
 
 def modeling():
     volume_train, volume_test = preprocessing()
@@ -139,6 +142,14 @@ def modeling():
     tollgate_list = ["1S", "2S", "3S"]
     for tollgate_id in tollgate_list:
         print tollgate_id
+        entry_mean = 0
+        entry_std = 0
+        exit_mean = 0
+        exit_std = 0
+        entry_max = 0
+        entry_min = 0
+        exit_max = 0
+        exit_min = 0
 
         # 创建之和流量，20分钟跨度有关系的训练集
         def divide_train_by_direction(volume_df, entry_file_path=None, exit_file_path=None):
@@ -146,14 +157,20 @@ def modeling():
             volume_all_entry = volume_df[
                 (volume_df['tollgate_id'] == tollgate_id) & (volume_df['direction'] == 'entry')].copy()
             volume_all_entry['volume'] = 1
-            volume_all_entry['cargo_count'] = volume_all_entry['vehicle_type'].apply(lambda x: 1 if x == "cargo" else 0)
-            volume_all_entry['passenger_count'] = volume_all_entry['vehicle_type'].apply(
-                lambda x: 1 if x == "passenger" else 0)
-            volume_all_entry['no_count'] = volume_all_entry['vehicle_type'].apply(lambda x: 1 if x == "No" else 0)
             volume_all_entry["etc_count"] = volume_all_entry["has_etc"].apply(lambda x: 1 if x == "Yes" else 0)
-            volume_all_entry["cargo_model"] = volume_all_entry["cargo_count"] * volume_all_entry["vehicle_model"]
-            volume_all_entry["passenger_model"] = volume_all_entry["passenger_count"] * volume_all_entry[
-                "vehicle_model"]
+            volume_all_entry["etc_model"] = volume_all_entry["etc_count"] * volume_all_entry["vehicle_model"]
+            volume_all_entry["no_etc_count"] = volume_all_entry["has_etc"].apply(lambda x: 1 if x == "No" else 0)
+            volume_all_entry["no_etc_model"] = volume_all_entry["no_etc_count"] * volume_all_entry["vehicle_model"]
+            # entry方向不记录车辆类型，所以比exit少一些特征
+            volume_all_entry["model02_count"] = volume_all_entry["vehicle_model"].apply(
+                lambda x: 1 if x >= 0 and x <= 2 else 0)
+            volume_all_entry["model02_model"] = volume_all_entry["vehicle_model"] * volume_all_entry["model02_count"]
+            volume_all_entry["model35_count"] = volume_all_entry["vehicle_model"].apply(
+                lambda x: 1 if x >= 3 and x <= 5 else 0)
+            volume_all_entry["model35_model"] = volume_all_entry["vehicle_model"] * volume_all_entry["model35_count"]
+            volume_all_entry["model67_count"] = volume_all_entry["vehicle_model"].apply(
+                lambda x: 1 if x == 6 or x == 7 else 0)
+            volume_all_entry["model67_model"] = volume_all_entry["vehicle_model"] * volume_all_entry["model67_count"]
             volume_all_entry.index = volume_all_entry["time"]
             del volume_all_entry["time"]
             del volume_all_entry["tollgate_id"]
@@ -161,27 +178,34 @@ def modeling():
             del volume_all_entry["vehicle_type"]
             del volume_all_entry["has_etc"]
             volume_all_entry = volume_all_entry.resample("20T").sum()
-            # volume_all_entry = volume_all_entry.fillna(0)
-            volume_all_entry["cargo_model_avg"] = volume_all_entry["cargo_model"] / volume_all_entry["cargo_count"]
-            volume_all_entry["passenger_model_avg"] = volume_all_entry["passenger_model"] / volume_all_entry[
-                "passenger_count"]
-            volume_all_entry["vehicle_model_avg"] = volume_all_entry["vehicle_model"] / volume_all_entry["volume"]
-            # volume_all_entry = volume_all_entry.fillna(0)
+            volume_all_entry = volume_all_entry.fillna(0)
 
             # exit
             volume_all_exit = volume_df[
                 (volume_df['tollgate_id'] == tollgate_id) & (volume_df['direction'] == 'exit')].copy()
             if len(volume_all_exit) > 0:
                 volume_all_exit["volume"] = 1
+                volume_all_exit["etc_count"] = volume_all_exit["has_etc"].apply(lambda x: 1 if x == "Yes" else 0)
+                volume_all_exit["etc_model"] = volume_all_exit["etc_count"] * volume_all_exit["vehicle_model"]
+                volume_all_exit["no_etc_count"] = volume_all_exit["has_etc"].apply(lambda x: 1 if x == "No" else 0)
+                volume_all_exit["no_etc_model"] = volume_all_exit["no_etc_count"] * volume_all_exit["vehicle_model"]
+                # 注意！！！！！！！！！！！
+                # 只有exit方向才记录车辆类型
                 volume_all_exit["cargo_count"] = volume_all_exit['vehicle_type'].apply(
                     lambda x: 1 if x == "cargo" else 0)
                 volume_all_exit["passenger_count"] = volume_all_exit['vehicle_type'].apply(
                     lambda x: 1 if x == "passenger" else 0)
-                volume_all_exit["no_count"] = volume_all_exit['vehicle_type'].apply(lambda x: 1 if x == "No" else 0)
-                volume_all_exit["etc_count"] = volume_all_exit["has_etc"].apply(lambda x: 1 if x == "Yes" else 0)
+                # volume_all_exit["no_count"] = volume_all_exit['vehicle_type'].apply(lambda x: 1 if x == "No" else 0)
                 volume_all_exit["cargo_model"] = volume_all_exit["cargo_count"] * volume_all_exit["vehicle_model"]
                 volume_all_exit["passenger_model"] = volume_all_exit["passenger_count"] * \
                                                      volume_all_exit["vehicle_model"]
+                # 注意！！！！！！！！！！！
+                # volume_all_exit["model02_count"] = volume_all_exit["vehicle_model"].apply(
+                #     lambda x: 1 if x >= 0 and x <= 2 else 0)
+                # volume_all_exit["model35_count"] = volume_all_exit["vehicle_model"].apply(
+                #     lambda x: 1 if x >= 3 and x <= 5 else 0)
+                # volume_all_exit["model67_count"] = volume_all_exit["vehicle_model"].apply(
+                #     lambda x: 1 if x == 6 or x == 7 else 0)
                 volume_all_exit.index = volume_all_exit["time"]
                 del volume_all_exit["time"]
                 del volume_all_exit["tollgate_id"]
@@ -189,7 +213,8 @@ def modeling():
                 del volume_all_exit["vehicle_type"]
                 del volume_all_exit["has_etc"]
                 volume_all_exit = volume_all_exit.resample("20T").sum()
-                # volume_all_exit = volume_all_exit.dropna(0)
+                volume_all_exit = volume_all_exit.dropna(0)
+
                 volume_all_exit["cargo_model_avg"] = volume_all_exit["cargo_model"] / volume_all_exit["cargo_count"]
                 volume_all_exit["passenger_model_avg"] = volume_all_exit["passenger_model"] / volume_all_exit[
                     "passenger_count"]
@@ -201,35 +226,62 @@ def modeling():
                 volume_all_exit.to_csv(exit_file_path, encoding="utf8")
             return volume_all_entry, volume_all_exit
 
-
         # 计算2个小时为单位的特征
         # train_df就是整合后的特征，
         # offset是从index开始偏移多少个单位
-        def generate_2hours_features(train_df, offset, file_path=None):
+        def generate_2hours_features(train_df, offset, file_path=None, has_type=False):
+            # 加之前一定要判断空值，不然空值和数字相加还是空
             train_df["vehicle_all_model"] = train_df["vehicle_model0"] + train_df["vehicle_model1"] + \
                                             train_df["vehicle_model2"] + train_df["vehicle_model3"] + \
                                             train_df["vehicle_model4"] + train_df["vehicle_model5"]
-            train_df["cargo_all_model"] = train_df["cargo_model0"] + train_df["cargo_model1"] + \
-                                          train_df["cargo_model2"] + train_df["cargo_model3"] + \
-                                          train_df["cargo_model4"] + train_df["cargo_model5"]
-            train_df["passenger_all_model"] = train_df["passenger_model0"] + train_df["passenger_model1"] + \
-                                              train_df["passenger_model2"] + train_df["passenger_model3"] + \
-                                              train_df["passenger_model4"] + train_df["passenger_model5"]
-            train_df["no_all_count"] = train_df["no_count0"] + train_df["no_count1"] + train_df["no_count2"] + \
-                                       train_df["no_count3"] + train_df["no_count4"] + train_df["no_count5"]
-            train_df["cargo_all_count"] = train_df["cargo_count0"] + train_df["cargo_count1"] + \
-                                          train_df["cargo_count2"] + train_df["cargo_count3"] + \
-                                          train_df["cargo_count4"] + train_df["cargo_count5"]
-            train_df["passenger_all_count"] = train_df["passenger_count0"] + train_df["passenger_count1"] + \
-                                              train_df["passenger_count2"] + train_df["passenger_count3"] + \
-                                              train_df["passenger_count4"] + train_df["passenger_count5"]
+            train_df["etc_all_model"] = train_df["etc_model0"] + train_df["etc_model1"] + train_df["etc_model2"] + \
+                                        train_df["etc_model3"] + train_df["etc_model4"] + train_df["etc_model5"]
+            train_df["etc_all_count"] = train_df["etc_count0"] + train_df["etc_count1"] + train_df["etc_count2"] + \
+                                        train_df["etc_count3"] + train_df["etc_count4"] + train_df["etc_count5"]
+            train_df["etc_avg_model"] = train_df["etc_all_model"] / train_df["etc_all_count"]
+
+            if has_type:
+                train_df["cargo_all_model"] = train_df["cargo_model0"] + train_df["cargo_model1"] + \
+                                              train_df["cargo_model2"] + train_df["cargo_model3"] + \
+                                              train_df["cargo_model4"] + train_df["cargo_model5"]
+                train_df["passenger_all_model"] = train_df["passenger_model0"] + train_df["passenger_model1"] + \
+                                                  train_df["passenger_model2"] + train_df["passenger_model3"] + \
+                                                  train_df["passenger_model4"] + train_df["passenger_model5"]
+                train_df["cargo_all_count"] = train_df["cargo_count0"] + train_df["cargo_count1"] + \
+                                              train_df["cargo_count2"] + train_df["cargo_count3"] + \
+                                              train_df["cargo_count4"] + train_df["cargo_count5"]
+                train_df["passenger_all_count"] = train_df["passenger_count0"] + train_df["passenger_count1"] + \
+                                                  train_df["passenger_count2"] + train_df["passenger_count3"] + \
+                                                  train_df["passenger_count4"] + train_df["passenger_count5"]
+                train_df["cargo_avg_model"] = train_df["cargo_all_model"] / train_df["cargo_all_count"]
+                train_df["passenger_avg_model"] = train_df["passenger_all_model"] / train_df["passenger_all_count"]
+            else:
+                train_df["model02_all_count"] = train_df["model02_count0"] + train_df["model02_count1"] + \
+                                                train_df["model02_count2"] + train_df["model02_count3"] + \
+                                                train_df["model02_count4"] + train_df["model02_count5"]
+                train_df["model35_all_count"] = train_df["model35_count0"] + train_df["model35_count1"] + \
+                                                train_df["model35_count2"] + train_df["model35_count3"] + \
+                                                train_df["model35_count4"] + train_df["model35_count5"]
+                train_df["model67_all_count"] = train_df["model67_count0"] + train_df["model67_count1"] + \
+                                                train_df["model67_count2"] + train_df["model67_count3"] + \
+                                                train_df["model67_count4"] + train_df["model67_count5"]
+                train_df["model02_all_model"] = train_df["model02_model0"] + train_df["model02_model1"] + \
+                                                train_df["model02_model2"] + train_df["model02_model3"] + \
+                                                train_df["model02_model4"] + train_df["model02_model5"]
+                train_df["model35_all_model"] = train_df["model35_model0"] + train_df["model35_model1"] + \
+                                                train_df["model35_model1"] + train_df["model35_model2"] + \
+                                                train_df["model35_model3"] + train_df["model35_model4"]
+                train_df["model67_all_model"] = train_df["model67_model0"] + train_df["model67_model1"] + \
+                                                train_df["model67_model2"] + train_df["model67_model3"] + \
+                                                train_df["model67_model4"] + train_df["model67_model5"]
+                train_df["model02_avg_model"] = train_df["model02_all_model"] / train_df["model02_all_count"]
+                train_df["model35_avg_model"] = train_df["model35_all_model"] / train_df["model35_all_count"]
+                train_df["model67_avg_model"] = train_df["model67_all_model"] / train_df["model67_all_count"]
+                train_df = train_df.fillna(0)
+
             train_df["volume_all"] = train_df["volume0"] + train_df["volume1"] + train_df["volume2"] + \
                                      train_df["volume3"] + train_df["volume4"] + train_df["volume5"]
-            train_df["etc_all_count"] = train_df["etc_count0"] + train_df["etc_count1"] + train_df["etc_count2"] + \
-                                    train_df["etc_count3"] + train_df["etc_count4"] + train_df["etc_count5"]
-            train_df["vehicle_all_model_avg"] = train_df["vehicle_all_model"] / train_df["volume_all"]
-            train_df["cargo_all_model_avg"] = train_df["cargo_all_model"] / train_df["cargo_all_count"]
-            train_df["passenger_all_model_avg"] = train_df["passenger_all_model"] / train_df["passenger_all_count"]
+            train_df["vehicle_avg_model"] = train_df["vehicle_all_model"] / train_df["volume_all"]
             # 二次方 三次方 开方 运算
             # train_df["vehicle_all_model_avg_S2"] = train_df["vehicle_all_model_avg"] * train_df["vehicle_all_model_avg"]
             # train_df["vehicle_all_model_avg_S3"] = train_df["vehicle_all_model_avg"] * \
@@ -304,14 +356,6 @@ def modeling():
             time_se = time_str_se.apply(lambda x: pd.Timestamp(x))
             time_se.index = time_se.values
             data_df["time"] = time_se + DateOffset(minutes=offset * 20)
-            # data_df["day"] = data_df["time"].apply(lambda x: str(x.day) + "D")
-            # data_df["hour"] = data_df["time"].apply(lambda x: str(x.hour) + "H")
-            # data_df["is_eight"] = data_df["time"].apply(lambda x: 1 if x.hour == 8 else 0)
-            # data_df["is_nine"] = data_df["time"].apply(lambda x: 1 if x.hour == 9 else 0)
-            # data_df["is_eighteen"] = data_df["time"].apply(lambda x: 1 if x.hour == 18 else 0)
-            # data_df["is_seventeen"] = data_df["time"].apply(lambda x: 1 if x.hour == 17 else 0)
-            # data_df["minute"] = data_df["time"].apply(lambda x: str(x.minute) + "M")
-            # data_df["week"] = data_df["time"].apply(lambda x: str(x.dayofweek) + "W")
             data_df["day"] = data_df["time"].apply(lambda x: x.day)
             data_df["hour"] = data_df["time"].apply(lambda x: x.hour)
             data_df["minute"] = data_df["time"].apply(lambda x: x.minute)
@@ -323,7 +367,7 @@ def modeling():
             return data_df
 
         # 整合每20分钟的特征，并计算以2个小时为单位的特征
-        def generate_features(data_df, new_index, offset, has_y=True, file_path=None):
+        def generate_features(data_df, new_index, offset, has_y=True, file_path=None, has_type=False):
             train_df = pd.DataFrame()
             for i in range(len(data_df) - 6 - offset):
                 se_temp = pd.Series()
@@ -341,7 +385,7 @@ def modeling():
                 train_df = train_df.append(se_temp)
             # 2015-05-11
             # return generate_2hours_features(train_df.dropna(), 6 + offset, file_path)
-            return generate_2hours_features(train_df, 6 + offset, file_path)
+            return generate_2hours_features(train_df, 6 + offset, file_path, has_type)
 
         # 生成gbdt模型
         def gbdt_model(train_X, train_y):
@@ -357,10 +401,10 @@ def modeling():
             param_grid = [
                 {'max_depth': [3],
                  'min_samples_leaf': [10],
-                 'learning_rate':[0.1],
-                 'loss':['lad'],
-                 'n_estimators':[3000],
-                 'max_features':[1.0]
+                 'learning_rate': [0.1],
+                 'loss': ['lad'],
+                 'n_estimators': [3000],
+                 'max_features': [1.0]
                  }
             ]
 
@@ -419,7 +463,6 @@ def modeling():
             print("Best alpha :", alpha)
             return ridge, train_X
 
-
         # 创建训练集，总的要求就是以前两个小时数据为训练集，用迭代式预测方法
         # 例如8点-10点的数据预测10点20,8点-10点20预测10点40……，每一次预测使用的都是独立的（可能模型一样）的模型
         # 现在开始构建训练集
@@ -427,11 +470,22 @@ def modeling():
         # 第二个训练集，特征是所有两个小时又20分钟（以20分钟为一个单位）的数据，因变量是该两个小时之后20分钟的流量
         # 以此类推训练12个GBDT模型，其中entry 6个，exit 6个
         def generate_models(volume_entry, volume_exit, entry_file_path=None, exit_file_path=None):
-            old_index = volume_entry.columns
-            new_index = []
+            global entry_mean
+            global entry_std
+            global entry_max
+            global entry_min
+            global exit_mean
+            global exit_std
+            global exit_max
+            global exit_min
+            print "entry : %f + %f + %f + %f" % (entry_mean, entry_std, entry_max, entry_min)
+            print "exit : %f + %f + %f + %f" % (exit_mean, exit_std, exit_max, exit_min)
+
+            old_index_entry = volume_entry.columns
+            new_index_entry = []
             for i in range(6):
-                new_index += [item + "%d" % (i, ) for item in old_index]
-            new_index.append("y")
+                new_index_entry += [item + "%d" % (i,) for item in old_index_entry]
+            new_index_entry.append("y")
 
             # 这是用训练集做预测时的评分函数
             def scorer2(estimator, X, y):
@@ -439,57 +493,112 @@ def modeling():
                 result = (np.abs(1 - np.exp(predict_arr - y))).sum()
                 return result
 
+            def filter_error(data_df, mean, std, max_value, min_value):
+                columns = ["volume" + str(i) for i in range(6)]
+                temp_df = data_df.copy()
+                for i in range(len(columns)):
+                    temp_df = temp_df[(temp_df[columns[i]] > min(mean - 2 * std, min_value)) &
+                                        (temp_df[columns[i]] < max(mean + 2 * std, max_value))]
+                return temp_df
+
+            def filter_error2(data_df):
+                temp_df = data_df.copy()
+                mean_value = temp_df["y"].mean()
+                std_value = temp_df["y"].std()
+                temp_df = temp_df[(temp_df["y"] > 3) & (temp_df["y"] < mean_value + 2 * std_value)]
+                return temp_df
+
+            def filter_error3(data_df):
+                temp_df = data_df.copy()
+                temp_df["time"] = temp_df.index
+                temp_df["time"] = temp_df["time"].apply(pd.Timestamp)
+                temp_df = temp_df[(temp_df["time"] < pd.Timestamp("2016-09-30 22:20:00")) |
+                              (temp_df["time"] > pd.Timestamp("2016-10-07 00:00:00"))]
+                del temp_df["time"]
+                return temp_df
+
             models_entry = []
             train_entry_len = 0
             train_entry_score = 0
             for j in range(6):
-                train_df = generate_features(volume_entry, new_index, j, file_path=entry_file_path)
-                train_df = train_df[train_df["y"] > 0]
+                train_df = generate_features(volume_entry, new_index_entry, j, file_path=entry_file_path,
+                                             has_type=False)
+                train_df = filter_error3(train_df.fillna(0))
+                # print "shape before transformation: " + str(train_df.shape[0])
+                # train_df = filter_error2(train_df.fillna(0))
+                # train_df = filter_error(train_df.fillna(0), entry_mean, entry_std, entry_max, entry_min)
+                # print "shape after transformation: " + str(train_df.shape[0])
+                train_df = train_df[train_df["y"] >= 0]
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
-                train_X = train_df.fillna(0)
+                train_X = train_df
                 # 生成数据时可以注释掉下面五行
-            #     train_entry_len += len(train_y)
-            #     best_estimator = gbdt_model(train_X, train_y)
-            #     train_entry_score += scorer2(best_estimator, train_X, train_y)
-            #     models_entry.append(best_estimator)
+                # train_entry_len += len(train_y)
+                # best_estimator = gbdt_model(train_X, train_y)
+                # train_entry_score += scorer2(best_estimator, train_X, train_y)
+                # models_entry.append(best_estimator)
             # print "Best Score is :", train_entry_score / train_entry_len
 
             # 注意！！！！2号收费站只有entry方向没有exit方向
             if len(volume_exit) == 0:
                 return models_entry, []
 
+            old_index_exit = volume_exit.columns
+            new_index_exit = []
+            for i in range(6):
+                new_index_exit += [item + "%d" % (i,) for item in old_index_exit]
+            new_index_exit.append("y")
             models_exit = []
             train_exit_len = 0
             train_exit_score = 0
             for j in range(6):
-                train_df = generate_features(volume_exit, new_index, j, file_path=exit_file_path)
-                train_df = train_df[train_df["y"] > 0]
+                train_df = generate_features(volume_exit, new_index_exit, j, file_path=exit_file_path, has_type=True)
+                train_df = filter_error3(train_df.fillna(0))
+                # print "shape before transformation: " + str(train_df.shape[0])
+                # train_df = filter_error2(train_df.fillna(0))
+                # train_df = filter_error(train_df.fillna(0), exit_mean, exit_std, exit_max, exit_min)
+                # print "shape after transformation: " + str(train_df.shape[0])
+                train_df = train_df[train_df["y"] >= 0]
                 train_y = np.log(1 + train_df["y"].fillna(0))
                 del train_df["y"]
-                train_X = train_df.fillna(0)
+                train_X = train_df
                 # 生成数据时可以注释掉下面五行
-            #     best_estimator = gbdt_model(train_X, train_y)
-            #     train_exit_len += len(train_y)
-            #     train_exit_score += scorer2(best_estimator, train_X, train_y)
-            #     models_exit.append(best_estimator)
+                # best_estimator = gbdt_model(train_X, train_y)
+                # train_exit_len += len(train_y)
+                # train_exit_score += scorer2(best_estimator, train_X, train_y)
+                # models_exit.append(best_estimator)
             # print "Best Score is :", train_exit_score / train_exit_len
 
             return models_entry, models_exit
 
         # 创建车流量预测集，20分钟跨度有关系的预测集
-        def divide_test_by_direction(volume_df, entry_file_path=None, exit_file_path=None):
+        def divide_test_by_direction(volume_df, entry_file_path=None, exit_file_path=None, has_type=False):
+            global entry_mean
+            global entry_std
+            global entry_max
+            global entry_min
+            global exit_mean
+            global exit_std
+            global exit_max
+            global exit_min
             volume_entry_test = volume_df[
                 (volume_df['tollgate_id'] == tollgate_id) & (volume_df["direction"] == "entry")].copy()
             volume_entry_test["volume"] = 1
-            volume_entry_test["cargo_count"] = volume_entry_test["vehicle_type"].apply(lambda x: 1 if x == "cargo" else 0)
-            volume_entry_test["passenger_count"] = volume_entry_test["vehicle_type"].apply(
-                lambda x: 1 if x == "passenger" else 0)
-            volume_entry_test["no_count"] = volume_entry_test["vehicle_type"].apply(lambda x: 1 if x == "No" else 0)
+
             volume_entry_test["etc_count"] = volume_entry_test["has_etc"].apply(lambda x: 1 if x == "Yes" else 0)
-            volume_entry_test["cargo_model"] = volume_entry_test["cargo_count"] * volume_entry_test["vehicle_model"]
-            volume_entry_test["passenger_model"] = volume_entry_test["passenger_count"] * volume_entry_test[
-                "vehicle_model"]
+            volume_entry_test["etc_model"] = volume_entry_test["etc_count"] * volume_entry_test["vehicle_model"]
+            volume_entry_test["no_etc_count"] = volume_entry_test["has_etc"].apply(lambda x: 1 if x == "No" else 0)
+            volume_entry_test["no_etc_model"] = volume_entry_test["no_etc_count"] * volume_entry_test["vehicle_model"]
+            # 这里entry方向数据不记录车辆类型，所以特征稍微少一点
+            volume_entry_test["model02_count"] = volume_entry_test["vehicle_model"].apply(
+                lambda x: 1 if x >= 0 and x <= 2 else 0)
+            volume_entry_test["model02_model"] = volume_entry_test["vehicle_model"] * volume_entry_test["model02_count"]
+            volume_entry_test["model35_count"] = volume_entry_test["vehicle_model"].apply(
+                lambda x: 1 if x >= 3 and x <= 5 else 0)
+            volume_entry_test["model35_model"] = volume_entry_test["vehicle_model"] * volume_entry_test["model35_count"]
+            volume_entry_test["model67_count"] = volume_entry_test["vehicle_model"].apply(
+                lambda x: 1 if x == 6 or x == 7 else 0)
+            volume_entry_test["model67_model"] = volume_entry_test["vehicle_model"] * volume_entry_test["model67_count"]
             volume_entry_test.index = volume_entry_test["time"]
             del volume_entry_test["time"]
             del volume_entry_test["tollgate_id"]
@@ -498,25 +607,34 @@ def modeling():
             del volume_entry_test["has_etc"]
             volume_entry_test = volume_entry_test.resample("20T").sum()
             volume_entry_test = volume_entry_test.dropna()
-            volume_entry_test["cargo_model_avg"] = volume_entry_test["cargo_model"] / volume_entry_test["cargo_count"]
-            volume_entry_test["passenger_model_avg"] = volume_entry_test["passenger_model"] / volume_entry_test[
-                "passenger_count"]
-            volume_entry_test["vehicle_model_avg"] = volume_entry_test["vehicle_model"] / volume_entry_test["volume"]
-            volume_entry_test = volume_entry_test.fillna(0)
+            entry_mean = volume_entry_test["volume"].mean()
+            entry_std = volume_entry_test["volume"].std()
+            entry_max = volume_entry_test["volume"].max()
+            entry_min = volume_entry_test["volume"].min()
 
             volume_exit_test = volume_df[
                 (volume_df['tollgate_id'] == tollgate_id) & (volume_df["direction"] == "exit")].copy()
             if len(volume_exit_test) > 0:
                 volume_exit_test["volume"] = 1
+                volume_exit_test["etc_count"] = volume_exit_test["has_etc"].apply(lambda x: 1 if x == "Yes" else 0)
+                volume_exit_test["etc_model"] = volume_exit_test["etc_count"] * volume_exit_test["vehicle_model"]
+                volume_exit_test["no_etc_count"] = volume_exit_test["has_etc"].apply(lambda x: 1 if x == "No" else 0)
+                volume_exit_test["no_etc_model"] = volume_exit_test["no_etc_count"] * volume_exit_test[
+                    "vehicle_model"]
                 volume_exit_test["cargo_count"] = volume_exit_test["vehicle_type"].apply(
                     lambda x: 1 if x == "cargo" else 0)
                 volume_exit_test["passenger_count"] = volume_exit_test["vehicle_type"].apply(
                     lambda x: 1 if x == "passenger" else 0)
-                volume_exit_test["no_count"] = volume_exit_test["vehicle_type"].apply(lambda x: 1 if x == "No" else 0)
-                volume_exit_test["etc_count"] = volume_exit_test["has_etc"].apply(lambda x: 1 if x == "Yes" else 0)
+                # volume_exit_test["no_count"] = volume_exit_test["vehicle_type"].apply(lambda x: 1 if x == "No" else 0)
                 volume_exit_test["cargo_model"] = volume_exit_test["cargo_count"] * volume_exit_test["vehicle_model"]
                 volume_exit_test["passenger_model"] = volume_exit_test["passenger_count"] * volume_exit_test[
                     "vehicle_model"]
+                # volume_exit_test["model02_count"] = volume_exit_test["vehicle_model"].apply(
+                #     lambda x: 1 if x >= 0 and x <= 2 else 0)
+                # volume_exit_test["model35_count"] = volume_exit_test["vehicle_model"].apply(
+                #     lambda x: 1 if x >= 3 and x <= 5 else 0)
+                # volume_exit_test["model67_count"] = volume_exit_test["vehicle_model"].apply(
+                #     lambda x: 1 if x == 6 or x == 7 else 0)
                 volume_exit_test.index = volume_exit_test["time"]
                 del volume_exit_test["time"]
                 del volume_exit_test["tollgate_id"]
@@ -530,6 +648,10 @@ def modeling():
                     "passenger_count"]
                 volume_exit_test["vehicle_model_avg"] = volume_exit_test["vehicle_model"] / volume_exit_test["volume"]
                 volume_exit_test = volume_exit_test.fillna(0)
+                exit_mean = volume_exit_test["volume"].mean()
+                exit_std = volume_exit_test["volume"].std()
+                exit_max = volume_exit_test["volume"].max()
+                exit_min = volume_exit_test["volume"].min()
             if entry_file_path:
                 volume_entry_test.to_csv(entry_file_path, encoding="utf8")
             if exit_file_path:
@@ -539,10 +661,10 @@ def modeling():
         # 转换预测集，将预测集转换成与训练集格式相同的格式
         def predict(volume_entry_test, volume_exit_test, models_entry, models_exit,
                     entry_file_path=None, exit_file_path=None):
-            old_index = volume_entry_test.columns
-            new_index = []
+            old_index_entry = volume_entry_test.columns
+            new_index_entry = []
             for i in range(6):
-                new_index += [item + "%d" % (i, ) for item in old_index]
+                new_index_entry += [item + "%d" % (i,) for item in old_index_entry]
 
             # （entry方向）
             test_entry_df = pd.DataFrame()
@@ -551,11 +673,11 @@ def modeling():
                 se_temp = pd.Series()
                 for k in range(6):
                     se_temp = se_temp.append(volume_entry_test.iloc[i + k, :])
-                se_temp.index = new_index
+                se_temp.index = new_index_entry
                 se_temp.name = str(volume_entry_test.index[i])
                 test_entry_df = test_entry_df.append(se_temp)
                 i += 6
-            test_entry_df = generate_2hours_features(test_entry_df, 0)
+            test_entry_df = generate_2hours_features(test_entry_df, 0, has_type=False)
             predict_test_entry = pd.DataFrame()
             for i in range(6):
                 if entry_file_path:
@@ -563,33 +685,38 @@ def modeling():
                 else:
                     test_entry_df = generate_time_features(test_entry_df, i + 6)
                 # 生成数据时可以注释掉三行
-            #     test_y = models_entry[i].predict(test_entry_df)
-            #     predict_test_entry[i] = np.exp(test_y) - 1
+                # test_y = models_entry[i].predict(test_entry_df)
+                # predict_test_entry[i] = np.exp(test_y) - 1
             # predict_test_entry.index = test_entry_df.index
 
             # （exit方向）
             test_exit_df = pd.DataFrame()
             if tollgate_id == "2S":
                 return predict_test_entry, test_exit_df
+
+            old_index_exit = volume_exit_test.columns
+            new_index_exit = []
+            for i in range(6):
+                new_index_exit += [item + "%d" % (i,) for item in old_index_exit]
             i = 0
             while i < len(volume_exit_test) - 5:
                 se_temp = pd.Series()
                 for k in range(6):
                     se_temp = se_temp.append(volume_exit_test.iloc[i + k, :])
-                se_temp.index = new_index
+                se_temp.index = new_index_exit
                 se_temp.name = str(volume_exit_test.index[i])
                 test_exit_df = test_exit_df.append(se_temp)
                 i += 6
-            test_exit_df = generate_2hours_features(test_exit_df, 0)
+            test_exit_df = generate_2hours_features(test_exit_df, 0, has_type=True)
             predict_test_exit = pd.DataFrame()
             for i in range(6):
                 if exit_file_path:
-                    test_exit_df = generate_time_features(test_exit_df, i + 6, exit_file_path + "offset" +str(i))
+                    test_exit_df = generate_time_features(test_exit_df, i + 6, exit_file_path + "offset" + str(i))
                 else:
                     test_exit_df = generate_time_features(test_exit_df, i + 6)
                 # 生成数据时可以注释掉三行
-            #     test_y = models_exit[i].predict(test_exit_df)
-            #     predict_test_exit[i] = np.exp(test_y) - 1
+                # test_y = models_exit[i].predict(test_exit_df)
+                # predict_test_exit[i] = np.exp(test_y) - 1
             # predict_test_exit.index = test_exit_df.index
             return predict_test_entry, predict_test_exit
 
@@ -609,17 +736,17 @@ def modeling():
                     result = result.append(series)
             return result
 
-        entry_train_file = "./train&test_zjw/volume_entry_train_%s" % (tollgate_id, )
-        exit_train_file = "./train&test_zjw/volume_exit_train_%s" % (tollgate_id, )
-        volume_entry_train, volume_exit_train = divide_train_by_direction(volume_train)
+        entry_train_file = "./train&test_zjw/volume_entry_train_%s" % (tollgate_id,)
+        exit_train_file = "./train&test_zjw/volume_exit_train_%s" % (tollgate_id,)
+        entry_test_file = "./train&test_zjw/volume_entry_test_%s" % (tollgate_id,)
+        exit_test_file = "./train&test_zjw/volume_exit_test_%s" % (tollgate_id,)
 
+        entry_test, exit_test = divide_test_by_direction(volume_test)
+        volume_entry_train, volume_exit_train = divide_train_by_direction(volume_train)
         models_entry, models_exit = generate_models(volume_entry_train,
                                                     volume_exit_train,
                                                     entry_train_file,
                                                     exit_train_file)
-        entry_test_file = "./train&test_zjw/volume_entry_test_%s" % (tollgate_id, )
-        exit_test_file = "./train&test_zjw/volume_exit_test_%s" % (tollgate_id, )
-        entry_test, exit_test = divide_test_by_direction(volume_test)
         predict_original_entry, predict_original_exit = predict(entry_test,
                                                                 exit_test,
                                                                 models_entry,
@@ -631,10 +758,11 @@ def modeling():
 
     return result_df
 
+
 result = modeling()
-# result_df = pd.DataFrame()
-# result_df["tollgate_id"] = result["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
-# result_df["time_window"] = result["time_window"]
-# result_df["direction"] = result["direction"].replace({"entry": 0, "exit": 1})
-# result_df['volume'] = result["volume"]
-# result_df.to_csv("volume_predict3_result.csv", encoding="utf8", index=None)
+result_df = pd.DataFrame()
+result_df["tollgate_id"] = result["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
+result_df["time_window"] = result["time_window"]
+result_df["direction"] = result["direction"].replace({"entry": 0, "exit": 1})
+result_df['volume'] = result["volume"]
+result_df.to_csv("volume_predict3_focus_type.csv", encoding="utf8", index=None)

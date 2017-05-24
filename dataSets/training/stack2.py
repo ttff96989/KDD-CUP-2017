@@ -14,6 +14,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import AdaBoostRegressor
 import xgboost as xgb
+from sklearn.model_selection import GridSearchCV
+from xgboost.sklearn import XGBRegressor
 
 '''
 和stack.py的区别是不区分方向和出口
@@ -60,69 +62,142 @@ et_params = {
         'n_jobs': 16,
         'n_estimators': 1000,
         'max_features': 0.5,
-        'max_depth': 4,
+        'max_depth': 5,
         'min_samples_leaf': 2,
     }
+
+et_params_cv = [{
+    'n_jobs': [16],
+    'n_estimators': [600 + i * 100 for i in range(6)],
+    'max_features': [0.4 + i * 0.1 for i in range(4)],
+    'max_depth': [3, 4],
+    'min_samples_leaf': [2]
+}]
 
 rf_params = {
         'n_jobs': 16,
         'n_estimators': 1000,
         'max_features': 0.2,
-        'max_depth': 4,
+        'max_depth': 5,
         'min_samples_leaf': 2,
     }
+
+rf_params_cv = [{
+    'n_jobs': [16],
+    'n_estimators': [600 + i * 100 for i in range(6)],
+    'max_features': [0.4 + i * 0.1 for i in range(4)],
+    'max_depth': [3, 4],
+    'min_samples_leaf': [2]
+}]
 
 rd_params = {
         'alpha': 10
     }
 
+rd_params_cv = [{
+    'alpha': [10 + i for i in range(91)]
+}]
+
 ls_params = {
         'alpha': 0.002,
         'max_iter': 5000
-}
+    }
+
+ls_params_cv = [{
+    'alpha': [0.002 + 0.001 * i for i in range(10)],
+    'max_iter': [5000]
+}]
 
 gbdt_params = {
-    'max_depth': 3,
+    'max_depth': 4,
     'min_samples_leaf': 1,
     'learning_rate': 0.1,
     'loss': 'lad',
     'n_estimators': 3000,
     'max_features': 1.0
+    }
+
+gbdt_params_cv = [{
+    'max_depth': [3, 4],
+    'min_samples_leaf': [1],
+    'learning_rate': [0.08 + i * 0.01 for i in range(5)],
+    'loss': ['lad'],
+    'n_estimators': [3000],
+    'max_features': [0.6 + i * 0.1 for i in range(5)]
+}]
+
+gbdt_params2 = {
+    'max_depth': 4,
+    'min_samples_leaf': 1,
+    'learning_rate': 0.3,
+    'loss': 'lad',
+    'n_estimator': 3000,
+    'max_features': 0.7
 }
 
 xgb_params = {
     'seed': 0,
+    'colsample_bytree': 0.7,
     'silent': 1,
     'subsample': 0.7,
-    'learning_rate': 0.075,
+    'learning_rate': 0.1,
     'objective': 'reg:linear',
-    'max_depth': 4,
-    'num_parallel_tree': 1,
+    'max_depth': 5,
+    # 'num_parallel_tree': 1,
     'min_child_weight': 1,
-    'eval_metric': 'rmse',
-    'n_estimator': 3000,
-    'nrounds': 500
+    # 'eval_metric': 'rmse',
+    'n_estimators': 2000
 }
+
+xgb_params_cv = [{
+    'seed': [0],
+    'colsample_bytree': [0.7],
+    'silent': [1],
+    'subsample': [0.7 + i * 0.1 for i in range(3)],
+    'learning_rate': [0.08 + i * 0.01 for i in range(5)],
+    'objective': ['reg:linear'],
+     'max_depth': [3, 4],
+    'min_child_weight': [1],
+    'n_estimators': [2000]
+}]
 
 xgb_params2 = {
     'seed': 0,
+    'colsample_bytree': 0.7,
     'silent': 1,
     'subsample': 0.7,
-    'learning_rate': 0.075,
+    'learning_rate': 0.03,
     'objective': 'reg:linear',
-    'max_depth': 4,
-    'num_parallel_tree': 1,
+    'max_depth': 5,
+    # 'num_parallel_tree': 1,
     'min_child_weight': 1,
-    'eval_metric': 'rmse',
-    'n_estimator': 3000,
-    'nrounds': 500,
-    'lambda': 0.3
+    # 'eval_metric': 'rmse',
+    'n_estimators': 2000,
+    'reg_lambda': 0.3
 }
+
+xgb_params2_cv = [{
+    'seed': [0],
+    'colsample_bytree': [0.7],
+    'silent': [1],
+    'subsample': [0.7 + i * 0.1 for i in range(3)],
+    'learning_rate': [0.03 + i * 0.01 for i in range(5)],
+    'objective': ['reg:linear'],
+    'max_depth': [3, 4],
+    'min_child_weight': [1],
+    'n_estimators': [2000],
+    'reg_lambda': [0.3]
+}]
 
 ada_param = {
     'base_estimator': DecisionTreeRegressor(max_depth=4),
     'n_estimators': 300
 }
+
+ada_param_cv = [{
+    'base_estimator': [DecisionTreeRegressor(max_depth=4)],
+    'n_estimators': [200 + i * 50 for i in range(6)]
+}]
 
 ada_param2 = {
     'base_estimator': LinearRegression(),
@@ -136,7 +211,7 @@ mean_param = {
 result_df = pd.DataFrame()
 model_score_dic = {}
 
-model_used_name = ["GB", "RF", "XGB", "XGB2", "ADA", "LS", "ET", "RD"]
+model_used_name = ["GB", "RF", "XGB", "XGB2", "ET"]
 
 def predict1(offset):
     ## Load the data ##
@@ -386,6 +461,28 @@ def predict2(offset):
         def clf_type(self):
             return type(self.clf)
 
+    class SklearnWrapper_cv(object):
+        def scorer(self, estimator, X, y):
+            predict_arr = estimator.predict(X)
+            y_arr = y
+            result = (np.abs(1 - np.exp(predict_arr - y_arr))).sum() / len(y)
+            return result
+
+        def __init__(self, clf, seed=0, params=None):
+            # params['random_state'] = seed
+            model = clf()
+            self.clf = GridSearchCV(estimator=model, param_grid=params, refit=True, scoring=self.scorer)
+
+        def train(self, x_train, y_train):
+            # print x_train
+            self.clf.fit(x_train, y_train)
+
+        def predict(self, x):
+            return self.clf.predict(x)
+
+        def clf_type(self):
+            return type(self.clf)
+
     class XgbWrapper(object):
         def __init__(self, seed=0, params=None):
             self.param = params
@@ -398,6 +495,25 @@ def predict2(offset):
 
         def predict(self, x):
             return self.gbdt.predict(xgb.DMatrix(x))
+
+        def clf_type(self):
+            return None
+
+    class XgbWrapper_cv(object):
+        def __init__(self, seed=0, params=None):
+            # self.param = params
+            # self.param["seed"] = seed
+            # self.nrounds = params.pop("nrounds", 250)
+            gbdt = XGBRegressor()
+            self.model = GridSearchCV(gbdt, params, refit=True)
+
+        def train(self, x_train, y_train):
+            #dtrain = xgb.DMatrix(x_train, label=y_train)
+            self.model.fit(x_train, y_train)
+
+        def predict(self, x):
+            return self.model.predict(x)
+            #return self.model.predict(xgb.DMatrix(x))
 
         def clf_type(self):
             return None
@@ -441,15 +557,22 @@ def predict2(offset):
     y_test = np.zeros((ntest,))
     for i in range(len(model_used_idx)):
 
-        def generate_wrapper(index, names, models, params):
+        def generate_wrapper(index, names, models, params, cv=True):
+            # print names[index]
             if names[index] == "XGB" or names[index] == "XGB2":
-                return XgbWrapper(seed=SEED, params=params[index])
+                if cv:
+                    return XgbWrapper_cv(seed=SEED, params=params[index])
+                else:
+                    return XgbWrapper(seed=SEED, params=params[index])
             else:
-                return SklearnWrapper(clf=models[index], seed=SEED, params=params[index])
+                if cv:
+                    return SklearnWrapper_cv(clf=models[index], seed=SEED, params=params[index])
+                else:
+                    return SklearnWrapper(clf=models[index], seed=SEED, params=params[index])
 
         # model_used = [model_lst[idx] for idx in model_used_idx[i]]
         # arams_used = [model_params[idx] for idx in model_used_idx[i]]
-        wrapper_lst = [generate_wrapper(idx, model_name, model_lst, model_params)
+        wrapper_lst = [generate_wrapper(idx, model_name, model_lst, model_params, cv=False)
                        for idx in range(len(model_used_idx[i]))]
         train_test_lst = [get_oof(wrapper) for wrapper in wrapper_lst]
         train_lst = [train_temp for train_temp, test_temp in train_test_lst]
@@ -475,7 +598,7 @@ def predict2(offset):
 
         random_index = random.randint(0, 2)
         print "second floor use : " + model2_name[random_index]
-        model2 = generate_wrapper(random_index, model2_name, model2_lst, model2_params)
+        model2 = generate_wrapper(random_index, model2_name, model2_lst, model2_params, cv=False)
         model2.train(x_train, y_train)
         y_test += model2.predict(x_test)
     return y_test, len(model_used_idx), test_index, test_tollgate, test_direction
