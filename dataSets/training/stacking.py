@@ -16,6 +16,7 @@ from sklearn.ensemble import AdaBoostRegressor
 import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
 from xgboost.sklearn import XGBRegressor
+from sklearn.externals import joblib
 
 '''
 待优化点：
@@ -28,11 +29,13 @@ NFOLDS = 5
 SEED = 0
 NROWS = None
 
-id_direction_lst = [("3S", "entry"), ("3S", "exit")]
+# id_direction_lst = [("1S", "entry"), ("1S", "exit"), ("2S", "entry"), ("3S", "entry"), ("3S", "exit")]
+id_direction_lst = [("1S", "exit")]
 tuple_lst = []
 for id, direction in id_direction_lst:
-    for i in range(6):
-        tuple_lst.append((id, direction, i))
+   for i in range(6):
+       tuple_lst.append((id, direction, i))
+# tuple_lst = [("1S", "entry", 1)]
 
 et_params = {
         'n_jobs': 16,
@@ -44,9 +47,9 @@ et_params = {
 
 et_params_cv = [{
     'n_jobs': [16],
-    'n_estimators': [600 + i * 100 for i in range(6)],
-    'max_features': [0.4 + i * 0.1 for i in range(4)],
-    'max_depth': [3, 4],
+    'n_estimators': [1000],#[600 + i * 100 for i in range(6)],
+    'max_features': [0.5 + i * 0.1 for i in range(3)],
+    'max_depth': [4, 5],
     'min_samples_leaf': [2]
 }]
 
@@ -56,13 +59,13 @@ rf_params = {
         'max_features': 0.2,
         'max_depth': 5,
         'min_samples_leaf': 2,
-    }
+     }
 
 rf_params_cv = [{
     'n_jobs': [16],
-    'n_estimators': [600 + i * 100 for i in range(6)],
-    'max_features': [0.4 + i * 0.1 for i in range(4)],
-    'max_depth': [3, 4],
+    'n_estimators': [1000], #[600 + i * 100 for i in range(6)],
+    'max_features': [0.5 + i * 0.1 for i in range(3)],
+    'max_depth': [4, 5],
     'min_samples_leaf': [2]
 }]
 
@@ -71,7 +74,7 @@ rd_params = {
     }
 
 rd_params_cv = [{
-    'alpha': [10 + i for i in range(91)]
+    'alpha': [10 + i * 5 for i in range(10)]
 }]
 
 ls_params = {
@@ -94,12 +97,12 @@ gbdt_params = {
     }
 
 gbdt_params_cv = [{
-    'max_depth': [3, 4],
+    'max_depth': [4, 5],
     'min_samples_leaf': [1],
-    'learning_rate': [0.1 + i * 0.1 for i in range(5)],
+    'learning_rate': [0.1],#[0.08 + i * 0.01 for i in range(3)],
     'loss': ['lad'],
     'n_estimators': [3000],
-    'max_features': [0.6 + i * 0.1 for i in range(5)]
+    'max_features': [0.7 + i * 0.1 for i in range(4)]
 }]
 
 gbdt_params2 = {
@@ -130,9 +133,9 @@ xgb_params_cv = [{
     'colsample_bytree': [0.7],
     'silent': [1],
     'subsample': [0.7 + i * 0.1 for i in range(3)],
-    'learning_rate': [0.1 + i * 0.1 for i in range(5)],
+    'learning_rate': [0.1], #[0.08 + i * 0.01 for i in range(5)],
     'objective': ['reg:linear'],
-     'max_depth': [3, 4],
+     'max_depth': [4, 5],
     'min_child_weight': [1],
     'n_estimators': [2000]
 }]
@@ -157,9 +160,9 @@ xgb_params2_cv = [{
     'colsample_bytree': [0.7],
     'silent': [1],
     'subsample': [0.7 + i * 0.1 for i in range(3)],
-    'learning_rate': [0.03 + i * 0.01 for i in range(5)],
+    'learning_rate': [0.03],#[0.03 + i * 0.01 for i in range(5)],
     'objective': ['reg:linear'],
-    'max_depth': [3, 4],
+    'max_depth': [4, 5],
     'min_child_weight': [1],
     'n_estimators': [2000],
     'reg_lambda': [0.3]
@@ -416,15 +419,20 @@ def predict1(tollgate_id, direction, offset):
             return result
 
     class SklearnWrapper(object):
-        def __init__(self, clf, seed=0, params=None):
+        def __init__(self, clf, name, seed=0, params=None):
             # params['random_state'] = seed
             self.clf = clf(**params)
+            self.name = name
+            self.file_name = None
 
         def train(self, x_train, y_train):
             self.clf.fit(x_train, y_train)
+            self.file_name = "train&test_zjw/model/" + self.name + "_" + tollgate_id + "_" + direction + "_%d.model" % (offset, )
+            joblib.dump(self.clf, self.file_name, compress=3)
 
         def predict(self, x):
-            return self.clf.predict(x)
+            model = joblib.load(self.file_name)
+            return model.predict(x)
 
         def clf_type(self):
             return type(self.clf)
@@ -436,51 +444,68 @@ def predict1(tollgate_id, direction, offset):
             result = (np.abs(1 - np.exp(predict_arr - y_arr))).sum() / len(y)
             return result
 
-        def __init__(self, clf, seed=0, params=None):
+        def __init__(self, clf, name, seed=0, params=None):
             # params['random_state'] = seed
             model = clf()
             self.clf = GridSearchCV(estimator=model, param_grid=params, refit=True, scoring=self.scorer)
+            self.name = name
+            self.file_name = None
 
-        def train(self, x_train, y_train):
+        def train(self, x_train, y_train, stack_idx):
             # print x_train
             self.clf.fit(x_train, y_train)
+            self.file_name = "train&test_zjw/model/" + self.name + "_" + tollgate_id + "_" + direction + "_%d_%d.plk" % (offset, stack_idx)
+            print self.file_name
+            joblib.dump(self.clf.best_estimator_, self.file_name, compress=3)
 
         def predict(self, x):
-            return self.clf.predict(x)
+            model = joblib.load(self.file_name)
+            return model.predict(x)
 
         def clf_type(self):
             return type(self.clf)
 
     class XgbWrapper(object):
-        def __init__(self, seed=0, params=None):
+        def __init__(self, name, seed=0, params=None):
             self.param = params
             self.param["seed"] = seed
             self.nrounds = params.pop("nrounds", 250)
+            self.name = name
+            self.file_name = None
+            self.gbdt = None
 
         def train(self, x_train, y_train):
             dtrain = xgb.DMatrix(x_train, label=y_train)
             self.gbdt = xgb.train(self.param, dtrain, self.nrounds)
+            self.file_name = "train&test_zjw/model/" + self.name + "_" + tollgate_id + "_" + direction + "_%d.model" % (offset, )
+            joblib.dump(self.gbdt, self.file_name, compress=3)
 
         def predict(self, x):
-            return self.gbdt.predict(xgb.DMatrix(x))
+            model = joblib.load(self.file_name)
+            return model.predict(xgb.DMatrix(x))
 
         def clf_type(self):
             return None
 
     class XgbWrapper_cv(object):
-        def __init__(self, seed=0, params=None):
+        def __init__(self, name, seed=0, params=None):
             # self.param = params
             # self.param["seed"] = seed
             # self.nrounds = params.pop("nrounds", 250)
             gbdt = XGBRegressor()
             self.model = GridSearchCV(gbdt, params, refit=True)
+            self.name = name
+            self.file_name = None
 
-        def train(self, x_train, y_train):
+        def train(self, x_train, y_train, stack_idx):
             #dtrain = xgb.DMatrix(x_train, label=y_train)
             self.model.fit(x_train, y_train)
+            self.file_name = "train&test_zjw/model/" + self.name + "_" + tollgate_id + "_" + direction + "_%d_%d.model" % (offset, stack_idx)
+            joblib.dump(self.model, self.file_name, compress=3)
 
         def predict(self, x):
-            return self.model.predict(x)
+            model = joblib.load(self.file_name)
+            return model.predict(x)
             #return self.model.predict(xgb.DMatrix(x))
 
         def clf_type(self):
@@ -490,7 +515,7 @@ def predict1(tollgate_id, direction, offset):
         oof_train = np.zeros((ntrain,))
         oof_test = np.zeros((ntest,))
         oof_test_skf = np.empty((NFOLDS, ntest))
-
+        idx = 0
         for i, (train_index, test_index) in enumerate(kf):
             x_tr = x_train[train_index]
             y_tr = y_train[train_index]
@@ -500,10 +525,11 @@ def predict1(tollgate_id, direction, offset):
                 oof_train = clf.predict(train.copy())
                 oof_test_skf[i, :] = clf.predict(test.copy())
             else:
-                clf.train(x_tr, y_tr)
+                clf.train(x_tr, y_tr, stack_idx=idx)
 
                 oof_train[test_index] = clf.predict(x_te)
                 oof_test_skf[i, :] = clf.predict(x_test)
+                idx += 1
 
         oof_test[:] = oof_test_skf.mean(axis=0)
         # print oof_train
@@ -514,10 +540,10 @@ def predict1(tollgate_id, direction, offset):
     model_name_lst = ["GB", "RF", "XGB", "XGB2", "LS", "ET", "RD"]
     model_lst = [GradientBoostingRegressor, RandomForestRegressor, XGBRegressor, XGBRegressor,
                  Lasso, ExtraTreesRegressor, Ridge]
-    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2,
-                   ls_params, et_params, rd_params]
-    # model_params = [gbdt_params_cv, rf_params_cv, xgb_params_cv, xgb_params2_cv,
-    #                 ls_params_cv, et_params_cv, rd_params_cv]
+    #model_params = [gbdt_params, rf_params, xgb_params, xgb_params2,
+    #               ls_params, et_params, rd_params]
+    model_params = [gbdt_params_cv, rf_params_cv, xgb_params_cv, xgb_params2_cv,
+                    ls_params_cv, et_params_cv, rd_params_cv]
     model2_name = ["GB", "XGB", "XGB2"]
     model2_lst = [GradientBoostingRegressor, XGBRegressor, XGBRegressor]
     model2_params = [gbdt_params, xgb_params, xgb_params2]
@@ -539,20 +565,20 @@ def predict1(tollgate_id, direction, offset):
             # print names[index]
             if names[index] == "XGB" or names[index] == "XGB2":
                 if cv:
-                    return XgbWrapper_cv(seed=SEED, params=params[index])
+                    return XgbWrapper_cv(name=names[index], seed=SEED, params=params[index])
                 else:
-                    return XgbWrapper(seed=SEED, params=params[index])
+                    return XgbWrapper(name=names[index], seed=SEED, params=params[index])
             else:
                 if cv:
-                    return SklearnWrapper_cv(clf=models[index], seed=SEED, params=params[index])
+                    return SklearnWrapper_cv(name=names[index], clf=models[index], seed=SEED, params=params[index])
                 else:
-                    return SklearnWrapper(clf=models[index], seed=SEED, params=params[index])
+                    return SklearnWrapper(name=names[index], clf=models[index], seed=SEED, params=params[index])
 
         # model_used = [model_lst[idx] for idx in model_used_idx[i]]
         # params_used = [model_params[idx] for idx in model_used_idx[i]]
         # wrapper_lst = [SklearnWrapper(clf=model_used[i], seed=SEED, params=params_used[i])
         #                for i in range(len(model_used))]
-        wrapper_lst = [generate_wrapper(idx, model_name_lst, model_lst, model_params, cv=False)
+        wrapper_lst = [generate_wrapper(idx, model_name_lst, model_lst, model_params, cv=True)
                        for idx in range(len(model_used_idx[i]))]
         train_test_lst = [get_oof(wrapper) for wrapper in wrapper_lst]
         train_lst = [train_temp for train_temp, test_temp in train_test_lst]

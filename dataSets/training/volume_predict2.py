@@ -517,6 +517,32 @@ def modeling():
                 del temp_df["time"]
                 return temp_df
 
+            def multi_sample(data_df, offset):
+                temp_df = data_df.copy()
+                hour_offset = offset / 3
+                minute_offset = (offset % 3) * 20
+                # 增加filter，只要下午的数据
+                # temp_df = temp_df[temp_df["hour"] >= 14]
+                append_data = temp_df[(temp_df["hour"] == 17 + hour_offset) & (temp_df["minute"] == minute_offset)]
+                # print 'before appending : ' + str(temp_df.shape)
+                for i in range(10):
+                    temp_df = temp_df.append(append_data, ignore_index=True)
+                # print "after appending : " + str(temp_df.shape)
+                return temp_df
+
+            def multi_sample_morning(data_df, offset):
+                temp_df = data_df.copy()
+                hour_offset = offset / 3
+                minute_offset = (offset % 3) * 20
+                # 增加filter，只要上午的数据
+                temp_df = temp_df[temp_df["hour"] < 14]
+                append_data = temp_df[(temp_df["hour"] == 8 + hour_offset) & (temp_df["minute"] == minute_offset)]
+                print 'before appending : ' + str(temp_df.shape)
+                for i in range(15):
+                    temp_df = temp_df.append(append_data, ignore_index=True)
+                print "after appending : " + str(temp_df.shape)
+                return temp_df
+
             models_entry = []
             train_entry_len = 0
             train_entry_score = 0
@@ -528,15 +554,21 @@ def modeling():
                 # train_df = filter_error2(train_df.fillna(0))
                 # train_df = filter_error(train_df.fillna(0), entry_mean, entry_std, entry_max, entry_min)
                 # print "shape after transformation: " + str(train_df.shape[0])
-                train_df = train_df[train_df["y"] >= 0]
-                train_y = np.log(1 + train_df["y"].fillna(0))
-                del train_df["y"]
-                train_X = train_df
-                # 生成数据时可以注释掉下面五行
+                # train_df = train_df[train_df["y"] >= 0]
+
+                # 生成数据时可以注释掉下面涉及该收费站该方向的所有代码
+                # 模型分上下午
+                train_X = multi_sample_morning(train_df, j)
+                train_y = np.log(1 + train_X["y"].fillna(0)).copy()
+                del train_X["y"]
                 # train_entry_len += len(train_y)
-                # best_estimator = gbdt_model(train_X, train_y)
+                estimator1 = gbdt_model(train_X, train_y)
+                train2_X = multi_sample(train_df, j)
+                train2_y = np.log1p(train2_X["y"].fillna(0)).copy()
+                del train2_X["y"]
+                estimator2 = gbdt_model(train2_X, train2_y)
                 # train_entry_score += scorer2(best_estimator, train_X, train_y)
-                # models_entry.append(best_estimator)
+                models_entry.append([estimator1, estimator2])
             # print "Best Score is :", train_entry_score / train_entry_len
 
             # 注意！！！！2号收费站只有entry方向没有exit方向
@@ -558,15 +590,19 @@ def modeling():
                 # train_df = filter_error2(train_df.fillna(0))
                 # train_df = filter_error(train_df.fillna(0), exit_mean, exit_std, exit_max, exit_min)
                 # print "shape after transformation: " + str(train_df.shape[0])
-                train_df = train_df[train_df["y"] >= 0]
-                train_y = np.log(1 + train_df["y"].fillna(0))
-                del train_df["y"]
-                train_X = train_df
                 # 生成数据时可以注释掉下面五行
-                # best_estimator = gbdt_model(train_X, train_y)
+                # 模型分上下午
+                train_X = multi_sample_morning(train_df, j)
+                train_y = np.log(1 + train_X["y"].fillna(0)).copy()
+                del train_X["y"]
+                estimator1 = gbdt_model(train_X, train_y)
+                train2_X = multi_sample(train_df, j)
+                train2_y = np.log1p(train2_X["y"].fillna(0)).copy()
+                del train2_X["y"]
+                estimator2 = gbdt_model(train2_X, train2_y)
                 # train_exit_len += len(train_y)
                 # train_exit_score += scorer2(best_estimator, train_X, train_y)
-                # models_exit.append(best_estimator)
+                models_exit.append([estimator1, estimator2])
             # print "Best Score is :", train_exit_score / train_exit_len
 
             return models_entry, models_exit
@@ -679,15 +715,22 @@ def modeling():
                 i += 6
             test_entry_df = generate_2hours_features(test_entry_df, 0, has_type=False)
             predict_test_entry = pd.DataFrame()
+            new_index = None
             for i in range(6):
                 if entry_file_path:
                     test_entry_df = generate_time_features(test_entry_df, i + 6, entry_file_path + "offset" + str(i))
                 else:
                     test_entry_df = generate_time_features(test_entry_df, i + 6)
                 # 生成数据时可以注释掉三行
+                test_entry_df1 = test_entry_df[test_entry_df["hour"] < 12]
+                test_entry_df2 = test_entry_df[test_entry_df["hour"] > 12]
+                test1_y = models_entry[i][0].predict(test_entry_df1)
+                test2_y = models_entry[i][1].predict(test_entry_df2)
+                test_y = np.append(test1_y, test2_y)
                 # test_y = models_entry[i].predict(test_entry_df)
-                # predict_test_entry[i] = np.exp(test_y) - 1
-            # predict_test_entry.index = test_entry_df.index
+                predict_test_entry[i] = np.exp(test_y) - 1
+                new_index = np.append(test_entry_df1.index.values, test_entry_df2.index.values)
+            predict_test_entry.index = new_index
 
             # （exit方向）
             test_exit_df = pd.DataFrame()
@@ -715,9 +758,16 @@ def modeling():
                 else:
                     test_exit_df = generate_time_features(test_exit_df, i + 6)
                 # 生成数据时可以注释掉三行
+                test_exit_df1 = test_exit_df[test_exit_df["hour"] < 12]
+                test_exit_df2 = test_exit_df[test_exit_df["hour"] > 12]
+                test1_y = models_exit[i][0].predict(test_exit_df1)
+                test2_y = models_exit[i][1].predict(test_exit_df2)
+                test_y = np.append(test1_y, test2_y)
                 # test_y = models_exit[i].predict(test_exit_df)
-                # predict_test_exit[i] = np.exp(test_y) - 1
+                predict_test_exit[i] = np.exp(test_y) - 1
+                new_index = np.append(test_exit_df1.index.values, test_exit_df2.index.values)
             # predict_test_exit.index = test_exit_df.index
+            predict_test_exit.index = new_index
             return predict_test_entry, predict_test_exit
 
         # 将预测数据转换成输出文件的格式
@@ -744,15 +794,11 @@ def modeling():
         entry_test, exit_test = divide_test_by_direction(volume_test)
         volume_entry_train, volume_exit_train = divide_train_by_direction(volume_train)
         models_entry, models_exit = generate_models(volume_entry_train,
-                                                    volume_exit_train,
-                                                    entry_train_file,
-                                                    exit_train_file)
+                                                    volume_exit_train)
         predict_original_entry, predict_original_exit = predict(entry_test,
                                                                 exit_test,
                                                                 models_entry,
-                                                                models_exit,
-                                                                entry_test_file,
-                                                                exit_test_file)
+                                                                models_exit)
         result_df = result_df.append(transform_predict(predict_original_entry, "entry", tollgate_id))
         result_df = result_df.append(transform_predict(predict_original_exit, "exit", tollgate_id))
 
@@ -765,4 +811,4 @@ result_df["tollgate_id"] = result["tollgate_id"].replace({"1S": 1, "2S": 2, "3S"
 result_df["time_window"] = result["time_window"]
 result_df["direction"] = result["direction"].replace({"entry": 0, "exit": 1})
 result_df['volume'] = result["volume"]
-result_df.to_csv("volume_predict3_focus_type.csv", encoding="utf8", index=None)
+result_df.to_csv("volume_predict_multi_sample15_filter.csv", encoding="utf8", index=None)

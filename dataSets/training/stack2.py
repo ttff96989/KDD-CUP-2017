@@ -16,6 +16,7 @@ from sklearn.ensemble import AdaBoostRegressor
 import xgboost as xgb
 from sklearn.model_selection import GridSearchCV
 from xgboost.sklearn import XGBRegressor
+from sklearn.externals import joblib
 
 '''
 和stack.py的区别是不区分方向和出口
@@ -68,9 +69,9 @@ et_params = {
 
 et_params_cv = [{
     'n_jobs': [16],
-    'n_estimators': [600 + i * 100 for i in range(6)],
-    'max_features': [0.4 + i * 0.1 for i in range(4)],
-    'max_depth': [3, 4],
+    'n_estimators': [1000],#[600 + i * 100 for i in range(6)],
+    'max_features': [0.5 + i * 0.1 for i in range(3)],
+    'max_depth': [4, 5],
     'min_samples_leaf': [2]
 }]
 
@@ -118,12 +119,12 @@ gbdt_params = {
     }
 
 gbdt_params_cv = [{
-    'max_depth': [3, 4],
+    'max_depth': [4, 5],
     'min_samples_leaf': [1],
-    'learning_rate': [0.08 + i * 0.01 for i in range(5)],
+    'learning_rate': [0.1],#[0.08 + i * 0.01 for i in range(3)],
     'loss': ['lad'],
     'n_estimators': [3000],
-    'max_features': [0.6 + i * 0.1 for i in range(5)]
+    'max_features': [0.7 + i * 0.1 for i in range(4)]
 }]
 
 gbdt_params2 = {
@@ -154,9 +155,9 @@ xgb_params_cv = [{
     'colsample_bytree': [0.7],
     'silent': [1],
     'subsample': [0.7 + i * 0.1 for i in range(3)],
-    'learning_rate': [0.08 + i * 0.01 for i in range(5)],
+    'learning_rate': [0.1], #[0.08 + i * 0.01 for i in range(5)],
     'objective': ['reg:linear'],
-     'max_depth': [3, 4],
+     'max_depth': [4, 5],
     'min_child_weight': [1],
     'n_estimators': [2000]
 }]
@@ -181,9 +182,9 @@ xgb_params2_cv = [{
     'colsample_bytree': [0.7],
     'silent': [1],
     'subsample': [0.7 + i * 0.1 for i in range(3)],
-    'learning_rate': [0.03 + i * 0.01 for i in range(5)],
+    'learning_rate': [0.03],#[0.03 + i * 0.01 for i in range(5)],
     'objective': ['reg:linear'],
-    'max_depth': [3, 4],
+    'max_depth': [4, 5],
     'min_child_weight': [1],
     'n_estimators': [2000],
     'reg_lambda': [0.3]
@@ -448,15 +449,20 @@ def predict2(offset):
             return result
 
     class SklearnWrapper(object):
-        def __init__(self, clf, seed=0, params=None):
+        def __init__(self, clf, name, seed=0, params=None):
             params['random_state'] = seed
             self.clf = clf(**params)
+            self.name = name
+            self.file_name = None
 
         def train(self, x_train, y_train):
             self.clf.fit(x_train, y_train)
+            self.file_name = "train&test3_zjw/model/" + self.name + "_%d.model" % (offset, )
+            joblib.dump(self.clf, self.file_name, compress=3)
 
         def predict(self, x):
-            return self.clf.predict(x)
+            model = joblib.load(self.file_name)
+            return model.predict(x)
 
         def clf_type(self):
             return type(self.clf)
@@ -468,51 +474,67 @@ def predict2(offset):
             result = (np.abs(1 - np.exp(predict_arr - y_arr))).sum() / len(y)
             return result
 
-        def __init__(self, clf, seed=0, params=None):
+        def __init__(self, clf, name, seed=0, params=None):
             # params['random_state'] = seed
             model = clf()
             self.clf = GridSearchCV(estimator=model, param_grid=params, refit=True, scoring=self.scorer)
+            self.name = name
+            self.file_name = None
 
         def train(self, x_train, y_train):
             # print x_train
             self.clf.fit(x_train, y_train)
+            self.file_name = "train&test3_zjw/model/" + self.name + "_%d.model" % (offset, )
+            joblib.dump(self.clf.best_estimator_, self.file_name, compress=3)
 
         def predict(self, x):
-            return self.clf.predict(x)
+            model = joblib.load(self.file_name)
+            return model.predict(x)
 
         def clf_type(self):
             return type(self.clf)
 
     class XgbWrapper(object):
-        def __init__(self, seed=0, params=None):
+        def __init__(self, name, seed=0, params=None):
             self.param = params
             self.param["seed"] = seed
             self.nrounds = params.pop("nrounds", 250)
+            self.name = name
+            self.file_name = None
+            self.gbdt = None
 
         def train(self, x_train, y_train):
             dtrain = xgb.DMatrix(x_train, label=y_train)
             self.gbdt = xgb.train(self.param, dtrain, self.nrounds)
+            self.file_name = "train&test3_zjw/model/" + self.name + "_%d.model" % (offset,)
+            joblib.dump(self.gbdt, self.file_name, compress=3)
 
         def predict(self, x):
-            return self.gbdt.predict(xgb.DMatrix(x))
+            model = joblib.load(self.file_name)
+            return model.predict(xgb.DMatrix(x))
 
         def clf_type(self):
             return None
 
     class XgbWrapper_cv(object):
-        def __init__(self, seed=0, params=None):
+        def __init__(self, name, seed=0, params=None):
             # self.param = params
             # self.param["seed"] = seed
             # self.nrounds = params.pop("nrounds", 250)
             gbdt = XGBRegressor()
             self.model = GridSearchCV(gbdt, params, refit=True)
+            self.name = name
+            self.file_name = None
 
         def train(self, x_train, y_train):
             #dtrain = xgb.DMatrix(x_train, label=y_train)
+            self.file_name = "train&test3_zjw/model/" + self.name + "_%d.model" % (offset,)
             self.model.fit(x_train, y_train)
+            joblib.dump(self.model, self.file_name, compress=3)
 
         def predict(self, x):
-            return self.model.predict(x)
+            model = joblib.load(self.file_name)
+            return model.predict(x)
             #return self.model.predict(xgb.DMatrix(x))
 
         def clf_type(self):
@@ -544,7 +566,7 @@ def predict2(offset):
 
     model_name = ["GB", "RF", "XGB", "XGB2", "ET"]
     model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None, ExtraTreesRegressor]
-    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2, et_params]
+    model_params = [gbdt_params_cv, rf_params_cv, xgb_params_cv, xgb_params2_cv, et_params_cv]
     model2_name = ["GB", "XGB", "XGB2"]
     model2_lst = [GradientBoostingRegressor, None, None]
     model2_params = [gbdt_params, xgb_params, xgb_params2]
@@ -561,18 +583,18 @@ def predict2(offset):
             # print names[index]
             if names[index] == "XGB" or names[index] == "XGB2":
                 if cv:
-                    return XgbWrapper_cv(seed=SEED, params=params[index])
+                    return XgbWrapper_cv(name=names[index], seed=SEED, params=params[index])
                 else:
-                    return XgbWrapper(seed=SEED, params=params[index])
+                    return XgbWrapper(name=names[index], seed=SEED, params=params[index])
             else:
                 if cv:
-                    return SklearnWrapper_cv(clf=models[index], seed=SEED, params=params[index])
+                    return SklearnWrapper_cv(name=names[index], clf=models[index], seed=SEED, params=params[index])
                 else:
-                    return SklearnWrapper(clf=models[index], seed=SEED, params=params[index])
+                    return SklearnWrapper(name=names[index], clf=models[index], seed=SEED, params=params[index])
 
         # model_used = [model_lst[idx] for idx in model_used_idx[i]]
         # arams_used = [model_params[idx] for idx in model_used_idx[i]]
-        wrapper_lst = [generate_wrapper(idx, model_name, model_lst, model_params, cv=False)
+        wrapper_lst = [generate_wrapper(idx, model_name, model_lst, model_params, cv=True)
                        for idx in range(len(model_used_idx[i]))]
         train_test_lst = [get_oof(wrapper) for wrapper in wrapper_lst]
         train_lst = [train_temp for train_temp, test_temp in train_test_lst]
@@ -606,7 +628,7 @@ def predict2(offset):
 
 def main():
     global result_df
-    for offset in range(6):
+    for offset in [3, 4, 5]:
 
         # index, tollgate, direction在测试集中的顺序就按照predict1里读取到的文件里的顺序来
         # y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset)
@@ -626,18 +648,18 @@ def main():
         del y_predict["volume_float"]
         result_df = result_df.append(y_predict)
 
-    try:
-        for i in range(len(model_used_name)):
-            name = model_used_name[i]
-            score = model_score_dic[name][0] / model_score_dic[name][1]
-            print name + "-stacking : %.5f" % (score,)
-        print result_df.sort_values(["tollgate_id", "direction"])
-    except Exception as e:
-        print e
-
-    result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
-    result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
-    result_df.to_csv("./train&test3_zjw/volume_predict_stacking_pure.csv", index=None, encoding="utf8")
+    # try:
+    #     for i in range(len(model_used_name)):
+    #         name = model_used_name[i]
+    #         score = model_score_dic[name][0] / model_score_dic[name][1]
+    #         print name + "-stacking : %.5f" % (score,)
+    #     print result_df.sort_values(["tollgate_id", "direction"])
+    # except Exception as e:
+    #     print e
+    #
+    # result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
+    # result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
+    # result_df.to_csv("./train&test3_zjw/volume_predict_stacking_pure.csv", index=None, encoding="utf8")
 
 
 main()
