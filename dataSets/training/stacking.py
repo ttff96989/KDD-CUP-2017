@@ -29,12 +29,13 @@ NFOLDS = 5
 SEED = 0
 NROWS = None
 
-# id_direction_lst = [("1S", "entry"), ("1S", "exit"), ("2S", "entry"), ("3S", "entry"), ("3S", "exit")]
-id_direction_lst = [("1S", "exit")]
+id_direction_lst = [("1S", "entry"), ("1S", "exit"), ("2S", "entry"), ("3S", "entry"), ("3S", "exit")]
+# id_direction_lst = [("1S", "exit")]
 tuple_lst = []
 for id, direction in id_direction_lst:
    for i in range(6):
-       tuple_lst.append((id, direction, i))
+       tuple_lst.append((id, direction, i, "morning"))
+       tuple_lst.append((id, direction, i, "afternoon"))
 # tuple_lst = [("1S", "entry", 1)]
 
 et_params = {
@@ -345,11 +346,13 @@ def predict0(tollgate_id, direction, offset):
     return gbdt_model(x_train, x_test, y_train), test_index
 
 
-def predict1(tollgate_id, direction, offset):
+def predict1(tollgate_id, direction, offset, time_period):
     ## Load the data ##
-    train_file = "./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + "offset" + str(offset) + ".csv"
+    train_file = "./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + \
+                 "_offset_" + str(offset) + "_" + time_period + ".csv"
     train = pd.read_csv(train_file, index_col="Unnamed: 0")
-    test_file = "./train&test_zjw/volume_" + direction + "_test_" + tollgate_id + "offset" + str(offset) + ".csv"
+    test_file = "./train&test_zjw/volume_" + direction + "_test_" + tollgate_id + \
+                "offset" + str(offset) + "_" + time_period + ".csv"
     test = pd.read_csv(test_file, index_col="Unnamed: 0")
     print "predict1 path of train file: " + train_file
     print "predict1 path of test file: " + test_file
@@ -1012,11 +1015,11 @@ def main():
     print u"训练集用train&test的数据，非调参另一种Stacking模型，训练集用单模型结果为0.1647的特征"
 
     print "NFOLD = " + str(NFOLDS)
-    for tollgate_id, direction, offset in tuple_lst:
+    for tollgate_id, direction, offset, time_period in tuple_lst:
         print tollgate_id
         print direction
         print offset
-        y_test1, length1, test_index = predict1(tollgate_id, direction, offset)
+        y_test1, length1, test_index = predict1(tollgate_id, direction, offset, time_period)
         # y_test2, _, _ = predict2(tollgate_id, direction, offset)
         # y_test = (y_test1 + y_test2) / (length1 + length2)
         y_test = y_test1 / length1

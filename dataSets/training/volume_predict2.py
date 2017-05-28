@@ -83,8 +83,7 @@ def preprocessing():
     '''
     预处理训练集
     '''
-    volume_df = pd.read_csv("volume(table 6)_training.csv")
-
+    volume_df = pd.read_csv("volume(table 6)_training2.csv")
     # 替换所有有标签含义的数字
     volume_df['tollgate_id'] = volume_df['tollgate_id'].replace({1: "1S", 2: "2S", 3: "3S"})
     volume_df['direction'] = volume_df['direction'].replace({0: "entry", 1: "exit"})
@@ -112,7 +111,8 @@ def preprocessing():
     '''
     处理预测集
     '''
-    volume_test = pd.read_csv("../testing_phase1/volume(table 6)_test1.csv")
+    volume_test = pd.read_csv("../testing_phase1/volume(table 6)_test2.csv")
+    volume_test.columns = ["time","tollgate_id","direction","vehicle_model","has_etc","vehicle_type"]
     # 替换所有有标签含义的数字
     volume_test['tollgate_id'] = volume_test['tollgate_id'].replace({1: "1S", 2: "2S", 3: "3S"})
     volume_test['direction'] = volume_test['direction'].replace({0: "entry", 1: "exit"})
@@ -392,11 +392,11 @@ def modeling():
             best_rate = 0.1
             best_n_estimator = 3000
             # param_grid = [
-            #     {'max_depth': [3], 'min_samples_leaf': [10],
+            #     {'max_depth': [4], 'min_samples_leaf': [10],
             #      'learning_rate': [best_rate + 0.01 * i for i in range(-2, 4, 1)],
             #      'loss': ['lad'],
-            #      'n_estimators': [best_n_estimator + i * 200 for i in range(-2, 3, 1)],
-            #      'max_features': [1.0]}
+            #      'n_estimators': [1000],#[best_n_estimator + i * 200 for i in range(-2, 3, 1)],
+            #      'max_features': [0.7]}#[0.7 + i * 0.1 for i in range(4)]}
             # ]
             param_grid = [
                 {'max_depth': [3],
@@ -535,19 +535,20 @@ def modeling():
                 hour_offset = offset / 3
                 minute_offset = (offset % 3) * 20
                 # 增加filter，只要上午的数据
-                temp_df = temp_df[temp_df["hour"] < 14]
+                # temp_df = temp_df[temp_df["hour"] < 14]
                 append_data = temp_df[(temp_df["hour"] == 8 + hour_offset) & (temp_df["minute"] == minute_offset)]
-                print 'before appending : ' + str(temp_df.shape)
-                for i in range(15):
+                # print 'before appending : ' + str(temp_df.shape)
+                for i in range(10):
                     temp_df = temp_df.append(append_data, ignore_index=True)
-                print "after appending : " + str(temp_df.shape)
+                # print "after appending : " + str(temp_df.shape)
                 return temp_df
+                # return data_df.copy()
 
             models_entry = []
             train_entry_len = 0
             train_entry_score = 0
             for j in range(6):
-                train_df = generate_features(volume_entry, new_index_entry, j, file_path=entry_file_path,
+                train_df = generate_features(volume_entry, new_index_entry, j, file_path=None,
                                              has_type=False)
                 train_df = filter_error3(train_df.fillna(0))
                 # print "shape before transformation: " + str(train_df.shape[0])
@@ -559,11 +560,16 @@ def modeling():
                 # 生成数据时可以注释掉下面涉及该收费站该方向的所有代码
                 # 模型分上下午
                 train_X = multi_sample_morning(train_df, j)
+                # 保存数据
+                if entry_file_path:
+                    train_X.to_csv(entry_file_path + "_offset_" + str(j) + "_morning.csv")
                 train_y = np.log(1 + train_X["y"].fillna(0)).copy()
                 del train_X["y"]
                 # train_entry_len += len(train_y)
                 estimator1 = gbdt_model(train_X, train_y)
                 train2_X = multi_sample(train_df, j)
+                if entry_file_path:
+                    train2_X.to_csv(entry_file_path + "_offset_" + str(j) + "_afternoon.csv")
                 train2_y = np.log1p(train2_X["y"].fillna(0)).copy()
                 del train2_X["y"]
                 estimator2 = gbdt_model(train2_X, train2_y)
@@ -593,10 +599,14 @@ def modeling():
                 # 生成数据时可以注释掉下面五行
                 # 模型分上下午
                 train_X = multi_sample_morning(train_df, j)
+                if exit_file_path:
+                    train_X.to_csv(exit_file_path + "_offset_" + str(j) + "_morning.csv")
                 train_y = np.log(1 + train_X["y"].fillna(0)).copy()
                 del train_X["y"]
                 estimator1 = gbdt_model(train_X, train_y)
                 train2_X = multi_sample(train_df, j)
+                if exit_file_path:
+                    train2_X.to_csv(exit_file_path + "_offset_" + str(j) + "_afternoon.csv")
                 train2_y = np.log1p(train2_X["y"].fillna(0)).copy()
                 del train2_X["y"]
                 estimator2 = gbdt_model(train2_X, train2_y)
@@ -717,13 +727,17 @@ def modeling():
             predict_test_entry = pd.DataFrame()
             new_index = None
             for i in range(6):
-                if entry_file_path:
-                    test_entry_df = generate_time_features(test_entry_df, i + 6, entry_file_path + "offset" + str(i))
-                else:
-                    test_entry_df = generate_time_features(test_entry_df, i + 6)
+                # if entry_file_path:
+                #     test_entry_df = generate_time_features(test_entry_df, i + 6, entry_file_path + "offset" + str(i))
+                # else:
+                #     test_entry_df = generate_time_features(test_entry_df, i + 6)
+                test_entry_df = generate_time_features(test_entry_df, i + 6)
                 # 生成数据时可以注释掉三行
                 test_entry_df1 = test_entry_df[test_entry_df["hour"] < 12]
                 test_entry_df2 = test_entry_df[test_entry_df["hour"] > 12]
+                if entry_file_path:
+                    test_entry_df1.to_csv(entry_file_path + "offset_" + str(i) + "_morning.csv")
+                    test_entry_df2.to_csv(entry_file_path + "offset_" + str(i) + "_afternoon.csv")
                 test1_y = models_entry[i][0].predict(test_entry_df1)
                 test2_y = models_entry[i][1].predict(test_entry_df2)
                 test_y = np.append(test1_y, test2_y)
@@ -753,13 +767,17 @@ def modeling():
             test_exit_df = generate_2hours_features(test_exit_df, 0, has_type=True)
             predict_test_exit = pd.DataFrame()
             for i in range(6):
-                if exit_file_path:
-                    test_exit_df = generate_time_features(test_exit_df, i + 6, exit_file_path + "offset" + str(i))
-                else:
-                    test_exit_df = generate_time_features(test_exit_df, i + 6)
+                # if exit_file_path:
+                #     test_exit_df = generate_time_features(test_exit_df, i + 6, exit_file_path + "offset" + str(i))
+                # else:
+                #     test_exit_df = generate_time_features(test_exit_df, i + 6)
+                test_exit_df = generate_time_features(test_exit_df, i + 6)
                 # 生成数据时可以注释掉三行
                 test_exit_df1 = test_exit_df[test_exit_df["hour"] < 12]
                 test_exit_df2 = test_exit_df[test_exit_df["hour"] > 12]
+                if exit_file_path:
+                    test_exit_df1.to_csv(exit_file_path + "_offset_" + str(i) + "_morning.csv")
+                    test_exit_df2.to_csv(exit_file_path + "_offset_" + str(i) + "_afternoon.csv")
                 test1_y = models_exit[i][0].predict(test_exit_df1)
                 test2_y = models_exit[i][1].predict(test_exit_df2)
                 test_y = np.append(test1_y, test2_y)
@@ -786,29 +804,33 @@ def modeling():
                     result = result.append(series)
             return result
 
-        entry_train_file = "./train&test_zjw/volume_entry_train_%s" % (tollgate_id,)
-        exit_train_file = "./train&test_zjw/volume_exit_train_%s" % (tollgate_id,)
-        entry_test_file = "./train&test_zjw/volume_entry_test_%s" % (tollgate_id,)
-        exit_test_file = "./train&test_zjw/volume_exit_test_%s" % (tollgate_id,)
+        entry_train_file = "./train&test_zjw/volume2_entry_train_%s" % (tollgate_id,)
+        exit_train_file = "./train&test_zjw/volume2_exit_train_%s" % (tollgate_id,)
+        entry_test_file = "./train&test_zjw/volume2_entry_test_%s" % (tollgate_id,)
+        exit_test_file = "./train&test_zjw/volume2_exit_test_%s" % (tollgate_id,)
 
         entry_test, exit_test = divide_test_by_direction(volume_test)
         volume_entry_train, volume_exit_train = divide_train_by_direction(volume_train)
         models_entry, models_exit = generate_models(volume_entry_train,
-                                                    volume_exit_train)
+                                                    volume_exit_train,
+                                                    entry_train_file,
+                                                    exit_train_file)
         predict_original_entry, predict_original_exit = predict(entry_test,
                                                                 exit_test,
                                                                 models_entry,
-                                                                models_exit)
-        result_df = result_df.append(transform_predict(predict_original_entry, "entry", tollgate_id))
-        result_df = result_df.append(transform_predict(predict_original_exit, "exit", tollgate_id))
+                                                                models_exit,
+                                                                entry_test_file,
+                                                                exit_test_file)
+        # result_df = result_df.append(transform_predict(predict_original_entry, "entry", tollgate_id))
+        # result_df = result_df.append(transform_predict(predict_original_exit, "exit", tollgate_id))
 
     return result_df
 
 
 result = modeling()
-result_df = pd.DataFrame()
-result_df["tollgate_id"] = result["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
-result_df["time_window"] = result["time_window"]
-result_df["direction"] = result["direction"].replace({"entry": 0, "exit": 1})
-result_df['volume'] = result["volume"]
-result_df.to_csv("volume_predict_multi_sample15_filter.csv", encoding="utf8", index=None)
+# result_df = pd.DataFrame()
+# result_df["tollgate_id"] = result["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
+# result_df["time_window"] = result["time_window"]
+# result_df["direction"] = result["direction"].replace({"entry": 0, "exit": 1})
+# result_df['volume'] = result["volume"]
+# result_df.to_csv("volume_predict_multi_sample10.csv", encoding="utf8", index=None)

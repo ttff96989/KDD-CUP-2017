@@ -390,10 +390,12 @@ def predict1(offset):
     return y_test, len(model_used_idx), test_index, test_tollgate, test_direction
 
 
-def predict2(offset):
+def predict2(offset, time_period):
     ## Load the data ##
-    train = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
-    test = pd.read_csv("./train&test3_zjw/test_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
+    train = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + "_" + \
+                        time_period + ".csv", index_col="Unnamed: 0")
+    test = pd.read_csv("./train&test3_zjw/test_offset" + str(offset) + "_" + \
+                       time_period + ".csv", index_col="Unnamed: 0")
     train = train.dropna()
     test_index = test.index
     test_tollgate = test.tollgate_id.values
@@ -628,11 +630,16 @@ def predict2(offset):
 
 def main():
     global result_df
-    for offset in [3, 4, 5]:
+    time_periods = ["morning", "afternoon"]
+    offset_time = []
+    for time_period in time_periods:
+        for offset in range(6):
+            offset_time.append((offset, time_period))
+    for offset, time_period in offset_time:
 
         # index, tollgate, direction在测试集中的顺序就按照predict1里读取到的文件里的顺序来
         # y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset)
-        y_test2, len2, test_index, test_tollgate, test_direction = predict2(offset)
+        y_test2, len2, test_index, test_tollgate, test_direction = predict2(offset, time_period)
         # y_test = (y_test1 + y_test2) / (len1 + len2)
         y_test = y_test2 / len2
 

@@ -235,8 +235,10 @@ def generate_test(volume_entry_test, volume_exit_test, tollgate_id, entry_file_p
 def generate_features():
     volume_train, volume_test = preprocessing()
     tollgate_list = ["1S", "2S", "3S"]
-    train_df = [pd.DataFrame() for i in range(6)]
-    test_df = [pd.DataFrame() for i in range(6)]
+    train_df_morning = [pd.DataFrame() for i in range(6)]
+    train_df_afternoon = [pd.DataFrame() for i in range(6)]
+    test_df_morning = [pd.DataFrame() for i in range(6)]
+    test_df_afternoon = [pd.DataFrame() for i in range(6)]
     for tollgate_id in tollgate_list:
         print tollgate_id
         def add_labels(data_df, direction):
@@ -244,22 +246,63 @@ def generate_features():
                 item["tollgate_id"] = tollgate_id
                 item["direction"] = direction
 
+        def train_filter_morning(data_df, offset):
+            if data_df.shape[0] == 0:
+                return data_df
+            temp_df = data_df.copy()
+            hour_offset = offset / 3
+            minute_offset = (offset % 3) * 20
+            append_data = temp_df[(temp_df["hour"] == 8 + hour_offset) & (temp_df["minute"] == minute_offset)]
+            for i in range(10):
+                temp_df = temp_df.append(append_data, ignore_index=True)
+            return temp_df
+
+        def train_filter_afternoon(data_df, offset):
+            if data_df.shape[0] == 0:
+                return data_df
+            temp_df = data_df.copy()
+            hour_offset = offset / 3
+            minute_offset = (offset % 3) * 20
+            append_data = temp_df[(temp_df["hour"] == 17 + hour_offset) & (temp_df["minute"] == minute_offset)]
+            for i in range(10):
+                temp_df = temp_df.append(append_data, ignore_index=True)
+            return temp_df
+
         record_entry_train, record_exit_train = divide_train_by_direction(volume_train, tollgate_id)
         volume_entry_train, volume_exit_train = generate_train(record_entry_train, record_exit_train)
         add_labels(volume_entry_train, "entry")
         add_labels(volume_exit_train, "exit")
-        train_df = [train_df[i].append(volume_entry_train[i]) for i in range(6)]
-        train_df = [train_df[i].append(volume_exit_train[i]) for i in range(6)]
+        train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_entry_train[i], i))
+                            for i in range(6)]
+        train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_exit_train[i], i))
+                            for i in range(6)]
+        train_df_afternoon = [train_df_afternoon[i].append(train_filter_afternoon(volume_entry_train[i], i))
+                              for i in range(6)]
+        train_df_afternoon = [train_df_afternoon[i].append(train_filter_afternoon(volume_exit_train[i], i))
+                              for i in range(6)]
 
         record_entry_test, record_exit_test = divide_test_by_direction(volume_test, tollgate_id)
         volume_entry_test, volume_exit_test = generate_test(record_entry_test, record_exit_test, tollgate_id)
         add_labels(volume_entry_test, "entry")
         add_labels(volume_exit_test, "exit")
-        test_df = [test_df[i].append(volume_entry_test[i]) for i in range(6)]
-        test_df = [test_df[i].append(volume_exit_test[i]) for i in range(6)]
+        test_df_morning = [test_df_morning[i].append(volume_entry_test[i][volume_entry_test[i]["hour"] < 12])
+                           for i in range(6)]
+
+        test_df_afternoon = [test_df_afternoon[i].append(volume_entry_test[i][volume_entry_test[i]["hour"] > 12])
+                             for i in range(6)]
+        if volume_exit_test[0].shape[0] > 0:
+            test_df_morning = [test_df_morning[i].append(volume_exit_test[i][volume_exit_test[i]["hour"] < 12])
+                           for i in range(6)]
+            test_df_afternoon = [test_df_afternoon[i].append(volume_exit_test[i][volume_exit_test[i]["hour"] > 12])
+                             for i in range(6)]
 
     for i in range(6):
-        train_df[i].to_csv("./train&test3_zjw/train_offset%d.csv" % (i, ))
-        test_df[i].to_csv("./train&test3_zjw/test_offset%d.csv" % (i, ))
+        # train_df[i].to_csv("./train&test3_zjw/train_offset%d.csv" % (i, ))
+        # test_df[i].to_csv("./train&test3_zjw/test_offset%d.csv" % (i, ))
+        train_df_morning[i].to_csv("./train&test3_zjw/train_offset%d_morning.csv" % (i, ))
+        train_df_afternoon[i].to_csv("./train&test3_zjw/train_offset%d_afternoon.csv" % (i, ))
+        # test_df_morning[i].to_csv("./train&test3_zjw/test2_offset%d_morning.csv" % (i, ))
+        # test_df_afternoon[i].to_csv("./train&test3_zjw/test2_offset%d_afternoon.csv" % (i, ))
+
 
 generate_features()
