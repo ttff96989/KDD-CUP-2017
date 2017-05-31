@@ -43,7 +43,7 @@ et_params = {
         'n_estimators': 1000,
         'max_features': 0.5,
         'max_depth': 5,
-        'min_samples_leaf': 2,
+        'min_samples_leaf': 10,
     }
 
 et_params_cv = [{
@@ -59,7 +59,7 @@ rf_params = {
         'n_estimators': 1000,
         'max_features': 0.2,
         'max_depth': 5,
-        'min_samples_leaf': 2,
+        'min_samples_leaf': 10,
      }
 
 rf_params_cv = [{
@@ -90,7 +90,7 @@ ls_params_cv = [{
 
 gbdt_params = {
     'max_depth': 4,
-    'min_samples_leaf': 1,
+    'min_samples_leaf': 10,
     'learning_rate': 0.1,
     'loss': 'lad',
     'n_estimators': 3000,
@@ -348,11 +348,19 @@ def predict0(tollgate_id, direction, offset):
 
 def predict1(tollgate_id, direction, offset, time_period):
     ## Load the data ##
-    train_file = "./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + \
+    train_file = "./train&test_zjw/volume2_" + direction + "_train_" + tollgate_id + \
                  "_offset_" + str(offset) + "_" + time_period + ".csv"
+    train1_file = "./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + \
+                 "_offset_" + str(offset) + "_" + time_period + ".csv"
+    train_phase1 = pd.read_csv(train1_file, index_col="Unnamed: 0")
     train = pd.read_csv(train_file, index_col="Unnamed: 0")
-    test_file = "./train&test_zjw/volume_" + direction + "_test_" + tollgate_id + \
-                "offset" + str(offset) + "_" + time_period + ".csv"
+    print "shape before merge : " + str(train.shape)
+    train = train.append(train_phase1)
+    train.index = range(train.shape[0])
+    print "shape after merge : " + str(train.shape)
+
+    test_file = "./train&test_zjw/volume2_" + direction + "_test_" + tollgate_id + \
+                "_offset_" + str(offset) + "_" + time_period + ".csv"
     test = pd.read_csv(test_file, index_col="Unnamed: 0")
     print "predict1 path of train file: " + train_file
     print "predict1 path of test file: " + test_file
@@ -430,12 +438,13 @@ def predict1(tollgate_id, direction, offset, time_period):
 
         def train(self, x_train, y_train):
             self.clf.fit(x_train, y_train)
-            self.file_name = "train&test_zjw/model/" + self.name + "_" + tollgate_id + "_" + direction + "_%d.model" % (offset, )
-            joblib.dump(self.clf, self.file_name, compress=3)
+            # self.file_name = "train&test_zjw/model/" + self.name + "_" + tollgate_id + "_" + direction + "_%d.model" % (offset, )
+            # joblib.dump(self.clf, self.file_name, compress=3)
 
         def predict(self, x):
-            model = joblib.load(self.file_name)
-            return model.predict(x)
+            # model = joblib.load(self.file_name)
+            # return model.predict(x)
+            return self.clf.predict(x)
 
         def clf_type(self):
             return type(self.clf)
@@ -480,12 +489,13 @@ def predict1(tollgate_id, direction, offset, time_period):
         def train(self, x_train, y_train):
             dtrain = xgb.DMatrix(x_train, label=y_train)
             self.gbdt = xgb.train(self.param, dtrain, self.nrounds)
-            self.file_name = "train&test_zjw/model/" + self.name + "_" + tollgate_id + "_" + direction + "_%d.model" % (offset, )
-            joblib.dump(self.gbdt, self.file_name, compress=3)
+            # self.file_name = "train&test_zjw/model/" + self.name + "_" + tollgate_id + "_" + direction + "_%d.model" % (offset, )
+            # joblib.dump(self.gbdt, self.file_name, compress=3)
 
         def predict(self, x):
-            model = joblib.load(self.file_name)
-            return model.predict(xgb.DMatrix(x))
+            # model = joblib.load(self.file_name)
+            # return model.predict(xgb.DMatrix(x))
+            return self.gbdt.predict(xgb.DMatrix(x))
 
         def clf_type(self):
             return None
@@ -528,7 +538,7 @@ def predict1(tollgate_id, direction, offset, time_period):
                 oof_train = clf.predict(train.copy())
                 oof_test_skf[i, :] = clf.predict(test.copy())
             else:
-                clf.train(x_tr, y_tr, stack_idx=idx)
+                clf.train(x_tr, y_tr)
 
                 oof_train[test_index] = clf.predict(x_te)
                 oof_test_skf[i, :] = clf.predict(x_test)
@@ -543,10 +553,10 @@ def predict1(tollgate_id, direction, offset, time_period):
     model_name_lst = ["GB", "RF", "XGB", "XGB2", "LS", "ET", "RD"]
     model_lst = [GradientBoostingRegressor, RandomForestRegressor, XGBRegressor, XGBRegressor,
                  Lasso, ExtraTreesRegressor, Ridge]
-    #model_params = [gbdt_params, rf_params, xgb_params, xgb_params2,
-    #               ls_params, et_params, rd_params]
-    model_params = [gbdt_params_cv, rf_params_cv, xgb_params_cv, xgb_params2_cv,
-                    ls_params_cv, et_params_cv, rd_params_cv]
+    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2,
+                  ls_params, et_params, rd_params]
+    # model_params = [gbdt_params_cv, rf_params_cv, xgb_params_cv, xgb_params2_cv,
+    #                 ls_params_cv, et_params_cv, rd_params_cv]
     model2_name = ["GB", "XGB", "XGB2"]
     model2_lst = [GradientBoostingRegressor, XGBRegressor, XGBRegressor]
     model2_params = [gbdt_params, xgb_params, xgb_params2]
@@ -581,7 +591,7 @@ def predict1(tollgate_id, direction, offset, time_period):
         # params_used = [model_params[idx] for idx in model_used_idx[i]]
         # wrapper_lst = [SklearnWrapper(clf=model_used[i], seed=SEED, params=params_used[i])
         #                for i in range(len(model_used))]
-        wrapper_lst = [generate_wrapper(idx, model_name_lst, model_lst, model_params, cv=True)
+        wrapper_lst = [generate_wrapper(idx, model_name_lst, model_lst, model_params, cv=False)
                        for idx in range(len(model_used_idx[i]))]
         train_test_lst = [get_oof(wrapper) for wrapper in wrapper_lst]
         train_lst = [train_temp for train_temp, test_temp in train_test_lst]

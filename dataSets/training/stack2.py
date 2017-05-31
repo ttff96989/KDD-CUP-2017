@@ -64,7 +64,7 @@ et_params = {
         'n_estimators': 1000,
         'max_features': 0.5,
         'max_depth': 5,
-        'min_samples_leaf': 2,
+        'min_samples_leaf': 10,
     }
 
 et_params_cv = [{
@@ -80,7 +80,7 @@ rf_params = {
         'n_estimators': 1000,
         'max_features': 0.2,
         'max_depth': 5,
-        'min_samples_leaf': 2,
+        'min_samples_leaf': 10,
     }
 
 rf_params_cv = [{
@@ -111,7 +111,7 @@ ls_params_cv = [{
 
 gbdt_params = {
     'max_depth': 4,
-    'min_samples_leaf': 1,
+    'min_samples_leaf': 10,
     'learning_rate': 0.1,
     'loss': 'lad',
     'n_estimators': 3000,
@@ -214,10 +214,10 @@ model_score_dic = {}
 
 model_used_name = ["GB", "RF", "XGB", "XGB2", "ET"]
 
-def predict1(offset):
+def predict1(offset, time_period):
     ## Load the data ##
-    train = pd.read_csv("./train&test4_zjw/train_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
-    test = pd.read_csv("./train&test4_zjw/test_offset" + str(offset) + ".csv", index_col="Unnamed: 0")
+    train = pd.read_csv("./train&test4_zjw/train_offset" + str(offset) + "_" + time_period + ".csv", index_col="Unnamed: 0")
+    test = pd.read_csv("./train&test4_zjw/test_offset" + str(offset) + "_" + time_period + ".csv", index_col="Unnamed: 0")
     train = train.dropna()
     test_index = test.index
     test_tollgate = test.tollgate_id.values
@@ -327,25 +327,18 @@ def predict1(offset):
         return oof_train.reshape(-1, 1), oof_test.reshape(-1, 1)
 
     # 可以无限增加元模型，然后增加模型组合的可能性
-    model_name_lst = ["GB", "RF", "XGB", "XGB2", "ADA", "LS", "ET", "RD"]
-    model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None,
-                 AdaBoostRegressor, Lasso, ExtraTreesRegressor, Ridge]
-    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2,
-                    ada_param, ls_params, et_params, rd_params]
-    model2_name = ["ET", "RF", "GB", "ADA", "XGB", "XGB2"]
-    model2_lst = [ExtraTreesRegressor, RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor, None, None]
-    model2_params = [et_params, rf_params, gbdt_params, ada_param, xgb_params, xgb_params2]
+    model_name_lst = ["GB", "RF", "XGB", "XGB2", "ET"]
+    model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None, ExtraTreesRegressor]
+    # model_params = [gbdt_params_cv, rf_params_cv, xgb_params_cv, xgb_params2_cv, et_params_cv]
+    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2, et_params]
+    model2_name = ["GB", "XGB", "XGB2"]
+    model2_lst = [GradientBoostingRegressor, None, None]
+    model2_params = [gbdt_params, xgb_params, xgb_params2]
     model_used_idx = [[0, 1, 2],
                       [0, 1, 2, 3],
                       [0, 1, 2, 3, 4],
-                      [0, 1, 2, 3, 4, 5],
-                      [0, 1, 2, 3, 4, 5, 6],
-                      [0, 1, 2, 3, 4, 5, 6, 7],
-                      [1, 2, 3, 4, 5, 6, 7],
-                      [2, 3, 4, 5, 6, 7],
-                      [3, 4, 5, 6, 7],
-                      [4, 5, 6, 7],
-                      [5, 6, 7]]
+                      [1, 2, 3, 4],
+                      [2, 3, 4]]
 
     y_test = np.zeros((ntest,))
     for i in range(len(model_used_idx)):
@@ -382,7 +375,7 @@ def predict1(offset):
 
         print("{},{}".format(x_train.shape, x_test.shape))
 
-        random_index = random.randint(0, 5)
+        random_index = i
         print "second floor use : " + model2_name[random_index]
         model2 = generate_wrapper(random_index, model2_name, model2_lst, model2_params)
         model2.train(x_train, y_train)
@@ -392,11 +385,17 @@ def predict1(offset):
 
 def predict2(offset, time_period):
     ## Load the data ##
-    train = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + "_" + \
+    train1 = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + "_" + \
                         time_period + ".csv", index_col="Unnamed: 0")
-    test = pd.read_csv("./train&test3_zjw/test_offset" + str(offset) + "_" + \
+    train = pd.read_csv("./train&test3_zjw/train2_offset" + str(offset) + "_" + \
+                        time_period + ".csv", index_col="Unnamed: 0")
+    print "shape before merge : " + str(train.shape)
+    train = train.append(train1)
+    print "shape after merge : " + str(train.shape)
+    test = pd.read_csv("./train&test3_zjw/test2_offset" + str(offset) + "_" + \
                        time_period + ".csv", index_col="Unnamed: 0")
     train = train.dropna()
+    train.index = range(train.shape[0])
     test_index = test.index
     test_tollgate = test.tollgate_id.values
     test_direction = test.direction.values
@@ -459,12 +458,13 @@ def predict2(offset, time_period):
 
         def train(self, x_train, y_train):
             self.clf.fit(x_train, y_train)
-            self.file_name = "train&test3_zjw/model/" + self.name + "_%d.model" % (offset, )
-            joblib.dump(self.clf, self.file_name, compress=3)
+            # self.file_name = "train&test3_zjw/model/" + self.name + "_%d.model" % (offset, )
+            # joblib.dump(self.clf, self.file_name, compress=3)
 
         def predict(self, x):
-            model = joblib.load(self.file_name)
-            return model.predict(x)
+            # model = joblib.load(self.file_name)
+            # return model.predict(x)
+            return self.clf.predict(x)
 
         def clf_type(self):
             return type(self.clf)
@@ -508,12 +508,13 @@ def predict2(offset, time_period):
         def train(self, x_train, y_train):
             dtrain = xgb.DMatrix(x_train, label=y_train)
             self.gbdt = xgb.train(self.param, dtrain, self.nrounds)
-            self.file_name = "train&test3_zjw/model/" + self.name + "_%d.model" % (offset,)
-            joblib.dump(self.gbdt, self.file_name, compress=3)
+            # self.file_name = "train&test3_zjw/model/" + self.name + "_%d.model" % (offset,)
+            # joblib.dump(self.gbdt, self.file_name, compress=3)
 
         def predict(self, x):
-            model = joblib.load(self.file_name)
-            return model.predict(xgb.DMatrix(x))
+            # model = joblib.load(self.file_name)
+            # return model.predict(xgb.DMatrix(x))
+            return self.gbdt.predict(xgb.DMatrix(x))
 
         def clf_type(self):
             return None
@@ -568,7 +569,8 @@ def predict2(offset, time_period):
 
     model_name = ["GB", "RF", "XGB", "XGB2", "ET"]
     model_lst = [GradientBoostingRegressor, RandomForestRegressor, None, None, ExtraTreesRegressor]
-    model_params = [gbdt_params_cv, rf_params_cv, xgb_params_cv, xgb_params2_cv, et_params_cv]
+    # model_params = [gbdt_params_cv, rf_params_cv, xgb_params_cv, xgb_params2_cv, et_params_cv]
+    model_params = [gbdt_params, rf_params, xgb_params, xgb_params2, et_params]
     model2_name = ["GB", "XGB", "XGB2"]
     model2_lst = [GradientBoostingRegressor, None, None]
     model2_params = [gbdt_params, xgb_params, xgb_params2]
@@ -596,7 +598,7 @@ def predict2(offset, time_period):
 
         # model_used = [model_lst[idx] for idx in model_used_idx[i]]
         # arams_used = [model_params[idx] for idx in model_used_idx[i]]
-        wrapper_lst = [generate_wrapper(idx, model_name, model_lst, model_params, cv=True)
+        wrapper_lst = [generate_wrapper(idx, model_name, model_lst, model_params, cv=False)
                        for idx in range(len(model_used_idx[i]))]
         train_test_lst = [get_oof(wrapper) for wrapper in wrapper_lst]
         train_lst = [train_temp for train_temp, test_temp in train_test_lst]
@@ -638,7 +640,7 @@ def main():
     for offset, time_period in offset_time:
 
         # index, tollgate, direction在测试集中的顺序就按照predict1里读取到的文件里的顺序来
-        # y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset)
+        # y_test1, len1, test_index, test_tollgate, test_direction = predict1(offset, time_period)
         y_test2, len2, test_index, test_tollgate, test_direction = predict2(offset, time_period)
         # y_test = (y_test1 + y_test2) / (len1 + len2)
         y_test = y_test2 / len2
@@ -664,9 +666,9 @@ def main():
     # except Exception as e:
     #     print e
     #
-    # result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
-    # result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
-    # result_df.to_csv("./train&test3_zjw/volume_predict_stacking_pure.csv", index=None, encoding="utf8")
+    result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
+    result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
+    result_df.to_csv("./train&test3_zjw/volume_predict_stacking_pure.csv", index=None, encoding="utf8")
 
 
 main()

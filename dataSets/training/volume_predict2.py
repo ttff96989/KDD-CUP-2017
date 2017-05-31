@@ -239,7 +239,7 @@ def modeling():
             train_df["etc_all_count"] = train_df["etc_count0"] + train_df["etc_count1"] + train_df["etc_count2"] + \
                                         train_df["etc_count3"] + train_df["etc_count4"] + train_df["etc_count5"]
             train_df["etc_avg_model"] = train_df["etc_all_model"] / train_df["etc_all_count"]
-
+            # print train_df.columns
             if has_type:
                 train_df["cargo_all_model"] = train_df["cargo_model0"] + train_df["cargo_model1"] + \
                                               train_df["cargo_model2"] + train_df["cargo_model3"] + \
@@ -736,8 +736,8 @@ def modeling():
                 test_entry_df1 = test_entry_df[test_entry_df["hour"] < 12]
                 test_entry_df2 = test_entry_df[test_entry_df["hour"] > 12]
                 if entry_file_path:
-                    test_entry_df1.to_csv(entry_file_path + "offset_" + str(i) + "_morning.csv")
-                    test_entry_df2.to_csv(entry_file_path + "offset_" + str(i) + "_afternoon.csv")
+                    test_entry_df1.to_csv(entry_file_path + "_offset_" + str(i) + "_morning.csv")
+                    test_entry_df2.to_csv(entry_file_path + "_offset_" + str(i) + "_afternoon.csv")
                 test1_y = models_entry[i][0].predict(test_entry_df1)
                 test2_y = models_entry[i][1].predict(test_entry_df2)
                 test_y = np.append(test1_y, test2_y)
