@@ -278,6 +278,7 @@ def generate_features():
 
         add_labels(volume_entry_train, "entry")
         add_labels(volume_exit_train, "exit")
+        # volume_entry_train已经是分好端口，方向，offset的了，需要做的就是将train和test整合起来，加上历史车流
         train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_entry_train[i], i))
                             for i in range(6)]
         train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_exit_train[i], i))
