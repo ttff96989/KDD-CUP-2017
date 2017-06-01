@@ -14,8 +14,8 @@ def preprocessing():
     '''
     预处理训练集
     '''
-    volume_df = pd.read_csv("volume(table 6)_training.csv")
-
+    # volume_df = pd.read_csv("volume(table 6)_training.csv")
+    volume_df = pd.read_csv("train_merge.csv")
     # 替换所有有标签含义的数字
     volume_df['tollgate_id'] = volume_df['tollgate_id'].replace({1: "1S", 2: "2S", 3: "3S"})
     volume_df['direction'] = volume_df['direction'].replace({0: "entry", 1: "exit"})
@@ -24,13 +24,13 @@ def preprocessing():
     volume_df['time'] = volume_df['time'].apply(lambda x: pd.Timestamp(x))
 
     # 剔除10月1日至10月6日数据（每个收费站在该日期附近都有异常）
-    volume_df = volume_df[(volume_df["time"] < pd.Timestamp("2016-10-01 00:00:00")) |
-                          (volume_df["time"] > pd.Timestamp("2016-10-07 00:00:00"))]
+    # volume_df = volume_df[(volume_df["time"] < pd.Timestamp("2016-10-01 00:00:00")) |
+    #                       (volume_df["time"] > pd.Timestamp("2016-10-07 00:00:00"))]
 
     '''
     处理预测集
     '''
-    volume_test = pd.read_csv("../testing_phase1/volume(table 6)_test1.csv")
+    volume_test = pd.read_csv("../testing_phase1/volume(table 6)_test2.csv")
     # 替换所有有标签含义的数字
     volume_test['tollgate_id'] = volume_test['tollgate_id'].replace({1: "1S", 2: "2S", 3: "3S"})
     volume_test['direction'] = volume_test['direction'].replace({0: "entry", 1: "exit"})
@@ -246,8 +246,19 @@ def generate_features():
                 item["tollgate_id"] = tollgate_id
                 item["direction"] = direction
 
-        # def add_history(data_df):
-
+        def add_history(data_df):
+            if data_df.shape[0] == 0:
+                return data_df
+            data = data_df.copy()
+            data["time"] = data.index
+            data["time"] = data["time"].apply(lambda x: pd.Timestamp(x))
+            for i in range(4):
+                data_temp = data[["volume5", "time"]].copy()
+                data_temp.rename(columns={"volume5": "y"})
+                data_temp["time"] = data_temp["time"] + DateOffset(days=i * 2 + 1)
+                data = pd.merge(data, data_temp, how="left", on=["time"], suffixes=["", "_" + str(i)])
+            del data["time"]
+            return data
 
         def train_filter_morning(data_df, offset):
             if data_df.shape[0] == 0:
@@ -271,14 +282,26 @@ def generate_features():
                 temp_df = temp_df.append(append_data, ignore_index=True)
             return temp_df
 
+        def filter_error(data_df):
+            return data_df.dropna()
+
         record_entry_train, record_exit_train = divide_train_by_direction(volume_train, tollgate_id)
         volume_entry_train, volume_exit_train = generate_train(record_entry_train, record_exit_train)
         record_entry_test, record_exit_test = divide_test_by_direction(volume_test, tollgate_id)
         volume_entry_test, volume_exit_test = generate_test(record_entry_test, record_exit_test, tollgate_id)
 
-        add_labels(volume_entry_train, "entry")
-        add_labels(volume_exit_train, "exit")
+
         # volume_entry_train已经是分好端口，方向，offset的了，需要做的就是将train和test整合起来，加上历史车流
+        n_entry_trains = [train.shape[0] for train in volume_entry_train]
+        all_data_entry = [add_history(pd.concat((volume_entry_train[i], volume_entry_test[i]))) for i in range(6)]
+        volume_entry_train = [filter_error(all_data_entry[i][:n_entry_trains[i]]) for i in range(6)]
+        volume_entry_test = [all_data_entry[i][n_entry_trains[i]:] for i in range(6)]
+
+        n_exit_trains = [train.shape[0] for train in volume_exit_train]
+        all_data_exit = [add_history(pd.concat((volume_exit_train[i], volume_exit_test[i]))) for i in range(6)]
+        volume_exit_train = [filter_error(all_data_exit[i][:n_exit_trains[i]]) for i in range(6)]
+        volume_exit_test = [all_data_exit[i][n_exit_trains[i]:] for i in range(6)]
+
         train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_entry_train[i], i))
                             for i in range(6)]
         train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_exit_train[i], i))
@@ -288,8 +311,11 @@ def generate_features():
         train_df_afternoon = [train_df_afternoon[i].append(train_filter_afternoon(volume_exit_train[i], i))
                               for i in range(6)]
 
+        add_labels(volume_entry_train, "entry")
+        add_labels(volume_exit_train, "exit")
         add_labels(volume_entry_test, "entry")
         add_labels(volume_exit_test, "exit")
+
         test_df_morning = [test_df_morning[i].append(volume_entry_test[i][volume_entry_test[i]["hour"] < 12])
                            for i in range(6)]
 
@@ -304,10 +330,10 @@ def generate_features():
     for i in range(6):
         # train_df[i].to_csv("./train&test3_zjw/train_offset%d.csv" % (i, ))
         # test_df[i].to_csv("./train&test3_zjw/test_offset%d.csv" % (i, ))
-        train_df_morning[i].to_csv("./train&test3_zjw/train_offset%d_morning.csv" % (i, ))
-        train_df_afternoon[i].to_csv("./train&test3_zjw/train_offset%d_afternoon.csv" % (i, ))
-        # test_df_morning[i].to_csv("./train&test3_zjw/test2_offset%d_morning.csv" % (i, ))
-        # test_df_afternoon[i].to_csv("./train&test3_zjw/test2_offset%d_afternoon.csv" % (i, ))
+        train_df_morning[i].to_csv("./train&test3_zjw/train2_offset%d_morning.csv" % (i, ))
+        train_df_afternoon[i].to_csv("./train&test3_zjw/train2_offset%d_afternoon.csv" % (i, ))
+        test_df_morning[i].to_csv("./train&test3_zjw/test2_offset%d_morning.csv" % (i, ))
+        test_df_afternoon[i].to_csv("./train&test3_zjw/test2_offset%d_afternoon.csv" % (i, ))
 
 
 generate_features()

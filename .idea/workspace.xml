@@ -2,7 +2,156 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c1080875-0cfa-475a-87fc-d2ad5d721bf1" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/VolumePredict-zjw.iml" afterPath="$PROJECT_DIR$/.idea/VolumePredict-zjw.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/generate_feature2.py" afterPath="$PROJECT_DIR$/dataSets/training/generate_feature2.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/stacking.py" afterPath="$PROJECT_DIR$/dataSets/training/stacking.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_1S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_2S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_test_3S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_1S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_2S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_entry_train_3S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_1S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_test_3S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_1S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test1_zjw/volume_exit_train_3S_offset_5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/test2_offset5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset0_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset0_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset0_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset0_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset1_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset1_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset1_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset1_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset2_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset2_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset2_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset2_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset3_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset3_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset3_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset3_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset4_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset4_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset4_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset4_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset5_afternoon.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset5_afternoon.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset5_morning.csv" afterPath="$PROJECT_DIR$/dataSets/training/train&amp;test3_zjw/train2_offset5_morning.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataSets/training/volume_predict2.py" afterPath="$PROJECT_DIR$/dataSets/training/volume_predict2.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,7 +169,7 @@
       <file leaf-file-name="generate_feature.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dataSets/training/generate_feature.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11950">
+            <state relative-caret-position="6990">
               <caret line="478" column="0" lean-forward="false" selection-start-line="478" selection-start-column="0" selection-end-line="478" selection-end-column="19" />
               <folding>
                 <element signature="e#342#361#0" expanded="true" />
@@ -32,20 +181,9 @@
       <file leaf-file-name="generate_feature2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dataSets/training/generate_feature2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="280" column="55" lean-forward="false" selection-start-line="280" selection-start-column="55" selection-end-line="280" selection-end-column="55" />
-              <folding>
-                <element signature="e#208#1551#0" expanded="false" />
-                <element signature="e#1679#3015#0" expanded="false" />
-                <element signature="e#3121#4409#0" expanded="false" />
-                <element signature="e#4528#5249#0" expanded="false" />
-                <element signature="e#5603#6331#0" expanded="false" />
-                <element signature="e#6460#7593#0" expanded="false" />
-                <element signature="e#7712#9388#0" expanded="false" />
-                <element signature="e#9856#9982#0" expanded="false" />
-                <element signature="e#10075#10494#0" expanded="false" />
-                <element signature="e#10561#10981#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="285">
+              <caret line="21" column="34" lean-forward="true" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -53,31 +191,9 @@
       <file leaf-file-name="volume_predict2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="815" column="13" lean-forward="false" selection-start-line="815" selection-start-column="13" selection-end-line="815" selection-end-column="13" />
-              <folding>
-                <element signature="e#6479#11505#0" expanded="false" />
-                <element signature="e#11691#22731#0" expanded="false" />
-                <element signature="e#22861#23589#0" expanded="false" />
-                <element signature="e#23742#24708#0" expanded="false" />
-                <element signature="e#24783#26052#0" expanded="false" />
-                <element signature="e#26131#26879#0" expanded="false" />
-                <element signature="e#26958#28145#0" expanded="false" />
-                <element signature="e#28564#36029#0" expanded="false" />
-                <element signature="e#29314#29447#0" expanded="false" />
-                <element signature="e#29537#29893#0" expanded="false" />
-                <element signature="e#29951#30202#0" expanded="false" />
-                <element signature="e#30260#30648#0" expanded="false" />
-                <element signature="e#30713#31315#0" expanded="false" />
-                <element signature="e#31388#32028#0" expanded="false" />
-                <element signature="e#36184#41876#0" expanded="false" />
-                <element signature="e#42073#46617#0" expanded="false" />
-                <element signature="e#46730#47520#0" expanded="false" />
-                <element signature="e#48365#48752#0" expanded="false" />
-                <element signature="e#48819#49201#0" expanded="false" />
-                <element signature="e#49266#49647#0" expanded="false" />
-                <element signature="e#49694#49844#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="63">
+              <caret line="858" column="12" lean-forward="false" selection-start-line="858" selection-start-column="12" selection-end-line="858" selection-end-column="28" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -85,9 +201,20 @@
       <file leaf-file-name="stacking.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dataSets/training/stacking.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="383" column="24" lean-forward="false" selection-start-line="383" selection-start-column="18" selection-end-line="383" selection-end-column="24" />
-              <folding />
+            <state relative-caret-position="366">
+              <caret line="409" column="25" lean-forward="false" selection-start-line="409" selection-start-column="12" selection-end-line="409" selection-end-column="25" />
+              <folding>
+                <element signature="e#4610#10349#0" expanded="false" />
+                <element signature="e#13299#13755#0" expanded="false" />
+                <element signature="e#13799#14498#0" expanded="false" />
+                <element signature="e#14545#15606#0" expanded="false" />
+                <element signature="e#15646#16512#0" expanded="false" />
+                <element signature="e#16555#17479#0" expanded="false" />
+                <element signature="e#17511#18366#0" expanded="false" />
+                <element signature="e#22148#28637#0" expanded="false" />
+                <element signature="e#28683#36922#0" expanded="false" />
+                <element signature="e#36941#39875#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -95,7 +222,7 @@
       <file leaf-file-name="stack2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dataSets/training/stack2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1556">
+            <state relative-caret-position="5700">
               <caret line="397" column="23" lean-forward="false" selection-start-line="397" selection-start-column="23" selection-end-line="397" selection-end-column="23" />
               <folding />
             </state>
@@ -105,18 +232,8 @@
       <file leaf-file-name="generate_features3.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dataSets/training/generate_features3.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2014">
+            <state relative-caret-position="1590">
               <caret line="108" column="66" lean-forward="false" selection-start-line="108" selection-start-column="66" selection-end-line="108" selection-end-column="66" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1292">
-              <caret line="68" column="66" lean-forward="false" selection-start-line="68" selection-start-column="66" selection-end-line="68" selection-end-column="66" />
               <folding />
             </state>
           </provider>
@@ -162,17 +279,16 @@
         <option value="$PROJECT_DIR$/dataSets/training/generate_feature.py" />
         <option value="$PROJECT_DIR$/dataSets/training/generate_features3.py" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/dataSets/training/stacking.py" />
         <option value="$PROJECT_DIR$/dataSets/training/stack2.py" />
+        <option value="$PROJECT_DIR$/dataSets/training/stacking.py" />
         <option value="$PROJECT_DIR$/dataSets/training/volume_predict2.py" />
         <option value="$PROJECT_DIR$/dataSets/training/generate_feature2.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1920" />
-    <option name="width" value="1440" />
-    <option name="height" value="900" />
+    <option name="width" value="1280" />
+    <option name="height" value="800" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -189,8 +305,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -237,6 +351,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -249,7 +365,7 @@
       <recent name="$PROJECT_DIR$/dataSets/training" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.volume_predict2">
+  <component name="RunManager" selected="Python.generate_feature2">
     <configuration default="false" name="volume_predict2" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -478,8 +594,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.volume_predict2" />
-        <item index="1" class="java.lang.String" itemvalue="Python.generate_feature2" />
+        <item index="0" class="java.lang.String" itemvalue="Python.generate_feature2" />
+        <item index="1" class="java.lang.String" itemvalue="Python.volume_predict2" />
         <item index="2" class="java.lang.String" itemvalue="Python.stacking" />
         <item index="3" class="java.lang.String" itemvalue="Python.generate_feature" />
         <item index="4" class="java.lang.String" itemvalue="Python.volume_predict2&amp;3_result" />
@@ -500,19 +616,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1920" y="0" width="1440" height="900" extended-state="6" />
+    <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16925247" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26767275" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.04657534" sideWeight="0.50277996" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32833958" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21598002" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13150685" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1835206" sideWeight="0.49722" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1835206" sideWeight="0.49722" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -554,18 +670,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="540">
           <caret line="38" column="37" lean-forward="false" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="37" />
-          <folding>
-            <element signature="e#208#1551#0" expanded="false" />
-            <element signature="e#1679#3015#0" expanded="false" />
-            <element signature="e#3121#4409#0" expanded="false" />
-            <element signature="e#4528#5249#0" expanded="false" />
-            <element signature="e#5603#6331#0" expanded="false" />
-            <element signature="e#6460#7593#0" expanded="false" />
-            <element signature="e#7712#9388#0" expanded="false" />
-            <element signature="e#9856#9982#0" expanded="false" />
-            <element signature="e#10075#10494#0" expanded="false" />
-            <element signature="e#10561#10981#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -573,29 +678,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1770">
           <caret line="130" column="28" lean-forward="false" selection-start-line="130" selection-start-column="28" selection-end-line="130" selection-end-column="28" />
-          <folding>
-            <element signature="e#6479#11505#0" expanded="false" />
-            <element signature="e#11691#22731#0" expanded="false" />
-            <element signature="e#22861#23589#0" expanded="false" />
-            <element signature="e#23742#24708#0" expanded="false" />
-            <element signature="e#24783#26052#0" expanded="false" />
-            <element signature="e#26131#26879#0" expanded="false" />
-            <element signature="e#26958#28145#0" expanded="false" />
-            <element signature="e#28564#36029#0" expanded="false" />
-            <element signature="e#29314#29447#0" expanded="false" />
-            <element signature="e#29537#29893#0" expanded="false" />
-            <element signature="e#29951#30202#0" expanded="false" />
-            <element signature="e#30260#30648#0" expanded="false" />
-            <element signature="e#30713#31315#0" expanded="false" />
-            <element signature="e#31388#32028#0" expanded="false" />
-            <element signature="e#36184#41876#0" expanded="false" />
-            <element signature="e#42073#46617#0" expanded="false" />
-            <element signature="e#46730#47520#0" expanded="false" />
-            <element signature="e#48365#48752#0" expanded="false" />
-            <element signature="e#48819#49201#0" expanded="false" />
-            <element signature="e#49266#49647#0" expanded="false" />
-            <element signature="e#49694#49844#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -613,18 +696,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="540">
           <caret line="38" column="37" lean-forward="false" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="37" />
-          <folding>
-            <element signature="e#208#1551#0" expanded="false" />
-            <element signature="e#1679#3015#0" expanded="false" />
-            <element signature="e#3121#4409#0" expanded="false" />
-            <element signature="e#4528#5249#0" expanded="false" />
-            <element signature="e#5603#6331#0" expanded="false" />
-            <element signature="e#6460#7593#0" expanded="false" />
-            <element signature="e#7712#9388#0" expanded="false" />
-            <element signature="e#9856#9982#0" expanded="false" />
-            <element signature="e#10075#10494#0" expanded="false" />
-            <element signature="e#10561#10981#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -632,29 +704,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1575">
           <caret line="105" column="27" lean-forward="true" selection-start-line="105" selection-start-column="27" selection-end-line="105" selection-end-column="27" />
-          <folding>
-            <element signature="e#6479#11505#0" expanded="false" />
-            <element signature="e#11691#22731#0" expanded="false" />
-            <element signature="e#22861#23589#0" expanded="false" />
-            <element signature="e#23742#24708#0" expanded="false" />
-            <element signature="e#24783#26052#0" expanded="false" />
-            <element signature="e#26131#26879#0" expanded="false" />
-            <element signature="e#26958#28145#0" expanded="false" />
-            <element signature="e#28564#36029#0" expanded="false" />
-            <element signature="e#29314#29447#0" expanded="false" />
-            <element signature="e#29537#29893#0" expanded="false" />
-            <element signature="e#29951#30202#0" expanded="false" />
-            <element signature="e#30260#30648#0" expanded="false" />
-            <element signature="e#30713#31315#0" expanded="false" />
-            <element signature="e#31388#32028#0" expanded="false" />
-            <element signature="e#36184#41876#0" expanded="false" />
-            <element signature="e#42073#46617#0" expanded="false" />
-            <element signature="e#46730#47520#0" expanded="false" />
-            <element signature="e#48365#48752#0" expanded="false" />
-            <element signature="e#48819#49201#0" expanded="false" />
-            <element signature="e#49266#49647#0" expanded="false" />
-            <element signature="e#49694#49844#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -670,7 +720,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1695">
           <caret line="227" column="26" lean-forward="true" selection-start-line="227" selection-start-column="26" selection-end-line="227" selection-end-column="26" />
-          <folding />
+          <folding>
+            <element signature="e#4610#10349#0" expanded="false" />
+            <element signature="e#13299#13755#0" expanded="false" />
+            <element signature="e#13799#14498#0" expanded="false" />
+            <element signature="e#14545#15606#0" expanded="false" />
+            <element signature="e#15646#16512#0" expanded="false" />
+            <element signature="e#16555#17479#0" expanded="false" />
+            <element signature="e#17511#18366#0" expanded="false" />
+            <element signature="e#22148#28637#0" expanded="false" />
+            <element signature="e#28683#36922#0" expanded="false" />
+            <element signature="e#36941#39875#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -703,18 +764,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2775">
           <caret line="187" column="0" lean-forward="true" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
-          <folding>
-            <element signature="e#208#1551#0" expanded="false" />
-            <element signature="e#1679#3015#0" expanded="false" />
-            <element signature="e#3121#4409#0" expanded="false" />
-            <element signature="e#4528#5249#0" expanded="false" />
-            <element signature="e#5603#6331#0" expanded="false" />
-            <element signature="e#6460#7593#0" expanded="false" />
-            <element signature="e#7712#9388#0" expanded="false" />
-            <element signature="e#9856#9982#0" expanded="false" />
-            <element signature="e#10075#10494#0" expanded="false" />
-            <element signature="e#10561#10981#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -730,7 +780,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#4610#10349#0" expanded="false" />
+            <element signature="e#13299#13755#0" expanded="false" />
+            <element signature="e#13799#14498#0" expanded="false" />
+            <element signature="e#14545#15606#0" expanded="false" />
+            <element signature="e#15646#16512#0" expanded="false" />
+            <element signature="e#16555#17479#0" expanded="false" />
+            <element signature="e#17511#18366#0" expanded="false" />
+            <element signature="e#22148#28637#0" expanded="false" />
+            <element signature="e#28683#36922#0" expanded="false" />
+            <element signature="e#36941#39875#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -748,18 +809,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3795">
           <caret line="255" column="0" lean-forward="true" selection-start-line="255" selection-start-column="0" selection-end-line="255" selection-end-column="0" />
-          <folding>
-            <element signature="e#208#1551#0" expanded="false" />
-            <element signature="e#1679#3015#0" expanded="false" />
-            <element signature="e#3121#4409#0" expanded="false" />
-            <element signature="e#4528#5249#0" expanded="false" />
-            <element signature="e#5603#6331#0" expanded="false" />
-            <element signature="e#6460#7593#0" expanded="false" />
-            <element signature="e#7712#9388#0" expanded="false" />
-            <element signature="e#9856#9982#0" expanded="false" />
-            <element signature="e#10075#10494#0" expanded="false" />
-            <element signature="e#10561#10981#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -789,7 +839,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#4610#10349#0" expanded="false" />
+            <element signature="e#13299#13755#0" expanded="false" />
+            <element signature="e#13799#14498#0" expanded="false" />
+            <element signature="e#14545#15606#0" expanded="false" />
+            <element signature="e#15646#16512#0" expanded="false" />
+            <element signature="e#16555#17479#0" expanded="false" />
+            <element signature="e#17511#18366#0" expanded="false" />
+            <element signature="e#22148#28637#0" expanded="false" />
+            <element signature="e#28683#36922#0" expanded="false" />
+            <element signature="e#36941#39875#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -811,7 +872,18 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2220">
           <caret line="185" column="0" lean-forward="false" selection-start-line="185" selection-start-column="0" selection-end-line="185" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#4610#10349#0" expanded="false" />
+            <element signature="e#13299#13755#0" expanded="false" />
+            <element signature="e#13799#14498#0" expanded="false" />
+            <element signature="e#14545#15606#0" expanded="false" />
+            <element signature="e#15646#16512#0" expanded="false" />
+            <element signature="e#16555#17479#0" expanded="false" />
+            <element signature="e#17511#18366#0" expanded="false" />
+            <element signature="e#22148#28637#0" expanded="false" />
+            <element signature="e#28683#36922#0" expanded="false" />
+            <element signature="e#36941#39875#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -914,7 +986,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dataSets/training/generate_features3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2014">
+        <state relative-caret-position="1590">
           <caret line="108" column="66" lean-forward="false" selection-start-line="108" selection-start-column="66" selection-end-line="108" selection-end-column="66" />
           <folding />
         </state>
@@ -924,21 +996,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1292">
           <caret line="68" column="66" lean-forward="false" selection-start-line="68" selection-start-column="66" selection-end-line="68" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dataSets/training/stack2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1556">
-          <caret line="397" column="23" lean-forward="false" selection-start-line="397" selection-start-column="23" selection-end-line="397" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dataSets/training/generate_feature.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11950">
+        <state relative-caret-position="6990">
           <caret line="478" column="0" lean-forward="false" selection-start-line="478" selection-start-column="0" selection-end-line="478" selection-end-column="19" />
           <folding>
             <element signature="e#342#361#0" expanded="true" />
@@ -946,68 +1009,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dataSets/training/stacking.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="383" column="24" lean-forward="false" selection-start-line="383" selection-start-column="18" selection-end-line="383" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="296">
           <caret line="1595" column="0" lean-forward="false" selection-start-line="1595" selection-start-column="0" selection-end-line="1595" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dataSets/training/volume_predict2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="815" column="13" lean-forward="false" selection-start-line="815" selection-start-column="13" selection-end-line="815" selection-end-column="13" />
+        <state relative-caret-position="63">
+          <caret line="858" column="12" lean-forward="false" selection-start-line="858" selection-start-column="12" selection-end-line="858" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataSets/training/stacking.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="409" column="25" lean-forward="false" selection-start-line="409" selection-start-column="12" selection-end-line="409" selection-end-column="25" />
           <folding>
-            <element signature="e#6479#11505#0" expanded="false" />
-            <element signature="e#11691#22731#0" expanded="false" />
-            <element signature="e#22861#23589#0" expanded="false" />
-            <element signature="e#23742#24708#0" expanded="false" />
-            <element signature="e#24783#26052#0" expanded="false" />
-            <element signature="e#26131#26879#0" expanded="false" />
-            <element signature="e#26958#28145#0" expanded="false" />
-            <element signature="e#28564#36029#0" expanded="false" />
-            <element signature="e#29314#29447#0" expanded="false" />
-            <element signature="e#29537#29893#0" expanded="false" />
-            <element signature="e#29951#30202#0" expanded="false" />
-            <element signature="e#30260#30648#0" expanded="false" />
-            <element signature="e#30713#31315#0" expanded="false" />
-            <element signature="e#31388#32028#0" expanded="false" />
-            <element signature="e#36184#41876#0" expanded="false" />
-            <element signature="e#42073#46617#0" expanded="false" />
-            <element signature="e#46730#47520#0" expanded="false" />
-            <element signature="e#48365#48752#0" expanded="false" />
-            <element signature="e#48819#49201#0" expanded="false" />
-            <element signature="e#49266#49647#0" expanded="false" />
-            <element signature="e#49694#49844#0" expanded="false" />
+            <element signature="e#4610#10349#0" expanded="false" />
+            <element signature="e#13299#13755#0" expanded="false" />
+            <element signature="e#13799#14498#0" expanded="false" />
+            <element signature="e#14545#15606#0" expanded="false" />
+            <element signature="e#15646#16512#0" expanded="false" />
+            <element signature="e#16555#17479#0" expanded="false" />
+            <element signature="e#17511#18366#0" expanded="false" />
+            <element signature="e#22148#28637#0" expanded="false" />
+            <element signature="e#28683#36922#0" expanded="false" />
+            <element signature="e#36941#39875#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dataSets/training/stack2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5700">
+          <caret line="397" column="23" lean-forward="false" selection-start-line="397" selection-start-column="23" selection-end-line="397" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dataSets/training/generate_feature2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="280" column="55" lean-forward="false" selection-start-line="280" selection-start-column="55" selection-end-line="280" selection-end-column="55" />
-          <folding>
-            <element signature="e#208#1551#0" expanded="false" />
-            <element signature="e#1679#3015#0" expanded="false" />
-            <element signature="e#3121#4409#0" expanded="false" />
-            <element signature="e#4528#5249#0" expanded="false" />
-            <element signature="e#5603#6331#0" expanded="false" />
-            <element signature="e#6460#7593#0" expanded="false" />
-            <element signature="e#7712#9388#0" expanded="false" />
-            <element signature="e#9856#9982#0" expanded="false" />
-            <element signature="e#10075#10494#0" expanded="false" />
-            <element signature="e#10561#10981#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="285">
+          <caret line="21" column="34" lean-forward="true" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
+          <folding />
         </state>
       </provider>
     </entry>

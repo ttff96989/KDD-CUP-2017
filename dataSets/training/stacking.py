@@ -348,29 +348,33 @@ def predict0(tollgate_id, direction, offset):
 
 def predict1(tollgate_id, direction, offset, time_period):
     ## Load the data ##
-    train_file = "./train&test_zjw/volume2_" + direction + "_train_" + tollgate_id + \
-                 "_offset_" + str(offset) + "_" + time_period + ".csv"
-    train1_file = "./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + \
-                 "_offset_" + str(offset) + "_" + time_period + ".csv"
-    train_phase1 = pd.read_csv(train1_file, index_col="Unnamed: 0")
+    # train_file = "./train&test_zjw/volume2_" + direction + "_train_" + tollgate_id + \
+    #              "_offset_" + str(offset) + "_" + time_period + ".csv"
+    # train1_file = "./train&test_zjw/volume_" + direction + "_train_" + tollgate_id + \
+    #              "_offset_" + str(offset) + "_" + time_period + ".csv"
+    # train_phase1 = pd.read_csv(train1_file, index_col="Unnamed: 0")
+    # train = pd.read_csv(train_file, index_col="Unnamed: 0")
+    # print "shape before merge : " + str(train.shape)
+    # train = train.append(train_phase1)
+    # train.index = range(train.shape[0])
+    # print "shape after merge : " + str(train.shape)
+    train_file = "./train&test_zjw/volume1_" + direction + "_train_" + tollgate_id + \
+                      "_offset_" + str(offset) + "_" + time_period + ".csv"
     train = pd.read_csv(train_file, index_col="Unnamed: 0")
-    print "shape before merge : " + str(train.shape)
-    train = train.append(train_phase1)
     train.index = range(train.shape[0])
-    print "shape after merge : " + str(train.shape)
 
-    test_file = "./train&test_zjw/volume2_" + direction + "_test_" + tollgate_id + \
+    test_file = "./train&test_zjw/volume1_" + direction + "_test_" + tollgate_id + \
                 "_offset_" + str(offset) + "_" + time_period + ".csv"
     test = pd.read_csv(test_file, index_col="Unnamed: 0")
     print "predict1 path of train file: " + train_file
     print "predict1 path of test file: " + test_file
     # 训练集中有两种空值，一种是删除了10月1日到10月7日的车辆记录后，resample出现的空值；另一种是20分钟没有车辆的那种空值
     # train = train.dropna()
-    train["time"] = train.index
-    train["time"] = train["time"].apply(pd.Timestamp)
-    train = train[(train["time"] < pd.Timestamp("2016-09-30 22:20:00")) |
-                  (train["time"] > pd.Timestamp("2016-10-07 01:20:00"))]
-    del train["time"]
+    # train["time"] = train.index
+    # train["time"] = train["time"].apply(pd.Timestamp)
+    # train = train[(train["time"] < pd.Timestamp("2016-09-30 22:20:00")) |
+    #               (train["time"] > pd.Timestamp("2016-10-07 01:20:00"))]
+    # del train["time"]
     train = train.fillna(0)
 
     test_index = test.index
