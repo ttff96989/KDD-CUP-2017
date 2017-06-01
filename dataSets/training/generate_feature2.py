@@ -54,7 +54,7 @@ def divide_train_by_direction(volume_df, tollgate_id, entry_file_path=None, exit
     del volume_all_entry["vehicle_type"]
     del volume_all_entry["has_etc"]
     volume_all_entry = volume_all_entry.resample("20T").sum()
-    # volume_all_entry = volume_all_entry.fillna(0)
+    volume_all_entry = volume_all_entry.fillna(0)
 
 
     # exit
@@ -69,7 +69,7 @@ def divide_train_by_direction(volume_df, tollgate_id, entry_file_path=None, exit
         del volume_all_exit["vehicle_type"]
         del volume_all_exit["has_etc"]
         volume_all_exit = volume_all_exit.resample("20T").sum()
-        # volume_all_exit = volume_all_exit.fillna(0)
+        volume_all_exit = volume_all_exit.fillna(0)
 
     if entry_file_path:
         volume_all_entry.to_csv(entry_file_path, encoding="utf8")
@@ -246,6 +246,9 @@ def generate_features():
                 item["tollgate_id"] = tollgate_id
                 item["direction"] = direction
 
+        # def add_history(data_df):
+
+
         def train_filter_morning(data_df, offset):
             if data_df.shape[0] == 0:
                 return data_df
@@ -270,6 +273,9 @@ def generate_features():
 
         record_entry_train, record_exit_train = divide_train_by_direction(volume_train, tollgate_id)
         volume_entry_train, volume_exit_train = generate_train(record_entry_train, record_exit_train)
+        record_entry_test, record_exit_test = divide_test_by_direction(volume_test, tollgate_id)
+        volume_entry_test, volume_exit_test = generate_test(record_entry_test, record_exit_test, tollgate_id)
+
         add_labels(volume_entry_train, "entry")
         add_labels(volume_exit_train, "exit")
         train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_entry_train[i], i))
@@ -281,8 +287,6 @@ def generate_features():
         train_df_afternoon = [train_df_afternoon[i].append(train_filter_afternoon(volume_exit_train[i], i))
                               for i in range(6)]
 
-        record_entry_test, record_exit_test = divide_test_by_direction(volume_test, tollgate_id)
-        volume_entry_test, volume_exit_test = generate_test(record_entry_test, record_exit_test, tollgate_id)
         add_labels(volume_entry_test, "entry")
         add_labels(volume_exit_test, "exit")
         test_df_morning = [test_df_morning[i].append(volume_entry_test[i][volume_entry_test[i]["hour"] < 12])
