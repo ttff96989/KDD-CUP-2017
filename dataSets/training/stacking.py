@@ -358,12 +358,13 @@ def predict1(tollgate_id, direction, offset, time_period):
     # train = train.append(train_phase1)
     # train.index = range(train.shape[0])
     # print "shape after merge : " + str(train.shape)
-    train_file = "./train&test_zjw/volume1_" + direction + "_train_" + tollgate_id + \
+    train_file = "./train&test1_zjw/volume_" + direction + "_train_" + tollgate_id + \
                       "_offset_" + str(offset) + "_" + time_period + ".csv"
     train = pd.read_csv(train_file, index_col="Unnamed: 0")
     train.index = range(train.shape[0])
+    del train["time"]
 
-    test_file = "./train&test_zjw/volume1_" + direction + "_test_" + tollgate_id + \
+    test_file = "./train&test1_zjw/volume_" + direction + "_test_" + tollgate_id + \
                 "_offset_" + str(offset) + "_" + time_period + ".csv"
     test = pd.read_csv(test_file, index_col="Unnamed: 0")
     print "predict1 path of train file: " + train_file
@@ -377,7 +378,8 @@ def predict1(tollgate_id, direction, offset, time_period):
     # del train["time"]
     train = train.fillna(0)
 
-    test_index = test.index
+    test_index = test["time"].copy()
+    del test["time"]
 
     ## Preprocessing ##
 
@@ -1080,7 +1082,7 @@ def main():
 
     result_df["tollgate_id"] = result_df["tollgate_id"].replace({"1S": 1, "2S": 2, "3S": 3})
     result_df["direction"] = result_df["direction"].replace({"entry": 0, "exit": 1})
-    output_file = "./train&test_zjw/volume_predict_stacking_pure2.csv"
+    output_file = "./train&test1_zjw/volume_predict_stacking_pure.csv"
     result_df.to_csv(output_file, index=None, encoding="utf8")
     print output_file
 

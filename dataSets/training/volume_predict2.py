@@ -178,7 +178,7 @@ def modeling():
             del volume_all_entry["vehicle_type"]
             del volume_all_entry["has_etc"]
             volume_all_entry = volume_all_entry.resample("20T").sum()
-            volume_all_entry = volume_all_entry.dropna(0)
+            volume_all_entry = volume_all_entry.fillna(0)
 
             # exit
             volume_all_exit = volume_df[
@@ -213,7 +213,7 @@ def modeling():
                 del volume_all_exit["vehicle_type"]
                 del volume_all_exit["has_etc"]
                 volume_all_exit = volume_all_exit.resample("20T").sum()
-                volume_all_exit = volume_all_exit.dropna(0)
+                volume_all_exit = volume_all_exit.fillna(0)
 
                 volume_all_exit["cargo_model_avg"] = volume_all_exit["cargo_model"] / volume_all_exit["cargo_count"]
                 volume_all_exit["passenger_model_avg"] = volume_all_exit["passenger_model"] / volume_all_exit[

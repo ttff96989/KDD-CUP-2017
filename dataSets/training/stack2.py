@@ -385,18 +385,22 @@ def predict1(offset, time_period):
 
 def predict2(offset, time_period):
     ## Load the data ##
-    train1 = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + "_" + \
-                        time_period + ".csv", index_col="Unnamed: 0")
+    # train1 = pd.read_csv("./train&test3_zjw/train_offset" + str(offset) + "_" + \
+    #                     time_period + ".csv", index_col="Unnamed: 0")
     train = pd.read_csv("./train&test3_zjw/train2_offset" + str(offset) + "_" + \
                         time_period + ".csv", index_col="Unnamed: 0")
-    print "shape before merge : " + str(train.shape)
-    train = train.append(train1)
-    print "shape after merge : " + str(train.shape)
+    del train["time"]
+    # print "shape before merge : " + str(train.shape)
+    # train = train.append(train1)
+    # print "shape after merge : " + str(train.shape)
+
     test = pd.read_csv("./train&test3_zjw/test2_offset" + str(offset) + "_" + \
                        time_period + ".csv", index_col="Unnamed: 0")
     train = train.dropna()
     train.index = range(train.shape[0])
-    test_index = test.index
+    test_index = test["time"].copy()
+    del test["time"]
+    del test["y"]
     test_tollgate = test.tollgate_id.values
     test_direction = test.direction.values
 

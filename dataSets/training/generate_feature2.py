@@ -257,7 +257,7 @@ def generate_features():
                 data_temp.rename(columns={"volume5": "y"})
                 data_temp["time"] = data_temp["time"] + DateOffset(days=i * 2 + 1)
                 data = pd.merge(data, data_temp, how="left", on=["time"], suffixes=["", "_" + str(i)])
-            del data["time"]
+            # del data["time"]
             return data
 
         def train_filter_morning(data_df, offset):
@@ -302,6 +302,9 @@ def generate_features():
         volume_exit_train = [filter_error(all_data_exit[i][:n_exit_trains[i]]) for i in range(6)]
         volume_exit_test = [all_data_exit[i][n_exit_trains[i]:] for i in range(6)]
 
+        add_labels(volume_entry_train, "entry")
+        add_labels(volume_exit_train, "exit")
+
         train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_entry_train[i], i))
                             for i in range(6)]
         train_df_morning = [train_df_morning[i].append(train_filter_morning(volume_exit_train[i], i))
@@ -311,8 +314,6 @@ def generate_features():
         train_df_afternoon = [train_df_afternoon[i].append(train_filter_afternoon(volume_exit_train[i], i))
                               for i in range(6)]
 
-        add_labels(volume_entry_train, "entry")
-        add_labels(volume_exit_train, "exit")
         add_labels(volume_entry_test, "entry")
         add_labels(volume_exit_test, "exit")
 
