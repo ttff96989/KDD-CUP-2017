@@ -1,5 +1,49 @@
 
-# 下面是部分提交思路以及结果
+# 赛题及数据描述描述
+
+### 赛题描述
+
+本题给出了9月19日到10月18日期间3个收费站共五个方向（其中2号收费站只有0方向）的车辆通过记录作为训练集。预测集中给出了10月19日到10月25日共七天
+每天6点到8点，15点到17点的车辆通过记录，需要预测当天8点到10点，17点到19点以20分钟为单位的车流量
+
+### 数据定义
+
+description of the feature:
+
+Traffic Volume through the Tollgates
+
+| time          | datatime       | the time when a vehicle passes the tollgate                                                   |
+| ------------- |:--------------:| --------------------------------------------------------------------------------------------- |
+| tollgate_id   | string         | ID of the tollgate                                                                            |
+| direction     | string         | 0:entry, 1:exit                                                                               |
+| vehicle_model | int            | this number ranges from 0 to 7, which indicates the capacity of the vehicle(bigger the higher)|
+| has_etc       | string         | does the vehicle use ETC (Electronic Toll Collection) device? 0: No, 1: Yes                   |
+| vehicle_type  | string         | vehicle type: 0-passenger vehicle, 1-cargo vehicle                                            |
+
+
+# 解题思路
+
+- 数据中有部分车辆没有“vehicle_type”信息，通过分析数据发现：记录在案的载重量大于等于5的车辆都是货车，载重量为4的车辆以客车居多，载重量3，2的车辆货车居多，
+载重量1的车辆客车居多。剩下载重量为0的车辆，不是很理解什么样的车辆载重量会是0，所以单独处理。所以“vehicle_type”为空的记录根据其载重量以及相同载重量的记录中
+较多的“vehicle_type”去填充空值。
+
+```python
+vehicle_model0 = volume_df[volume_df['vehicle_model'] == 0].fillna("No")
+vehicle_model1 = volume_df[volume_df['vehicle_model'] == 1].fillna("passenger")
+vehicle_model2 = volume_df[volume_df['vehicle_model'] == 2].fillna("cargo")
+vehicle_model3 = volume_df[volume_df['vehicle_model'] == 3].fillna("cargo")
+vehicle_model4 = volume_df[volume_df['vehicle_model'] == 4].fillna("passenger")
+vehicle_model5 = volume_df[volume_df['vehicle_model'] >= 5].fillna("cargo")
+```
+
+- 每个收费站和方向分开分析，分别有：1号收费站0方向；1号收费站1方向；2号收费站0方向；3号收费站0方向；3号收费站1方向。每块数据按照20分钟切片，
+统计20分钟内通过的车流数量。以两个小时（6段）车流量为特征，用最后一个特征向后偏移20 * offset 时段的车流为因变量构建预测集，其中offset = 1，2，3...6。
+这么做是因为预测集中需要用前两个小时预测后两个小时车流。尝试过不区分收费站和方向的情况，效果没有区分的好。
+
+- 20分钟切片除了有车流量
+
+
+# 部分提交思路以及结果
 
 ### 2017-05-11
 
@@ -107,72 +151,5 @@
 
 - 时间特征模型调参，可以稍微过拟合，目的是降低和主train&test1模型的相关度，0.5x+0.5y的比例分配结果，最后成绩是0.1589
 
-description of the feature:
 
-Traffic Volume through the Tollgates
 
-time           datatime        the time when a vehicle passes the tollgate
-
-tollgate_id    string          ID of the tollgate
-
-direction      string           0:entry, 1:exit
-
-vehicle_model  int             this number ranges from 0 to 7, which indicates the capacity of the vehicle(bigger the higher)
-
-has_etc        string          does the vehicle use ETC (Electronic Toll Collection) device? 0: No, 1: Yes
-
-vehicle_type   string          vehicle type: 0-passenger vehicle, 1-cargo vehicle
-
-volume_predict.py建模思路：
-
-创建训练集，总的要求就是以前两个小时数据为训练集，用迭代式预测方法
-例如8点-10点的数据预测10点20,8点-10点20预测10点40……，每一次预测使用的都是独立的（可能模型一样）的模型
-现在开始构建训练集
-
-第一个训练集特征是所有两个小时（以20分钟为一个单位）的数据，因变量是该两小时之后20分钟的流量
-
-第二个训练集，特征是所有两个小时又20分钟（以20分钟为一个单位）的数据，因变量是该两个小时之后20分钟的流量
-以此类推训练12个GBDT模型，其中entry 6个，exit 6个
-
-待优化思路：
-1. 该模型想说明的问题是当前待预测时段的车流只和之前两小时车流有线性（或非线性）关系，这个认识其实比较局限，因此可以从
-   两个方面优化：第一个是增加特征，凭经验构建特征；第二个是换一个角度思考，当前时刻的车流量也可能和之前一个月同一时段
-   车流量呈线性（或非线性）关系
-
-2. 如何证明分开考虑收费站比将收费站全部整合到一起效果好，如果将收费站整合到一起的话，那么就不对收费站id，出入方向做分类
-
-优化思路：
-1. 根据题目所给评价函数，如果将y转换成log(y)，那么损失函数可以朝lad方向梯度下降（过程已经大致证明了），而特征的log处理
-   不影响CART的回归结果，所以对所有车流量（不论特征还是因变量都做log计算）。如果使用其他非树形结构模型需要考虑是否要对
-   所有数据做log计算
-   
-volume_predict2.py
-在volume_predict的基础上改进模型
-
-建模思路：
-
-创建训练集，总的要求就是以前两个小时数据为训练集，用迭代式预测方法
-
-例如8点-10点的数据预测10点20,8点-10点20预测10点40……，每一次预测使用的都是独立的（可能模型一样）的模型
-现在开始构建训练集
-
-第一个训练集特征是所有两个小时（以20分钟为一个单位）的数据，因变量是该两小时之后20分钟的流量
-
-第二个训练集，特征是所有两个小时又20分钟（以20分钟为一个单位）的数据，因变量是该两个小时之后20分钟的流量
-以此类推训练12个GBDT模型，其中entry 6个，exit 6个
-
-待优化思路：
-1. 该模型想说明的问题是当前待预测时段的车流只和之前两小时车流有线性（或非线性）关系，这个认识其实比较局限，可以尝试
-   换一个角度思考，当前时刻的车流量也可能和之前一个月同一时段车流量呈线性（或非线性）关系
-
-2. 如何证明分开考虑收费站比将收费站全部整合到一起效果好，如果将收费站整合到一起的话，那么就不对收费站id，出入方向做分类
-
-优化思路：
-1. 根据题目所给评价函数，如果将y转换成log(y)，那么损失函数可以朝lad方向梯度下降（过程已经大致证明了），而特征的log处理
-   不影响CART的回归结果，所以对所有车流量（不论特征还是因变量都做log计算）。如果使用其他非树形结构模型需要考虑是否要对
-   所有数据做log计算
-
-2. 增加特征，之前只考虑20分钟内的车流量情况，现在加上在20分钟内的总载重量，平均载重量；货车数量，货车总载重量，货车平均
-   载重量；客车数量，客车总载重量，客车平均载重量；使用电子桩的车数（2个小时6个时段，每个时段有10维特征，一共60维）；
-   2小时内总载重量，平均载重量，货车数量，货车总载重量，货车平均载重量，客车数量，客车总载重量，客车平均载重量（10维）；
-   总计70维特征
