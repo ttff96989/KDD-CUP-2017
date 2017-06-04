@@ -71,7 +71,7 @@ vehicle_model5 = volume_df[volume_df['vehicle_model'] >= 5].fillna("cargo")
 
 - 分析车流波形发现10月1日到10月7日之间的车流波形和其他时间区别非常大，所有收费站的所有方向都是如此。不知道用的是不是中国的数据，感觉就是国庆期间啊……所以将训练集中这段时间的数据全部删除
 
-- 参考Kaggle里[Stacking Start](https://www.kaggle.com/obiwang/stacking-starter/output/code)的帖子，做了三层Stacking模型，第一层用了9个模型（LASSO，Ridge，GBDT，ADABoost，XgBoost，XgBoost2，ExtraTrees，Liner，RandomForest），第二层用了（GBDT，XgBoost，XgBoost2），第三层是将第二层取平均。
+- 参考Kaggle里[Stacking Start](https://www.kaggle.com/obiwang/stacking-starter/)的帖子，做了三层Stacking模型，第一层用了9个模型（LASSO，Ridge，GBDT，ADABoost，XgBoost，XgBoost2，ExtraTrees，Liner，RandomForest），第二层用了（GBDT，XgBoost，XgBoost2），第三层是将第二层取平均。
 为了增加第二层模型之间的不相关程度，第二层的输入不是第一层所有模型的输出，其中（LASSO，Ridge，GBDT，ADABoost，XgBoost，XgBoost2，ExtraTrees，Liner）的输出为第二层GBDT的输入，（LASSO，Ridge，GBDT，ADABoost，XgBoost，XgBoost2，ExtraTrees，Liner，RandomForest）
 的输出为第二层XgBoost的输入，（Ridge，GBDT，ADABoost，XgBoost，XgBoost2，ExtraTrees，Liner，RandomForest）输出是第二层XgBoost2的输入。参数设置为：在默认参数的基础上增强了泛化能力，没有针对评分调参
 
